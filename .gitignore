@@ -1,0 +1,13 @@
+# build output (Vercel builds it from source)
+dist/
+dist-preview/
+node_modules/
+.vercel/
+# secrets: set them in Vercel → Settings → Environment Variables
+.env
+.env.*
+!.env.example
+# system
+.DS_Store
+__pycache__/
+*.pyc

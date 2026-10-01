@@ -1,0 +1,16 @@
+{
+  "name": "isani-park-residence",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Website of the Isani Park Residence apartment complex (Block E) by Mono Capitals",
+  "scripts": {
+    "build": "node build.mjs",
+    "build:preview": "node build.mjs --preview --out dist-preview",
+    "dev": "node build.mjs && node tools/dev-server.mjs",
+    "test": "node tools/test-api.mjs && node tools/qa.mjs && node tools/qa-picker.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

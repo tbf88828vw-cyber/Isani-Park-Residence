@@ -1,0 +1,442 @@
+{
+ "lang": "en",
+ "htmlLang": "en",
+ "ogLocale": "en_US",
+ "label": "EN",
+ "labelLong": "English",
+ "meta": {
+  "title": "Isani Park Residence — apartments in Tbilisi, Block E | Mono Capitals",
+  "description": "1- to 4-room apartments from 30 to 103 m² in Block E of Isani Park Residence, Isani district, Tbilisi. Floor plans for all 219 apartments; ask Mono Capitals' sales team for prices and payment terms.",
+  "privacyTitle": "Privacy policy — Isani Park Residence",
+  "privacyDescription": "How the Isani Park Residence website handles enquiry form data and analytics.",
+  "notFoundTitle": "Page not found — Isani Park Residence"
+ },
+ "skip": "Skip to content",
+ "nav": {
+  "project": "The project",
+  "apartments": "Apartments",
+  "gallery": "Architecture",
+  "location": "Location",
+  "purchase": "Buying",
+  "contact": "Contact",
+  "menu": "Menu",
+  "close": "Close",
+  "home": "Isani Park Residence — home",
+  "primary": "Main navigation",
+  "language": "Site language",
+  "themeToLight": "Switch to light theme",
+  "themeToDark": "Switch to dark theme"
+ },
+ "hero": {
+  "context": "Apartments in Tbilisi · Isani district",
+  "by": "by Mono Capitals",
+  "offer": "1- to 4-room apartments from 30 to 103 m² in the new Block E. Every apartment has a balcony or terrace, and the grounds include 4,530 m² of recreation areas.",
+  "ctaPrimary": "Choose an apartment",
+  "ctaSecondary": "Ask for price and terms",
+  "pause": "Pause video",
+  "play": "Play video",
+  "videoLabel": "Exterior animation of Block E (visualisation)",
+  "scroll": "Scroll down"
+ },
+ "project": {
+  "eyebrow": "Block E",
+  "title": "Ten floors above a green courtyard",
+  "lead": "Isani Park Residence is a residential complex by Mono Capitals on Beri Gabriel Salosi Avenue in Tbilisi's Isani district. Apartments in Block E are now for sale, from compact 1-room units to 4-room homes with generous terraces.",
+  "imageAlt": "Visualisation of Block E: a ten-storey building with terracotta piers and balconies above a landscaped courtyard",
+  "imageCaption": "The design may be refined during construction.",
+  "facts": [
+   {
+    "value": "219",
+    "label": "apartments in Block E",
+    "note": "per floor plans dated 23 April 2026"
+   },
+   {
+    "value": "10",
+    "label": "residential floors",
+    "note": "plus two underground parking levels"
+   },
+   {
+    "value": "30–103 m²",
+    "label": "total apartment area",
+    "note": "1, 2, 3 and 4 rooms"
+   },
+   {
+    "value": "4,530 m²",
+    "label": "of recreation areas",
+    "note": "on an 8,550 m² site (Blocks F and E)"
+   }
+  ],
+  "source": "Site and recreation areas are taken from the official Mono Capitals website. Apartment, floor and parking-space counts come from the Block E design plans."
+ },
+ "living": {
+  "eyebrow": "Life at the complex",
+  "title": "What comes with the apartment",
+  "items": [
+   {
+    "title": "Your own outdoor space",
+    "text": "Every apartment in Block E has an outdoor area: a balcony in the smaller units and terraces of up to 29 m² in the 4-room apartments. The exact figure is listed for each apartment."
+   },
+   {
+    "title": "A courtyard for walks and play",
+    "text": "The developer lists landscaped recreation areas with benches, children's playgrounds, sports grounds and footpaths — 4,530 m² on the Block F and E site."
+   },
+   {
+    "title": "Parking below the building",
+    "text": "Two underground parking levels are planned beneath Block E, with 86 spaces on the plans. Ask the sales team about buying or renting a space."
+   },
+   {
+    "title": "A layout for how you live",
+    "text": "1-room apartments from 30 m², 2-room around 50–52 m², 3-room from 61 to 79 m² and 4-room around 101–103 m². Each apartment has its own plan with room dimensions."
+   }
+  ],
+  "complexNote": "The developer's description of the whole complex also mentions an outdoor swimming pool, car-free zones and 24/7 security. Ask the sales team which of these belong to the phase that includes Block E, and when they will open."
+ },
+ "catalog": {
+  "eyebrow": "Floor plan catalogue",
+  "title": "Choose an apartment in Block E",
+  "lead": "All 219 apartments with numbers, floors and areas from the design plans. The sales team confirms availability and the price of any specific apartment.",
+  "filters": "Filters",
+  "rooms": "Rooms",
+  "roomsAny": "All",
+  "floor": "Floor",
+  "floorAny": "Any",
+  "area": "Area",
+  "areaAny": "Any",
+  "areaBands": [
+   {
+    "id": "s",
+    "label": "up to 35 m²",
+    "min": 0,
+    "max": 35
+   },
+   {
+    "id": "m",
+    "label": "35–55 m²",
+    "min": 35,
+    "max": 55
+   },
+   {
+    "id": "l",
+    "label": "55–80 m²",
+    "min": 55,
+    "max": 80
+   },
+   {
+    "id": "xl",
+    "label": "80 m² and more",
+    "min": 80,
+    "max": 1000
+   }
+  ],
+  "sort": "Sort",
+  "sortOptions": {
+   "floor": "By floor",
+   "areaAsc": "Smallest first",
+   "areaDesc": "Largest first"
+  },
+  "reset": "Reset filters",
+  "shown": "Showing {shown} of {total}",
+  "found": "Apartments found: {n}",
+  "more": "Show more",
+  "empty": "No apartments match these filters. Change them, or send an enquiry and the sales team will suggest close alternatives.",
+  "block": "Block E",
+  "apartment": "Apartment",
+  "no": "No.",
+  "floorShort": "Floor {n}",
+  "roomsLabel": {
+   "1": "1 room",
+   "2": "2 rooms",
+   "3": "3 rooms",
+   "4": "4 rooms"
+  },
+  "roomsFilter": {
+   "1": "1",
+   "2": "2",
+   "3": "3",
+   "4": "4"
+  },
+  "total": "Total area",
+  "interior": "Interior area",
+  "summer": "Outdoor area",
+  "summerHint": "balcony or terrace",
+  "priceCta": "Ask for price",
+  "details": "Details",
+  "planAlt": "Floor plan of apartment {n}, Block E, floor {floor}",
+  "typicalTitle": "What the layouts look like",
+  "typicalLead": "3D visualisations of typical apartments from the developer's materials. Select one to see similar apartments in the catalogue.",
+  "typicalAlt": "Interior visualisation of a typical {n}-room apartment of about {area} m²",
+  "typicalShow": "Similar apartments",
+  "floorsTitle": "Floor plans",
+  "floorsLead": "Where each apartment sits on the floor. The ground floor differs from the typical floors 2 to 10.",
+  "floorTabs": {
+   "floor-1": "Floor 1",
+   "floor-typical": "Floors 2–10"
+  },
+  "floorAlt": {
+   "floor-1": "Visualised plan of the first floor of Block E",
+   "floor-typical": "Visualised plan of a typical floor of Block E (floors 2–10)"
+  },
+  "floorHint": "Scroll the plan sideways to see the whole floor."
+ },
+ "modal": {
+  "title": "Apartment {n}",
+  "subtitle": "Block E · floor {floor} · {rooms}",
+  "zoomIn": "Zoom in on the plan",
+  "zoomOut": "Zoom out",
+  "pdf": "Open the plan as PDF",
+  "request": "Ask for price and terms",
+  "note": "Plan from the developer's design documents. The price, availability and finish of this apartment are available from the sales team.",
+  "close": "Close",
+  "prev": "Previous apartment",
+  "next": "Next apartment",
+  "specs": "Key figures",
+  "noPlan": "An individual plan for this apartment is being prepared. Its position is shown on the floor plan.",
+  "view3d": "3D view",
+  "viewPlan": "Floor plan",
+  "open3dHint": "Click the image to open the floor plan",
+  "note3d": "3D visualisation of this layout type: furniture and finishes are an example; neighbouring apartments may have a mirrored layout. Exact dimensions are on the floor plan.",
+  "no3d": "A 3D view for this layout is not ready yet.",
+  "alt3d": "3D visualisation of apartment No. {n} layout"
+ },
+ "gallery": {
+  "eyebrow": "Architecture and grounds",
+  "title": "Terracotta piers, glass and plenty of green",
+  "lead": "All images below are the developer's visualisations. Construction photos will be added here once they are provided.",
+  "badge": "Visualisation",
+  "prev": "Previous image",
+  "next": "Next image",
+  "counter": "{i} of {n}",
+  "thumbs": "Choose an image",
+  "items": {
+   "front": "Main façade of Block E from the courtyard",
+   "corner-west": "Block E from the corner: vertical piers and balconies",
+   "park-facade": "The façade above the landscaped grounds",
+   "aerial-courtyard": "Aerial view: the building, paths and green grounds",
+   "aerial-paths": "Footpaths and planting from above",
+   "corner-tower": "End elevation of Block E and the site entrance",
+   "garden-walk": "Walkway along the façade",
+   "evening-light": "Block E in soft daylight",
+   "street-view": "View from the internal driveway",
+   "garden-front": "Planting in front of the main façade",
+   "portrait-corner": "End elevation with balconies",
+   "east-facade": "The long façade of Block E"
+  }
+ },
+ "location": {
+  "eyebrow": "Location",
+  "title": "Isani: an established district, a new address",
+  "complexLabel": "Residential complex",
+  "complexAddress": "34 S. Tsuladze St. (Beri Gabriel Salosi Ave.), Isani district, Tbilisi",
+  "officeLabel": "Sales office",
+  "officeAddress": "1 D. Tavkhelidze St., Saburtalo, Tbilisi",
+  "officeHours": "Opening hours: 10:00–18:00",
+  "mapButton": "Show interactive map",
+  "mapLink": "Open in Google Maps",
+  "mapNote": "The map loads from Google only after you press the button.",
+  "mapTitle": "Map: Isani Park Residence, 34 S. Tsuladze St., Tbilisi",
+  "nearbyTitle": "Nearby, according to the developer's map",
+  "nearby": [
+   "Samgori metro station",
+   "Isani metro station",
+   "Isani Mall shopping centre",
+   "Public School No. 81",
+   "Shavnabada School",
+   "St Barbara's Church",
+   "Shevardeni rugby stadium",
+   "Supermarkets and public transport stops"
+  ],
+  "nearbyNote": "We don't list travel times because the developer doesn't say how they were measured. Google Maps can plan a route to any destination."
+ },
+ "purchase": {
+  "eyebrow": "Buying",
+  "title": "How to buy an apartment",
+  "installmentTitle": "In-house instalment plan at 0%",
+  "installmentText": "The official Mono Capitals website lists an in-house instalment plan from the developer at 0%. The down payment, term and schedule depend on the apartment — the sales team will calculate them for you.",
+  "installmentCta": "Get a payment plan",
+  "stepsTitle": "Three steps",
+  "steps": [
+   {
+    "title": "Pick a layout",
+    "text": "Shortlist one or more apartments in the catalogue."
+   },
+   {
+    "title": "Get the price and terms",
+    "text": "The sales team will confirm the current price, availability and payment options for your choice."
+   },
+   {
+    "title": "Visit the sales office",
+    "text": "Go through the details and documents at 1 D. Tavkhelidze St., Saburtalo. It's best to book a time in advance."
+   }
+  ],
+  "pricesNote": "Prices are not published on the site: they depend on the floor, the layout and the payment terms, and may change."
+ },
+ "developer": {
+  "eyebrow": "Developer",
+  "title": "Mono Capitals",
+  "text": "Mono Capitals is a property developer based in Tbilisi. The company describes its aim as the peace and comfort of future residents: a healthy environment, quality construction and modern infrastructure. Isani Park Residence is its multifunctional residential complex in the Isani district.",
+  "link": "Official Mono Capitals website",
+  "logoNote": "The mark on this site is a concept for a new identity, not the company's approved logo."
+ },
+ "faq": {
+  "eyebrow": "Questions and answers",
+  "title": "The essentials",
+  "items": [
+   {
+    "q": "Which apartments are in Block E?",
+    "a": "According to the design plans, Block E has 219 apartments on floors 1–10: 30 one-room (30–31 m²), 110 two-room (50–52 m²), 59 three-room (61–79 m²) and 20 four-room (101–103 m²). The sales team confirms which are available now."
+   },
+   {
+    "q": "How are rooms counted?",
+    "a": "The Georgian way: the living room counts as a room. A 1-room apartment is a studio with a kitchen area, a 2-room apartment has a living room and one bedroom. Each plan shows what every room is for."
+   },
+   {
+    "q": "What is the outdoor area?",
+    "a": "It is the balcony or terrace. It is part of the total area and listed separately for each apartment: for example, 72.6 m² inside plus a 29.3 m² terrace makes 101.9 m²."
+   },
+   {
+    "q": "How much does an apartment cost?",
+    "a": "The price depends on the floor, layout and payment method, so it isn't published on the site. Send an enquiry or call, and the sales team will give you the current price for the apartment you choose."
+   },
+   {
+    "q": "Is there an instalment plan?",
+    "a": "The developer's official website lists an in-house instalment plan at 0%. The down payment and term are agreed individually — ask the sales team for a calculation."
+   },
+   {
+    "q": "When will Block E be completed?",
+    "a": "An official completion date for Block E has not been published on the developer's website. Ask the sales team about the current construction stage and timeline."
+   },
+   {
+    "q": "Where can I see the materials and discuss a purchase?",
+    "a": "At the Mono Capitals sales office: 1 D. Tavkhelidze St., Saburtalo, Tbilisi, open 10:00–18:00. Book a visit on +995 501 111 444."
+   }
+  ]
+ },
+ "contact": {
+  "eyebrow": "Enquiry",
+  "title": "Get a shortlist of layouts and current terms",
+  "lead": "Leave your name and phone number. The sales team will call you back with the price and availability of the apartments you chose, and suggest similar options.",
+  "name": "Name",
+  "phone": "Phone",
+  "phoneHint": "Include the country code, e.g. +995 5XX XX XX XX",
+  "comment": "Comment",
+  "optional": "optional",
+  "commentPlaceholder": "For example, a good time to call or the floor you want",
+  "selected": "Apartment",
+  "removeSelected": "Remove the apartment from the enquiry",
+  "submit": "Send enquiry",
+  "sending": "Sending…",
+  "consent": "By pressing “Send enquiry” you agree that your name and phone number will be used to contact you. See our {link}.",
+  "consentLink": "privacy policy",
+  "successTitle": "Enquiry received",
+  "successText": "Thank you! The sales team will contact you during office hours (10:00–18:00).",
+  "successAgain": "Send another enquiry",
+  "errors": {
+   "name": "Enter your name — at least two letters.",
+   "phone": "Check the number: it needs 7 to 15 digits, ideally with the country code.",
+   "comment": "The comment is too long — please keep it under 1,000 characters.",
+   "network": "The enquiry wasn't sent: there is no connection to the server. Your details are still in the form — try again or call +995 501 111 444.",
+   "server": "The enquiry wasn't sent: the enquiry service is unavailable right now. Your details are still in the form — call +995 501 111 444 or email info@monocapitals.ge.",
+   "rate": "Too many enquiries in a short time. Please wait a minute and try again.",
+   "summary": "Please check the form: {n}."
+  },
+  "directTitle": "Contact directly",
+  "phoneLabel": "Sales office phone",
+  "call": "Call",
+  "copy": "Copy number",
+  "copied": "Number copied",
+  "emailLabel": "Email",
+  "messengers": "Messengers (official Mono Capitals links)",
+  "hours": "Office hours: 10:00–18:00. Please call to confirm opening days."
+ },
+ "footer": {
+  "seller": "Seller and developer: Mono Capitals",
+  "officeLine": "Sales office: 1 D. Tavkhelidze St., Saburtalo, Tbilisi · 10:00–18:00",
+  "disclaimer": "All images on this site are visualisations. The design, layouts and landscaping may be refined. The information on this site is not a public offer.",
+  "privacy": "Privacy policy",
+  "developerSite": "Mono Capitals website",
+  "rights": "© 2026 Mono Capitals"
+ },
+ "mobileBar": {
+  "choose": "Choose apartment",
+  "call": "Call"
+ },
+ "consent": {
+  "text": "Allow analytics cookies? They help us see which sections are useful. Nothing is enabled without your consent.",
+  "accept": "Allow",
+  "decline": "Decline"
+ },
+ "privacy": {
+  "title": "Privacy policy",
+  "updated": "Version of 29 September 2026",
+  "back": "Back to the site",
+  "sections": [
+   {
+    "h": "Who handles your data",
+    "p": [
+     "This site is about the Isani Park Residence complex. Enquiries are received by the sales team of the developer, Mono Capitals: 1 D. Tavkhelidze St., Saburtalo, Tbilisi; info@monocapitals.ge; +995 501 111 444."
+    ]
+   },
+   {
+    "h": "What we receive",
+    "p": [
+     "From the enquiry form: your name, phone number, comment (if you left one) and the apartment number you selected.",
+     "Technical details of your visit: the landing page, the site language and advertising tags in the link (such as utm_source or gclid) if you arrived from an ad. They show which advertising leads to enquiries."
+    ]
+   },
+   {
+    "h": "Why",
+    "p": [
+     "To call you back and answer your questions about apartments, prices and terms. We do not use form data for newsletters without your separate consent."
+    ]
+   },
+   {
+    "h": "Where it is kept and who receives it",
+    "p": [
+     "Your enquiry is delivered to the sales team through the connected channel (a messenger or email) and kept there. The site is hosted by a hosting provider, which receives technical data such as your IP address when serving pages.",
+     "The interactive map loads from Google only after you press “Show interactive map”."
+    ]
+   },
+   {
+    "h": "Analytics and cookies",
+    "p": [
+     "Analytics services (Google Analytics, Google Ads) run only after you agree in the banner. Your name and phone number are never sent to analytics. Declining does not affect the site.",
+     "The site remembers your theme, language and filters in your browser for convenience only."
+    ]
+   },
+   {
+    "h": "Retention and your rights",
+    "p": [
+     "Enquiry data is kept as long as needed to answer your request and complete a purchase. You can ask to access, correct or delete your data by writing to info@monocapitals.ge."
+    ]
+   }
+  ]
+ },
+ "notFound": {
+  "title": "Page not found",
+  "text": "The link may be out of date. Go to the home page or straight to the apartment catalogue.",
+  "home": "Home page",
+  "catalog": "Apartment catalogue"
+ },
+ "chooser": {
+  "prompt": "Choose a language"
+ },
+ "picker": {
+  "eyebrow": "Choose on the facade",
+  "title": "Pick a floor, then an apartment",
+  "lead": "Hover over a floor on the facade and click it. On the floor plan, choose an apartment: its 3D view opens first, and a click on it shows the floor plan with dimensions.",
+  "hintFacade": "Click a floor",
+  "floorLabel": "Floor {n}",
+  "floorCount": "Floor {n} · {count} apartments",
+  "back": "Back to facade",
+  "up": "Floor above",
+  "down": "Floor below",
+  "hintFloor": "Click an apartment on the plan or pick it from the list below.",
+  "listLabel": "Apartments on this floor",
+  "facadeAlt": "Block E facade — visualisation. Floor selection",
+  "planAlt": "Floor {n} plan — top-view visualisation",
+  "scrollHint": "Scroll the plan sideways",
+  "badge": "Visualisation",
+  "floorsLabel": "Floor",
+  "badge3d": "3D floor view · visualisation"
+ }
+}

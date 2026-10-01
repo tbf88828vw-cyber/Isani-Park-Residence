@@ -1,0 +1,22 @@
+{
+  "siteUrl": "",
+  "defaultLang": "ka",
+  "languages": ["ka", "en", "ru"],
+  "analytics": {
+    "ga4MeasurementId": "",
+    "googleAdsId": "",
+    "googleAdsLeadLabel": ""
+  },
+  "contacts": {
+    "phoneE164": "+995501111444",
+    "phoneDisplay": "+995 501 111 444",
+    "email": "info@monocapitals.ge",
+    "whatsapp": "https://wa.me/995501111444",
+    "telegram": "https://t.me/MonoCapitals",
+    "instagram": "https://www.instagram.com/mono_capitals/",
+    "developerSite": "https://www.monocapitals.ge/en"
+  },
+  "map": {
+    "query": "Isani Park Residence, 34 Sergi Tsuladze St, Tbilisi, Georgia"
+  }
+}

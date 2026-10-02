@@ -554,7 +554,7 @@ function contact(t, lang, depth) {
         <p><a href="mailto:${config.contacts.email}">${esc(config.contacts.email)}</a></p>
         <p class="direct__label">${esc(c.messengers)}</p>
         <ul class="direct__links">
-          <li><a href="${config.contacts.whatsapp}" target="_blank" rel="noopener">WhatsApp ${ICON.ext}</a></li>
+          <li><a href="${config.contacts.whatsapp}?text=${encodeURIComponent(t.contact.whatsappText.replace(/[\u00a0\u2060]/g, " "))}" target="_blank" rel="noopener">WhatsApp ${ICON.ext}</a></li>
           <li><a href="${config.contacts.telegram}" target="_blank" rel="noopener">Telegram ${ICON.ext}</a></li>
           <li><a href="${config.contacts.instagram}" target="_blank" rel="noopener">Instagram ${ICON.ext}</a></li>
         </ul>

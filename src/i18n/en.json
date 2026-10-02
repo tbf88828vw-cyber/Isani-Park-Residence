@@ -307,7 +307,7 @@
    },
    {
     "q": "Where can I see the materials and discuss a purchase?",
-    "a": "At the Mono Capitals sales office: 1 D. Tavkhelidze St., Saburtalo, Tbilisi, open 10:00–18:00. Book a visit on +995 501 111 444."
+    "a": "At the Mono Capitals sales office: 1 D. Tavkhelidze St., Saburtalo, Tbilisi, open 10:00–18:00. Book a visit on +995 544 77 77 88."
    }
   ]
  },
@@ -334,8 +334,8 @@
    "name": "Enter your name — at least two letters.",
    "phone": "Check the number: it needs 7 to 15 digits, ideally with the country code.",
    "comment": "The comment is too long — please keep it under 1,000 characters.",
-   "network": "The enquiry wasn't sent: there is no connection to the server. Your details are still in the form — try again or call +995 501 111 444.",
-   "server": "The enquiry wasn't sent: the enquiry service is unavailable right now. Your details are still in the form — call +995 501 111 444 or email info@monocapitals.ge.",
+   "network": "The enquiry wasn't sent: there is no connection to the server. Your details are still in the form — try again or call +995 544 77 77 88.",
+   "server": "The enquiry wasn't sent: the enquiry service is unavailable right now. Your details are still in the form — call +995 544 77 77 88 or email info@monocapitals.ge.",
    "rate": "Too many enquiries in a short time. Please wait a minute and try again.",
    "summary": "Please check the form: {n}."
   },
@@ -346,7 +346,8 @@
   "copied": "Number copied",
   "emailLabel": "Email",
   "messengers": "Messengers (official Mono Capitals links)",
-  "hours": "Office hours: 10:00–18:00. Please call to confirm opening days."
+  "hours": "Office hours: 10:00–18:00. Please call to confirm opening days.",
+  "whatsappText": "Hello! I found you on the Isani Park Residence website. Could you tell me about prices and which apartments are available?"
  },
  "footer": {
   "seller": "Seller and developer: Mono Capitals",
@@ -373,7 +374,7 @@
    {
     "h": "Who handles your data",
     "p": [
-     "This site is about the Isani Park Residence complex. Enquiries are received by the sales team of the developer, Mono Capitals: 1 D. Tavkhelidze St., Saburtalo, Tbilisi; info@monocapitals.ge; +995 501 111 444."
+     "This site is about the Isani Park Residence complex. Enquiries are received by the sales team of the developer, Mono Capitals: 1 D. Tavkhelidze St., Saburtalo, Tbilisi; info@monocapitals.ge; +995 544 77 77 88."
     ]
    },
    {

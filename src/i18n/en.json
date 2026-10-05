@@ -228,7 +228,7 @@
   "complexLabel": "Residential complex",
   "complexAddress": "34 S. Tsuladze St. (Beri Gabriel Salosi Ave.), Isani district, Tbilisi",
   "officeLabel": "Sales office",
-  "officeAddress": "1 D. Tavkhelidze St., Saburtalo, Tbilisi",
+  "officeAddress": "34 S. Tsuladze St., Isani, Tbilisi",
   "officeHours": "Opening hours: 10:00–18:00",
   "mapButton": "Show interactive map",
   "mapLink": "Open in Google Maps",
@@ -265,7 +265,7 @@
    },
    {
     "title": "Visit the sales office",
-    "text": "Go through the details and documents at 1 D. Tavkhelidze St., Saburtalo. It's best to book a time in advance."
+    "text": "Go through the details and documents at the on-site sales office, 34 S. Tsuladze St. It's best to book a time in advance."
    }
   ],
   "pricesNote": "Prices are not published on the site: they depend on the floor, the layout and the payment terms, and may change."
@@ -307,7 +307,7 @@
    },
    {
     "q": "Where can I see the materials and discuss a purchase?",
-    "a": "At the Mono Capitals sales office: 1 D. Tavkhelidze St., Saburtalo, Tbilisi, open 10:00–18:00. Book a visit on +995 544 77 77 88."
+    "a": "At the Mono Capitals sales office: 34 S. Tsuladze St., Isani, Tbilisi, open 10:00–18:00. Book a visit on +995 544 77 77 88."
    }
   ]
  },
@@ -351,7 +351,7 @@
  },
  "footer": {
   "seller": "Seller and developer: Mono Capitals",
-  "officeLine": "Sales office: 1 D. Tavkhelidze St., Saburtalo, Tbilisi · 10:00–18:00",
+  "officeLine": "Sales office: 34 S. Tsuladze St., Isani, Tbilisi · 10:00–18:00",
   "disclaimer": "All images on this site are visualisations. The design, layouts and landscaping may be refined. The information on this site is not a public offer.",
   "privacy": "Privacy policy",
   "developerSite": "Mono Capitals website",
@@ -374,7 +374,7 @@
    {
     "h": "Who handles your data",
     "p": [
-     "This site is about the Isani Park Residence complex. Enquiries are received by the sales team of the developer, Mono Capitals: 1 D. Tavkhelidze St., Saburtalo, Tbilisi; info@monocapitals.ge; +995 544 77 77 88."
+     "This site is about the Isani Park Residence complex. Enquiries are received by the sales team of the developer, Mono Capitals: 34 S. Tsuladze St., Isani, Tbilisi; info@monocapitals.ge; +995 544 77 77 88."
     ]
    },
    {

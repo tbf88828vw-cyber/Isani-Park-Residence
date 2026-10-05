@@ -670,7 +670,7 @@ function jsonLd(lang, t) {
   const org = {
     '@type': 'Organization', '@id': 'https://www.monocapitals.ge/#org', name: 'Mono Capitals', url: 'https://www.monocapitals.ge/',
     email: config.contacts.email, telephone: config.contacts.phoneE164,
-    address: { '@type': 'PostalAddress', streetAddress: lang === 'ka' ? 'დ. თავხელიძის ქ. N1' : (lang === 'ru' ? 'ул. Д. Тавхелидзе, 1' : '1 D. Tavkhelidze St.'), addressLocality: lang === 'ka' ? 'თბილისი' : (lang === 'ru' ? 'Тбилиси' : 'Tbilisi'), addressCountry: 'GE' },
+    address: { '@type': 'PostalAddress', streetAddress: lang === 'ka' ? 'ს. წულაძის ქ. N34' : (lang === 'ru' ? 'ул. С. Цуладзе, 34' : '34 S. Tsuladze St.'), addressLocality: lang === 'ka' ? 'თბილისი' : (lang === 'ru' ? 'Тбилиси' : 'Tbilisi'), addressCountry: 'GE' },
     sameAs: [config.contacts.instagram],
   };
   const complex = {

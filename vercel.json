@@ -371,17 +371,17 @@
       "permanent": true
     },
     {
-      "source": "/blog/:path*",
+      "source": "/blog/(.*)",
       "destination": "/ka/#project",
       "permanent": true
     },
     {
-      "source": "/post/:path*",
+      "source": "/post/(.*)",
       "destination": "/ka/#project",
       "permanent": true
     },
     {
-      "source": "/members-area/:path*",
+      "source": "/members-area/(.*)",
       "destination": "/ka/",
       "permanent": true
     },
@@ -406,17 +406,17 @@
       "permanent": true
     },
     {
-      "source": "/ka/blog/:path*",
+      "source": "/ka/blog/(.*)",
       "destination": "/ka/#project",
       "permanent": true
     },
     {
-      "source": "/ka/post/:path*",
+      "source": "/ka/post/(.*)",
       "destination": "/ka/#project",
       "permanent": true
     },
     {
-      "source": "/ka/members-area/:path*",
+      "source": "/ka/members-area/(.*)",
       "destination": "/ka/",
       "permanent": true
     },
@@ -441,17 +441,17 @@
       "permanent": true
     },
     {
-      "source": "/en/blog/:path*",
+      "source": "/en/blog/(.*)",
       "destination": "/en/#project",
       "permanent": true
     },
     {
-      "source": "/en/post/:path*",
+      "source": "/en/post/(.*)",
       "destination": "/en/#project",
       "permanent": true
     },
     {
-      "source": "/en/members-area/:path*",
+      "source": "/en/members-area/(.*)",
       "destination": "/en/",
       "permanent": true
     },
@@ -476,17 +476,17 @@
       "permanent": true
     },
     {
-      "source": "/ru/blog/:path*",
+      "source": "/ru/blog/(.*)",
       "destination": "/ru/#project",
       "permanent": true
     },
     {
-      "source": "/ru/post/:path*",
+      "source": "/ru/post/(.*)",
       "destination": "/ru/#project",
       "permanent": true
     },
     {
-      "source": "/ru/members-area/:path*",
+      "source": "/ru/members-area/(.*)",
       "destination": "/ru/",
       "permanent": true
     },
@@ -511,17 +511,17 @@
       "permanent": true
     },
     {
-      "source": "/he/blog/:path*",
+      "source": "/he/blog/(.*)",
       "destination": "/en/#project",
       "permanent": true
     },
     {
-      "source": "/he/post/:path*",
+      "source": "/he/post/(.*)",
       "destination": "/en/#project",
       "permanent": true
     },
     {
-      "source": "/he/members-area/:path*",
+      "source": "/he/members-area/(.*)",
       "destination": "/en/",
       "permanent": true
     },
@@ -536,7 +536,7 @@
       "permanent": true
     },
     {
-      "source": "/he/:path*",
+      "source": "/he/(.*)",
       "destination": "/en/",
       "permanent": true
     }

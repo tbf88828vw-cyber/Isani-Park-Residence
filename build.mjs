@@ -87,6 +87,7 @@ const heroTitleSvg = () => `
   <svg class="hero__mark hero__mark--two" viewBox="-4 -4 ${Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) + 8} 288" aria-hidden="true" focusable="false"><g transform="translate(${(Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) - logo.isaniPark2.w1) / 2} 0)">${svgStroke(logo.isaniPark2.l1, ' pathLength="1"')}</g><g transform="translate(${(Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) - logo.isaniPark2.w2) / 2} 160)">${svgStroke(logo.isaniPark2.l2, ' pathLength="1"')}</g></svg>`;
 
 const ICON = {
+  expand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   sun: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
   moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 14.6A8 8 0 0 1 9.4 4.5a8 8 0 1 0 10.1 10.1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
   menu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
@@ -118,12 +119,13 @@ function picture(base, sizes, w, h, alt, { widths = [640, 1280, 2000], avif = !P
 }
 
 // ---------- page chrome ----------
-function head({ lang, t, depth, title, description, sub = '', robots = 'index,follow', extraHead = '' }) {
+function head({ lang, t, depth, title, description, sub = '', robots = 'index,follow', extraHead = '', canonical = '' }) {
   const A = up(depth) + 'assets/';
-  const alternates = SITE ? [
+  // a noindex page (404) carries no canonical or hreflang; the root chooser is canonical to itself
+  const alternates = SITE && !/noindex/.test(robots) ? [
     ...LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${absUrl(l, sub)}">`),
     `<link rel="alternate" hreflang="x-default" href="${sub ? absUrl(config.defaultLang, sub) : SITE + '/'}">`,
-    `<link rel="canonical" href="${absUrl(lang, sub)}">`,
+    `<link rel="canonical" href="${canonical || absUrl(lang, sub)}">`,
   ].join('\n') : '';
   const ogImg = SITE ? `${SITE}/assets/img/og-image.jpg` : `${A}img/og-image.jpg`;
   return `<!doctype html>
@@ -141,17 +143,19 @@ ${alternates}
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="${t.ogLocale}">
 ${LANGS.filter((l) => l !== lang).map((l) => `<meta property="og:locale:alternate" content="${I18N[l].ogLocale}">`).join('')}
-${SITE ? `<meta property="og:url" content="${absUrl(lang, sub)}">` : ''}
+${SITE && !/noindex/.test(robots) ? `<meta property="og:url" content="${canonical || absUrl(lang, sub)}">` : ''}
 <meta property="og:image" content="${ogImg}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0c0b09">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="${A}logo/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="${A}logo/apple-touch-icon.png">
 <script>(function(d){d.classList.remove('no-js');d.classList.add('js');try{var s=localStorage.getItem('ipr-theme');if(s==='light'||s==='dark')d.setAttribute('data-theme',s);}catch(e){}})(document.documentElement)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="${fontsHref(lang)}">
+<link rel="preload" as="style" href="${fontsHref(lang)}" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="${fontsHref(lang)}"></noscript>
 <link rel="stylesheet" href="${A}css/site.css${PREVIEW ? '' : '?v=' + ASSET_V.css}">
 ${extraHead}
 </head>`;
@@ -210,7 +214,6 @@ function footer({ lang, t, depth, sub = '' }) {
       <div>
         <ul class="site-footer__links">
           <li><a href="${pageHref(depth, lang, 'privacy')}">${esc(t.footer.privacy)}</a></li>
-          <li><a href="https://www.monocapitals.ge/${lang}" rel="noopener" target="_blank">${esc(t.footer.developerSite)} ${ICON.ext}</a></li>
         </ul>
         ${langSwitch(lang, depth, sub, t, 'lang lang--footer')}
       </div>
@@ -437,10 +440,18 @@ function gallery(t) {
       <button class="icon-btn icon-btn--line" type="button" data-gallery-prev aria-label="${esc(g.prev)}">${ICON.prev}</button>
       <p class="gallery__counter" data-gallery-counter aria-live="polite">${esc(fmt(g.counter, { i: 1, n: items.length }))}</p>
       <button class="icon-btn icon-btn--line" type="button" data-gallery-next aria-label="${esc(g.next)}">${ICON.next}</button>
+      <button class="icon-btn icon-btn--line" type="button" data-gallery-full aria-label="${esc(g.fullscreen)}">${ICON.expand}</button>
     </div>
     <div class="container"><ul class="gallery__thumbs" aria-label="${esc(g.thumbs)}">${items.map((it, i) => `<li><button type="button" data-gallery-go="${i}" aria-label="${esc(g.items[it.id])}"${i === 0 ? ' aria-current="true"' : ''}><img src="../assets/img/gallery/${it.id}-640.webp" width="${it.w}" height="${it.h}" alt="" loading="lazy" decoding="async"></button></li>`).join('')}</ul></div>
   </div>
-</section>`;
+</section>
+<dialog class="lightbox" data-lightbox aria-label="${esc(g.viewer)}">
+  <div class="lightbox__stage" data-lb-stage></div>
+  <p class="lightbox__caption"><span class="badge">${esc(g.badge)}</span><span data-lb-caption></span><span class="lightbox__count" data-lb-count aria-live="polite"></span></p>
+  <button class="icon-btn lightbox__btn lightbox__close" type="button" data-lb-close aria-label="${esc(g.closeViewer)}">${ICON.close}</button>
+  <button class="icon-btn lightbox__btn lightbox__prev" type="button" data-lb-prev aria-label="${esc(g.prev)}">${ICON.prev}</button>
+  <button class="icon-btn lightbox__btn lightbox__next" type="button" data-lb-next aria-label="${esc(g.next)}">${ICON.next}</button>
+</dialog>`;
 }
 
 function location(t, lang) {
@@ -513,7 +524,7 @@ function developer(t, lang) {
       <p class="eyebrow">${esc(d.eyebrow)}</p>
       <h2 class="h2" id="developer-title">${esc(d.title)}</h2>
       <p class="lead">${esc(d.text)}</p>
-      <p><a class="link-arrow" href="https://www.monocapitals.ge/${lang}" target="_blank" rel="noopener">${esc(d.link)} ${ICON.ext}</a></p>
+      <p><a class="link-arrow" href="${config.contacts.instagram}" target="_blank" rel="noopener">${esc(d.link)} ${ICON.ext}</a></p>
       <p class="note">${esc(d.logoNote)}</p>
     </div>
   </div>
@@ -620,18 +631,20 @@ function aptDialog(t) {
         <button class="view-switch__btn" type="button" role="tab" id="vs-3d" aria-controls="v3d-panel" aria-selected="true" data-view="3d">${esc(m.view3d)}</button>
         <button class="view-switch__btn" type="button" role="tab" id="vs-plan" aria-controls="plan-panel" aria-selected="false" tabindex="-1" data-view="plan">${esc(m.viewPlan)}</button>
       </div>
-      <figure class="v3d" id="v3d-panel" role="tabpanel" aria-labelledby="vs-3d" data-v3d>
+      <div class="v3d" id="v3d-panel" role="tabpanel" aria-labelledby="vs-3d" data-v3d>
         <button class="v3d__btn" type="button" data-v3d-open aria-label="${esc(m.open3dHint)}"><img data-v3d-img alt="" width="800" height="640" decoding="async"></button>
-        <figcaption><span class="v3d__hint" aria-hidden="true">${esc(m.open3dHint)}</span><span class="v3d__note">${esc(m.note3d)}</span></figcaption>
-      </figure>
+        <div class="v3d__cap"><span class="v3d__hint" aria-hidden="true">${esc(m.open3dHint)}</span><span class="v3d__note">${esc(m.note3d)}</span></div>
+      </div>
       <div class="plan-view" id="plan-panel" role="tabpanel" aria-labelledby="vs-plan" data-plan-view>
         <div class="plan-view__scroll" data-plan-scroll tabindex="0"><img data-plan-img alt="" width="1000" height="1350"></div>
         <p class="plan-view__noplan" data-plan-none hidden>${esc(m.noPlan)}</p>
+        <p class="plan-view__noplan" data-plan-error role="status" hidden>${esc(m.planError)}</p>
         <div class="plan-view__tools">
           <button class="icon-btn icon-btn--line" type="button" data-zoom="in" aria-label="${esc(m.zoomIn)}">${ICON.plus}</button>
           <button class="icon-btn icon-btn--line" type="button" data-zoom="out" aria-label="${esc(m.zoomOut)}" disabled>${ICON.minus}</button>
         </div>
         <p class="plan-view__no3d" data-no3d hidden>${esc(m.no3d)}</p>
+        <p class="plan-view__no3d" data-err3d role="status" hidden>${esc(m.error3d)}</p>
       </div>
       </div>
       <div class="apt-dialog__side">
@@ -640,7 +653,7 @@ function aptDialog(t) {
         <dl class="specs" data-apt-specs></dl>
         <div class="apt-dialog__actions">
           <a class="btn btn--primary btn--block" href="#contact" data-apt-request>${esc(m.request)}</a>
-          <a class="btn btn--ghost btn--block" data-apt-pdf target="_blank" rel="noopener">${esc(m.pdf)} ${ICON.ext}</a>
+          <a class="btn btn--ghost btn--block" data-apt-pdf href="../assets/plans/pdf/isani-park-residence-E-apartment-1.pdf" target="_blank" rel="noopener">${esc(m.pdf)} ${ICON.ext}</a>
         </div>
         <p class="note">${esc(m.note)}</p>
         <div class="apt-dialog__nav">
@@ -668,13 +681,15 @@ function consentBanner(t) {
 
 function jsonLd(lang, t) {
   const org = {
-    '@type': 'Organization', '@id': 'https://www.monocapitals.ge/#org', name: 'Mono Capitals', url: 'https://www.monocapitals.ge/',
+    '@type': ['Organization', 'RealEstateAgent'], '@id': 'https://www.monocapitals.ge/#org', name: 'Mono Capitals', url: 'https://www.monocapitals.ge/',
+    logo: 'https://www.monocapitals.ge/assets/logo/mono-capitals-logo-512.png', image: 'https://www.monocapitals.ge/assets/img/og-image.jpg',
     email: config.contacts.email, telephone: config.contacts.phoneE164,
     address: { '@type': 'PostalAddress', streetAddress: lang === 'ka' ? 'ს. წულაძის ქ. N34' : (lang === 'ru' ? 'ул. С. Цуладзе, 34' : '34 S. Tsuladze St.'), addressLocality: lang === 'ka' ? 'თბილისი' : (lang === 'ru' ? 'Тбилиси' : 'Tbilisi'), addressCountry: 'GE' },
     sameAs: [config.contacts.instagram],
   };
   const complex = {
     '@type': 'ApartmentComplex', name: 'Isani Park Residence', description: t.meta.description,
+    numberOfAccommodationUnits: apartments.length, containedInPlace: { '@type': 'Place', name: lang === 'ka' ? 'ისნის რაიონი, თბილისი' : (lang === 'ru' ? 'район Исани, Тбилиси' : 'Isani district, Tbilisi') },
     address: { '@type': 'PostalAddress', streetAddress: t.location.complexAddress, addressLocality: lang === 'ka' ? 'თბილისი' : (lang === 'ru' ? 'Тбилиси' : 'Tbilisi'), addressCountry: 'GE' },
     ...(SITE ? { url: absUrl(lang), image: `${SITE}/assets/img/og-image.jpg` } : {}),
   };
@@ -744,7 +759,8 @@ function privacyPage(lang) {
   const t = I18N[lang];
   const depth = 2;
   const p = t.privacy;
-  return `${head({ lang, t, depth, title: t.meta.privacyTitle, description: t.meta.privacyDescription, sub: 'privacy' })}
+  const crumbs = SITE ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Isani Park Residence', item: absUrl(lang) }, { '@type': 'ListItem', position: 2, name: p.title, item: absUrl(lang, 'privacy') }] }).replace(/</g, '\\u003c')}</script>` : '';
+  return `${head({ lang, t, depth, title: t.meta.privacyTitle, description: t.meta.privacyDescription, sub: 'privacy', extraHead: crumbs })}
 <body class="page-doc lang-${lang}">
 ${header({ lang, t, depth, sub: 'privacy' })}
 <main id="main" class="doc container" tabindex="-1">
@@ -770,6 +786,7 @@ function notFoundPage() {
   return `${head({ lang, t: I18N.en, depth: 0, title: I18N.en.meta.notFoundTitle, description: I18N.en.meta.description, robots: 'noindex' }).replace(/\.\.\/assets|\.\/assets/g, '/assets')}
 <body class="page-doc">
 <main id="main" class="doc container nf">
+  <h1 class="sr-only">404 · ${esc(I18N.en.meta.notFoundTitle)}</h1>
   <p class="nf__mark">${monogram('nf__monogram')}</p>
   ${blocks}
 </main>
@@ -801,7 +818,7 @@ function chooserPage() {
 ${body}`;
   }
   const t = I18N.en;
-  return `${head({ lang: 'en', t, depth: 0, title: 'Isani Park Residence — Tbilisi | Mono Capitals', description: `${I18N.ka.meta.description} ${t.meta.description}` }).replace('<html lang="en"', '<html lang="en"').replace(/href="\.\/assets/g, 'href="/assets')}
+  return `${head({ lang: 'en', t, depth: 0, title: 'Isani Park Residence — Tbilisi | Mono Capitals', description: t.meta.description, canonical: SITE ? SITE + '/' : '' }).replace('<html lang="en"', '<html lang="en"').replace(/href="\.\/assets/g, 'href="/assets')}
 <body class="page-chooser">${body}
 </body>
 </html>

@@ -240,9 +240,19 @@
   var planView = $('[data-plan-view]', dlg), planImg = $('[data-plan-img]', dlg), planNone = $('[data-plan-none]', dlg), planScroll = $('[data-plan-scroll]', dlg);
   var zoomIn = $('[data-zoom="in"]', dlg), zoomOut = $('[data-zoom="out"]', dlg);
   var v3d = $('[data-v3d]', dlg), v3dImg = $('[data-v3d-img]', dlg), vTabs = $$('[data-view]', dlg), no3d = $('[data-no3d]', dlg);
+  var planErr = $('[data-plan-error]', dlg), err3d = $('[data-err3d]', dlg), failed3d = {};
+  // a render or plan that fails to load never shows as a broken image
+  planImg.addEventListener('error', function () {
+    if ((planImg.getAttribute('src') || '').indexOf('apt-' + openApt + '-') < 0) return;
+    planImg.hidden = true; planErr.hidden = false; zoomIn.hidden = zoomOut.hidden = true;
+  });
+  v3dImg.addEventListener('error', function () {
+    var a = byId[openApt]; if (!a || !a.t3d || (v3dImg.getAttribute('src') || '').indexOf('apt3d-' + a.t3d + '-') < 0) return;
+    failed3d[a.t3d] = true; vTabs[0].disabled = true; err3d.hidden = false; setView('plan');
+  });
   function setView(view, focus) {
     var a = byId[openApt];
-    if (view === '3d' && a && !a.t3d) view = 'plan';
+    if (view === '3d' && a && (!a.t3d || failed3d[a.t3d])) view = 'plan';
     vTabs.forEach(function (b) {
       var on = b.getAttribute('data-view') === view;
       b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1;
@@ -268,6 +278,7 @@
     var specs = $('[data-apt-specs]', dlg); specs.textContent = '';
     rows.forEach(function (r) { var d = document.createElement('div'); var dt = document.createElement('dt'); dt.textContent = r[0]; var dd = document.createElement('dd'); dd.textContent = r[1]; d.appendChild(dt); d.appendChild(dd); specs.appendChild(d); });
     planView.classList.remove('is-zoomed'); zoomIn.disabled = false; zoomOut.disabled = true;
+    planErr.hidden = true; err3d.hidden = true;
     if (a.plan) {
       planImg.hidden = false; planNone.hidden = true;
       planImg.src = D.assets + 'plans/img/apt-' + a.id + '-1000.webp';
@@ -279,7 +290,8 @@
     } else {
       planImg.hidden = true; planNone.hidden = false; $('[data-apt-pdf]', dlg).hidden = true; zoomIn.hidden = zoomOut.hidden = true;
     }
-    if (a.t3d) {
+    var has3d = a.t3d && !failed3d[a.t3d];
+    if (has3d) {
       var r = D.floormap.renders[a.t3d];
       v3dImg.src = D.assets + 'img/3d/apt3d-' + a.t3d + '-800.webp';
       v3dImg.srcset = D.assets + 'img/3d/apt3d-' + a.t3d + '-800.webp 800w, ' + D.assets + 'img/3d/apt3d-' + a.t3d + '-1600.webp 1600w';
@@ -287,7 +299,7 @@
       if (r) { v3dImg.width = 800; v3dImg.height = Math.round(800 * r.h / r.w); }
       v3dImg.alt = fmt(T.modal.alt3d, { n: a.id });
     }
-    vTabs[0].disabled = !a.t3d; no3d.hidden = !!a.t3d;
+    vTabs[0].disabled = !has3d; no3d.hidden = !!a.t3d; err3d.hidden = !(a.t3d && failed3d[a.t3d]);
     var idx = filtered.indexOf(a);
     $('[data-apt-prev]', dlg).disabled = idx <= 0;
     $('[data-apt-next]', dlg).disabled = idx < 0 || idx >= filtered.length - 1;
@@ -447,6 +459,32 @@
     track.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
     });
+    // full-screen viewer: the slide's own <picture> (AVIF/WebP up to 2000px) shown at viewport size
+    var lb = $('[data-lightbox]');
+    if (lb && lb.showModal) {
+      var stage = $('[data-lb-stage]', lb), cap = $('[data-lb-caption]', lb), cnt = $('[data-lb-count]', lb), lbCur = 0, lastF = null;
+      function show(i) {
+        lbCur = (i + slides.length) % slides.length;
+        var pic = $('picture', slides[lbCur]).cloneNode(true);
+        $$('source', pic).forEach(function (s) { s.sizes = '100vw'; });
+        var im = $('img', pic); im.loading = 'eager'; im.sizes = '100vw'; im.removeAttribute('class');
+        stage.textContent = ''; stage.appendChild(pic);
+        cap.textContent = $('figcaption span:last-child', slides[lbCur]).textContent;
+        cnt.textContent = fmt(T.gallery.counter, { i: lbCur + 1, n: slides.length });
+      }
+      function openLb(i) { lastF = document.activeElement; show(i); lb.showModal(); document.body.style.overflow = 'hidden'; }
+      lb.addEventListener('close', function () { document.body.style.overflow = ''; stage.textContent = ''; go(lbCur); if (lastF && lastF.focus) lastF.focus({ preventScroll: true }); });
+      $('[data-gallery-full]').addEventListener('click', function () { openLb(cur); });
+      slides.forEach(function (s, i) { var im = $('img', s); im.style.cursor = 'zoom-in'; im.addEventListener('click', function () { openLb(i); }); });
+      $('[data-lb-close]', lb).addEventListener('click', function () { lb.close(); });
+      $('[data-lb-prev]', lb).addEventListener('click', function () { show(lbCur - 1); });
+      $('[data-lb-next]', lb).addEventListener('click', function () { show(lbCur + 1); });
+      lb.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') { e.preventDefault(); show(lbCur + 1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); show(lbCur - 1); } });
+      lb.addEventListener('click', function (e) { if (e.target === lb || e.target === stage) lb.close(); });
+      var sx = null, sy = 0;
+      stage.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } else sx = null; }, { passive: true });
+      stage.addEventListener('touchend', function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(lbCur + (dx < 0 ? 1 : -1)); }, { passive: true });
+    } else { var fb = $('[data-gallery-full]'); if (fb) fb.hidden = true; }
     if ('IntersectionObserver' in window) {
       var gio = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && en.intersectionRatio > 0.6) setCur(slides.indexOf(en.target)); }); }, { root: track, threshold: [0.6] });
       slides.forEach(function (s) { gio.observe(s); });

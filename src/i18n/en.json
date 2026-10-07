@@ -196,6 +196,8 @@
   "open3dHint": "Click the image to open the floor plan",
   "note3d": "3D visualisation of this layout type: furniture and finishes are an example; neighbouring apartments may have a mirrored layout. Exact dimensions are on the floor plan.",
   "no3d": "A 3D view for this layout is not ready yet.",
+  "planError": "The plan image could not be loaded. Open the PDF plan or reload the page.",
+  "error3d": "The 3D view could not be loaded, so the plan is shown instead.",
   "alt3d": "3D visualisation of apartment No. {n} layout"
  },
  "gallery": {
@@ -207,6 +209,9 @@
   "next": "Next image",
   "counter": "{i} of {n}",
   "thumbs": "Choose an image",
+  "fullscreen": "View full screen",
+  "viewer": "Image viewer",
+  "closeViewer": "Close viewer",
   "items": {
    "front": "Main façade of Block E from the courtyard",
    "corner-west": "Block E from the corner: vertical piers and balconies",
@@ -274,7 +279,7 @@
   "eyebrow": "Developer",
   "title": "Mono Capitals",
   "text": "Mono Capitals is a property developer based in Tbilisi. The company describes its aim as the peace and comfort of future residents: a healthy environment, quality construction and modern infrastructure. Isani Park Residence is its multifunctional residential complex in the Isani district.",
-  "link": "Official Mono Capitals website",
+  "link": "Mono Capitals on Instagram",
   "logoNote": "The mark on this site is a concept for a new identity, not the company's approved logo."
  },
  "faq": {
@@ -354,7 +359,6 @@
   "officeLine": "Sales office: 34 S. Tsuladze St., Isani, Tbilisi · 10:00–18:00",
   "disclaimer": "All images on this site are visualisations. The design, layouts and landscaping may be refined. The information on this site is not a public offer.",
   "privacy": "Privacy policy",
-  "developerSite": "Mono Capitals website",
   "rights": "© 2026 Mono Capitals"
  },
  "mobileBar": {

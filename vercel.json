@@ -289,6 +289,256 @@
       "source": "/ka/ჩვენ-შესახებ/",
       "destination": "/ka/#developer",
       "permanent": true
+    },
+    {
+      "source": "/he/კონტაქტები",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/he/კონტაქტები/",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/he/%E1%83%99%E1%83%9D%E1%83%9C%E1%83%A2%E1%83%90%E1%83%A5%E1%83%A2%E1%83%94%E1%83%91%E1%83%98",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/he/%E1%83%99%E1%83%9D%E1%83%9C%E1%83%A2%E1%83%90%E1%83%A5%E1%83%A2%E1%83%94%E1%83%91%E1%83%98/",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/he/პროექტები",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/პროექტები/",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/%E1%83%9E%E1%83%A0%E1%83%9D%E1%83%94%E1%83%A5%E1%83%A2%E1%83%94%E1%83%91%E1%83%98",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/%E1%83%9E%E1%83%A0%E1%83%9D%E1%83%94%E1%83%A5%E1%83%A2%E1%83%94%E1%83%91%E1%83%98/",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/ჩვენ-შესახებ",
+      "destination": "/en/#developer",
+      "permanent": true
+    },
+    {
+      "source": "/he/ჩვენ-შესახებ/",
+      "destination": "/en/#developer",
+      "permanent": true
+    },
+    {
+      "source": "/he/%E1%83%A9%E1%83%95%E1%83%94%E1%83%9C-%E1%83%A8%E1%83%94%E1%83%A1%E1%83%90%E1%83%AE%E1%83%94%E1%83%91",
+      "destination": "/en/#developer",
+      "permanent": true
+    },
+    {
+      "source": "/he/%E1%83%A9%E1%83%95%E1%83%94%E1%83%9C-%E1%83%A8%E1%83%94%E1%83%A1%E1%83%90%E1%83%AE%E1%83%94%E1%83%91/",
+      "destination": "/en/#developer",
+      "permanent": true
+    },
+    {
+      "source": "/webinar-registration",
+      "destination": "/ka/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/webinar-registration/",
+      "destination": "/ka/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/blog/",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:path*",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/post/:path*",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/members-area/:path*",
+      "destination": "/ka/",
+      "permanent": true
+    },
+    {
+      "source": "/ka/webinar-registration",
+      "destination": "/ka/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/ka/webinar-registration/",
+      "destination": "/ka/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/ka/blog",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ka/blog/",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ka/blog/:path*",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ka/post/:path*",
+      "destination": "/ka/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ka/members-area/:path*",
+      "destination": "/ka/",
+      "permanent": true
+    },
+    {
+      "source": "/en/webinar-registration",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/en/webinar-registration/",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/en/blog",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/en/blog/",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/en/blog/:path*",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/en/post/:path*",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/en/members-area/:path*",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/ru/webinar-registration",
+      "destination": "/ru/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/ru/webinar-registration/",
+      "destination": "/ru/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/ru/blog",
+      "destination": "/ru/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ru/blog/",
+      "destination": "/ru/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ru/blog/:path*",
+      "destination": "/ru/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ru/post/:path*",
+      "destination": "/ru/#project",
+      "permanent": true
+    },
+    {
+      "source": "/ru/members-area/:path*",
+      "destination": "/ru/",
+      "permanent": true
+    },
+    {
+      "source": "/he/webinar-registration",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/he/webinar-registration/",
+      "destination": "/en/#contact",
+      "permanent": true
+    },
+    {
+      "source": "/he/blog",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/blog/",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/blog/:path*",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/post/:path*",
+      "destination": "/en/#project",
+      "permanent": true
+    },
+    {
+      "source": "/he/members-area/:path*",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/he",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/he/",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/he/:path*",
+      "destination": "/en/",
+      "permanent": true
     }
   ]
 }

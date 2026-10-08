@@ -87,6 +87,8 @@ const heroTitleSvg = () => `
   <svg class="hero__mark hero__mark--two" viewBox="-4 -4 ${Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) + 8} 288" aria-hidden="true" focusable="false"><g transform="translate(${(Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) - logo.isaniPark2.w1) / 2} 0)">${svgStroke(logo.isaniPark2.l1, ' pathLength="1"')}</g><g transform="translate(${(Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) - logo.isaniPark2.w2) / 2} 160)">${svgStroke(logo.isaniPark2.l2, ' pathLength="1"')}</g></svg>`;
 
 const ICON = {
+  sliders: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5l1.1-3.9A8 8 0 1 1 8.6 18.6Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.2 8.6c.2-.5.6-.5.9-.5h.4c.2 0 .4.1.5.4l.6 1.4c.1.2 0 .5-.1.6l-.4.5c-.1.1-.2.3 0 .5.5.9 1.3 1.6 2.2 2.1.2.1.4.1.5 0l.5-.6c.2-.2.4-.2.6-.1l1.4.7c.2.1.3.3.3.5 0 .9-.6 1.6-1.5 1.7-2.6.3-6.1-2.9-5.9-5.5.1-.6.3-1.2.4-1.7Z" fill="currentColor"/></svg>',
   expand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   sun: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
   moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 14.6A8 8 0 0 1 9.4 4.5a8 8 0 1 0 10.1 10.1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
@@ -238,7 +240,7 @@ function hero(t, lang) {
     <p class="hero__context eyebrow">${esc(t.hero.context)}</p>
     <h1 class="hero__title" id="hero-title"><span class="sr-only">Isani Park Residence</span>${heroTitleSvg()}</h1>
     <p class="hero__by"><span class="hero__rule" aria-hidden="true"></span><span>${esc(t.hero.by)}</span></p>
-    <p class="hero__offer">${esc(t.hero.offer)}</p>
+    <p class="hero__offer"><span class="hero__offer-long">${esc(t.hero.offer)}</span><span class="hero__offer-short">${esc(t.hero.offerShort)}</span></p>
     <div class="hero__actions">
       <a class="btn btn--primary" href="#choose" data-cta="hero-choose">${esc(t.hero.ctaPrimary)} ${ICON.arrow}</a>
       <a class="btn btn--ghost" href="#contact" data-cta="hero-price">${esc(t.hero.ctaSecondary)}</a>
@@ -302,12 +304,18 @@ function picker(t, lang) {
     <div class="picker__stage" data-picker>
       <div class="picker__floors" role="group" aria-label="${esc(p.floorsLabel)}"><span class="picker__floors-label" aria-hidden="true">${esc(p.floorsLabel)}</span>${Array.from({ length: 10 }, (_, i) => `<button class="picker__fbtn" type="button" data-floor-btn="${i + 1}" aria-label="${esc(fmt(p.floorLabel, { n: i + 1 }))}">${i + 1}</button>`).join('')}</div>
       <div class="picker__facade" data-pk-facade>
-        <div class="picker__frame">
-          ${picture('../assets/img/gallery/' + g.id, '(min-width: 1300px) 1240px, 100vw', g.w, g.h, p.facadeAlt, { cls: 'picker__img' })}
-          <svg class="picker__svg" viewBox="0 0 2000 1125" preserveAspectRatio="none" role="group" aria-label="${esc(p.hintFacade)}">${bands}</svg>
+        <div class="picker__frame" data-pk-frame>
+          <div class="picker__pan" data-pk-pan>
+            <div class="picker__canvas">
+              ${picture('../assets/img/gallery/' + g.id, '(min-width: 1300px) 1240px, (max-width: 760px) 220vw, 100vw', g.w, g.h, p.facadeAlt, { cls: 'picker__img' })}
+              <svg class="picker__svg" viewBox="0 0 2000 1125" preserveAspectRatio="none" role="group" aria-label="${esc(p.hintFacade)}">${bands}</svg>
+              <div class="picker__tip" data-pk-tip aria-hidden="true" hidden></div>
+            </div>
+          </div>
           <span class="badge picker__badge">${esc(p.badge)}</span>
-          <div class="picker__tip" data-pk-tip aria-hidden="true" hidden></div>
+          <button class="icon-btn picker__zoom" type="button" data-pk-zoom aria-pressed="false" aria-label="${esc(p.zoomIn)}" data-label-in="${esc(p.zoomIn)}" data-label-out="${esc(p.zoomOut)}"><span class="i-in">${ICON.plus}</span><span class="i-out">${ICON.minus}</span></button>
         </div>
+        <div class="picker__pick" data-pk-pick hidden><p class="picker__pick-label" aria-live="polite"><span class="sr-only">${esc(p.pickHint)}: </span><span data-pk-pick-label></span></p><button class="btn btn--primary btn--sm" type="button" data-pk-pick-open>${esc(p.openFloor)} ${ICON.arrow}</button></div>
         <p class="picker__hint">${esc(p.hintFacade)}</p>
       </div>
       <div class="picker__floor" data-pk-floor hidden>
@@ -359,8 +367,8 @@ function aptCard(a, t, lang, i) {
       <p class="apt-card__area"><span>${num(lang, a.area)}</span> ${m2[lang]}</p>
       <dl class="apt-card__specs">
         <div><dt class="sr-only">${esc(c.rooms)}</dt><dd>${esc(c.roomsLabel[a.rooms])}</dd></div>
-        <div><dt>${esc(c.interior)}</dt><dd>${num(lang, a.inner)} ${m2[lang]}</dd></div>
-        <div><dt>${esc(c.summer)}</dt><dd>${num(lang, a.summer)} ${m2[lang]}</dd></div>
+        <div><dt>${esc(c.interior)}</dt><dd>${num(lang, a.inner)} ${m2[lang]}<span class="apt-card__short"> ${esc(c.interiorShort)}</span></dd></div>
+        <div><dt>${esc(c.summer)}</dt><dd>${num(lang, a.summer)} ${m2[lang]}<span class="apt-card__short"> ${esc(c.summerShort)}</span></dd></div>
       </dl>
       <div class="apt-card__actions">
         <a class="btn btn--primary btn--sm" href="#contact" data-request-apt="${a.id}">${esc(c.priceCta)}</a>
@@ -390,7 +398,13 @@ function catalog(t, lang) {
       <h2 class="h2" id="catalog-title">${esc(c.title)}</h2>
       <p class="lead">${esc(c.lead)}</p>
     </div>
-    <form class="filters" data-filters aria-label="${esc(c.filters)}">
+    <div class="filters-bar" data-filters-bar>
+      <button class="btn btn--ghost btn--sm filters-bar__toggle" type="button" data-filters-toggle aria-expanded="false" aria-controls="filters-panel">${ICON.sliders}<span>${esc(c.filtersOpen)}</span><span class="filters-bar__n" data-filters-n hidden></span></button>
+      <p class="filters-bar__count" data-count-bar aria-hidden="true">${esc(fmt(c.countShort, { n: apartments.length }))}</p>
+      <button class="btn btn--text btn--sm filters-bar__clear" type="button" data-filters-clear hidden>${esc(c.resetShort)}</button>
+    </div>
+    <ul class="filters-active" data-filters-active aria-label="${esc(c.activeFilters)}" hidden></ul>
+    <form class="filters" id="filters-panel" data-filters aria-label="${esc(c.filters)}">
       <fieldset class="filters__group"><legend>${esc(c.rooms)}</legend><div class="chips">${radio('rooms', 'all', c.roomsAny, true)}${[1, 2, 3, 4].map((r) => radio('rooms', r, c.roomsFilter[r])).join('')}</div></fieldset>
       <fieldset class="filters__group"><legend>${esc(c.area)}</legend><div class="chips">${radio('area', 'all', c.areaAny, true)}${c.areaBands.map((b) => radio('area', b.id, b.label)).join('')}</div></fieldset>
       <div class="filters__row">
@@ -398,10 +412,11 @@ function catalog(t, lang) {
         <label class="field field--select"><span class="field__label">${esc(c.sort)}</span><select name="sort" id="filter-sort"><option value="floor">${esc(c.sortOptions.floor)}</option><option value="areaAsc">${esc(c.sortOptions.areaAsc)}</option><option value="areaDesc">${esc(c.sortOptions.areaDesc)}</option></select></label>
         <button class="btn btn--text btn--sm filters__reset" type="reset">${esc(c.reset)}</button>
       </div>
+      <button class="btn btn--primary filters__apply" type="button" data-filters-apply>${esc(fmt(c.showN, { n: apartments.length }))}</button>
     </form>
     <p class="catalog__count" data-count aria-live="polite">${esc(fmt(c.found, { n: apartments.length }))}</p>
     <ul class="apt-list" data-apt-list>${apartments.map((a, i) => aptCard(a, t, lang, i)).join('\n')}</ul>
-    <p class="catalog__empty" data-empty hidden>${esc(c.empty)}</p>
+    <div class="catalog__empty" data-empty hidden><p>${esc(c.empty)}</p><button class="btn btn--ghost btn--sm" type="button" data-filters-clear>${esc(c.emptyReset)}</button></div>
     <div class="catalog__more"><button class="btn btn--ghost" type="button" data-more hidden>${esc(c.more)}</button></div>
 
     <div class="typical">
@@ -578,18 +593,18 @@ function contact(t, lang, depth) {
         <div class="form-summary" data-form-summary tabindex="-1" hidden></div>
         <div class="field">
           <label class="field__label" for="lead-name">${esc(c.name)}</label>
-          <input id="lead-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="lead-name-error">
+          <input id="lead-name" name="name" type="text" autocomplete="name" autocapitalize="words" enterkeyhint="next" required minlength="2" maxlength="80" aria-describedby="lead-name-error">
           <p class="field__error" id="lead-name-error" hidden></p>
         </div>
         <div class="field">
           <label class="field__label" for="lead-phone">${esc(c.phone)}</label>
-          <input id="lead-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="24" placeholder="+995" aria-describedby="lead-phone-hint lead-phone-error">
+          <input id="lead-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" required maxlength="24" placeholder="+995" aria-describedby="lead-phone-hint lead-phone-error">
           <p class="field__hint" id="lead-phone-hint">${esc(c.phoneHint)}</p>
           <p class="field__error" id="lead-phone-error" hidden></p>
         </div>
         <div class="field">
           <label class="field__label" for="lead-comment">${esc(c.comment)} <span class="field__opt">(${esc(c.optional)})</span></label>
-          <textarea id="lead-comment" name="comment" rows="3" maxlength="1000" placeholder="${esc(c.commentPlaceholder)}" aria-describedby="lead-comment-error"></textarea>
+          <textarea id="lead-comment" name="comment" enterkeyhint="send" rows="3" maxlength="1000" placeholder="${esc(c.commentPlaceholder)}" aria-describedby="lead-comment-error"></textarea>
           <p class="field__error" id="lead-comment-error" hidden></p>
         </div>
         <div class="hp" aria-hidden="true"><label for="lead-company">Company</label><input id="lead-company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
@@ -635,9 +650,11 @@ function aptDialog(t) {
         <div class="plan-view__scroll" data-plan-scroll tabindex="0"><img data-plan-img alt="" width="1000" height="1350"></div>
         <p class="plan-view__noplan" data-plan-none hidden>${esc(m.noPlan)}</p>
         <p class="plan-view__noplan" data-plan-error role="status" hidden>${esc(m.planError)}</p>
+        <p class="plan-view__hint" data-zoom-hint aria-hidden="true">${esc(m.zoomHint)}</p>
         <div class="plan-view__tools">
-          <button class="icon-btn icon-btn--line" type="button" data-zoom="in" aria-label="${esc(m.zoomIn)}">${ICON.plus}</button>
+          <a class="icon-btn icon-btn--line" data-plan-original href="../assets/plans/pdf/isani-park-residence-E-apartment-1.pdf" target="_blank" rel="noopener" aria-label="${esc(m.original)}">${ICON.ext}</a>
           <button class="icon-btn icon-btn--line" type="button" data-zoom="out" aria-label="${esc(m.zoomOut)}" disabled>${ICON.minus}</button>
+          <button class="icon-btn icon-btn--line" type="button" data-zoom="in" aria-label="${esc(m.zoomIn)}">${ICON.plus}</button>
         </div>
         <p class="plan-view__no3d" data-no3d hidden>${esc(m.no3d)}</p>
         <p class="plan-view__no3d" data-err3d role="status" hidden>${esc(m.error3d)}</p>
@@ -663,9 +680,11 @@ function aptDialog(t) {
 }
 
 function mobileBar(t) {
-  return `<div class="mobile-bar" data-mobile-bar>
-  <a class="btn btn--primary" href="#choose" data-cta="bar-choose">${esc(t.mobileBar.choose)}</a>
-  <a class="btn btn--ghost" href="tel:${config.contacts.phoneE164}" data-phone-link>${ICON.phone}<span>${esc(t.mobileBar.call)}</span></a>
+  const wa = `${config.contacts.whatsapp}?text=${encodeURIComponent(t.contact.whatsappText.replace(/[\u00a0\u2060]/g, ' '))}`;
+  return `<div class="mobile-bar is-hidden" data-mobile-bar>
+  <a class="btn btn--primary mobile-bar__main" href="#choose" data-cta="bar-choose">${esc(t.mobileBar.choose)}</a>
+  <a class="icon-btn mobile-bar__icon" href="tel:${config.contacts.phoneE164}" data-phone-link aria-label="${esc(t.mobileBar.callLabel)}">${ICON.phone}</a>
+  <a class="icon-btn mobile-bar__icon" href="${wa}" target="_blank" rel="noopener" data-cta="bar-whatsapp" aria-label="${esc(t.mobileBar.whatsapp)}">${ICON.whatsapp}</a>
 </div>`;
 }
 
@@ -703,13 +722,14 @@ function clientData(lang, t) {
     config: { analytics: config.analytics, phone: config.contacts.phoneDisplay, api: '/api/lead' },
     pdf: !PREVIEW,
     t: {
-      catalog: { shown: t.catalog.shown, found: t.catalog.found, floorShort: t.catalog.floorShort, roomsLabel: t.catalog.roomsLabel, total: t.catalog.total, interior: t.catalog.interior, summer: t.catalog.summer, summerHint: t.catalog.summerHint, planAlt: t.catalog.planAlt, apartment: t.catalog.apartment, no: t.catalog.no, block: t.catalog.block, floor: t.catalog.floor, rooms: t.catalog.rooms, areaBands: t.catalog.areaBands },
+      catalog: { shown: t.catalog.shown, found: t.catalog.found, floorShort: t.catalog.floorShort, roomsLabel: t.catalog.roomsLabel, total: t.catalog.total, interior: t.catalog.interior, summer: t.catalog.summer, summerHint: t.catalog.summerHint, planAlt: t.catalog.planAlt, apartment: t.catalog.apartment, no: t.catalog.no, block: t.catalog.block, floor: t.catalog.floor, rooms: t.catalog.rooms, areaBands: t.catalog.areaBands, showN: t.catalog.showN, countShort: t.catalog.countShort, removeFilter: t.catalog.removeFilter },
       modal: { title: t.modal.title, subtitle: t.modal.subtitle, alt3d: t.modal.alt3d },
       picker: { floorLabel: t.picker.floorLabel, floorCount: t.picker.floorCount, planAlt: t.picker.planAlt },
       gallery: { counter: t.gallery.counter },
       hero: { pause: t.hero.pause, play: t.hero.play },
       contact: { errors: t.contact.errors, sending: t.contact.sending, submit: t.contact.submit, name: t.contact.name, phone: t.contact.phone, comment: t.contact.comment },
       nav: { themeToLight: t.nav.themeToLight, themeToDark: t.nav.themeToDark },
+      net: t.net,
     },
     apartments: apartments.map((a) => [a.id, a.floor, a.rooms, a.area, a.inner, a.summer, a.plan ? 1 : 0, a.ratio, floormap.apartments[a.id].pos, floormap.apartments[a.id].t3d || 0]),
     floormap: { w: floormap.w, h: floormap.h, shapes: floormap.shapes, renders: floormap.renders },

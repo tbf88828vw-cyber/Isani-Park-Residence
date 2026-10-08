@@ -36,7 +36,8 @@
   "pause": "Pause video",
   "play": "Play video",
   "videoLabel": "Exterior animation of Block E (visualisation)",
-  "scroll": "Scroll down"
+  "scroll": "Scroll down",
+  "offerShort": "1–4-room apartments from 30 to 103 m², each with a balcony or terrace. 4,530 m² of green recreation space."
  },
  "project": {
   "eyebrow": "Block E",
@@ -174,7 +175,16 @@
    "floor-1": "Visualised plan of the first floor of Block E",
    "floor-typical": "Visualised plan of a typical floor of Block E (floors 2–10)"
   },
-  "floorHint": "Scroll the plan sideways to see the whole floor."
+  "floorHint": "Scroll the plan sideways to see the whole floor.",
+  "filtersOpen": "Filters",
+  "showN": "Show apartments: {n}",
+  "removeFilter": "Remove filter",
+  "resetShort": "Reset",
+  "activeFilters": "Active filters",
+  "interiorShort": "inside",
+  "summerShort": "outdoor",
+  "emptyReset": "Reset filters",
+  "countShort": "{n} apts"
  },
  "modal": {
   "title": "Apartment {n}",
@@ -196,7 +206,9 @@
   "no3d": "A 3D view for this layout is not ready yet.",
   "planError": "The plan image could not be loaded. Open the PDF plan or reload the page.",
   "error3d": "The 3D view could not be loaded, so the plan is shown instead.",
-  "alt3d": "3D visualisation of apartment No. {n} layout"
+  "alt3d": "3D visualisation of apartment No. {n} layout",
+  "original": "Open the original plan (PDF)",
+  "zoomHint": "Pinch to zoom, double-tap to zoom in"
  },
  "gallery": {
   "eyebrow": "Architecture and grounds",
@@ -318,7 +330,7 @@
   "lead": "Leave your name and phone number. The sales team will call you back with the price and availability of the apartments you chose, and suggest similar options.",
   "name": "Name",
   "phone": "Phone",
-  "phoneHint": "Include the country code, e.g. +995 5XX XX XX XX",
+  "phoneHint": "Include the country code, e.g. +995 5XX XX XX XX",
   "comment": "Comment",
   "optional": "optional",
   "commentPlaceholder": "For example, a good time to call or the floor you want",
@@ -359,7 +371,9 @@
  },
  "mobileBar": {
   "choose": "Choose apartment",
-  "call": "Call"
+  "call": "Call",
+  "whatsapp": "Message us on WhatsApp",
+  "callLabel": "Call the sales team"
  },
  "consent": {
   "text": "Allow analytics cookies? They help us see which sections are useful. Nothing is enabled without your consent.",
@@ -401,7 +415,7 @@
     "h": "Analytics and cookies",
     "p": [
      "Analytics services (Google Analytics, Google Ads) run only after you agree in the banner. Your name and phone number are never sent to analytics. Declining does not affect the site.",
-     "The site remembers your theme, language and filters in your browser for convenience only."
+     "The site remembers your theme, language, filters and an unfinished enquiry (for up to 14 days or until it is sent) in your browser — only for convenience; this is not sent anywhere."
     ]
    },
    {
@@ -424,8 +438,8 @@
  "picker": {
   "eyebrow": "Choose on the facade",
   "title": "Pick a floor, then an apartment",
-  "lead": "Hover over a floor on the facade and click it. On the floor plan, choose an apartment: its 3D view opens first, and a click on it shows the floor plan with dimensions.",
-  "hintFacade": "Click a floor",
+  "lead": "Choose a floor with a number button or by tapping the façade. On the floor plan, choose an apartment: its 3D view opens first, then the plan with dimensions.",
+  "hintFacade": "Tap a floor on the façade or choose a number above",
   "floorLabel": "Floor {n}",
   "floorCount": "Floor {n} · {count} apartments",
   "back": "Back to facade",
@@ -438,6 +452,14 @@
   "scrollHint": "Scroll the plan sideways",
   "badge": "Visualisation",
   "floorsLabel": "Floor",
-  "badge3d": "3D floor view · visualisation"
+  "badge3d": "3D floor view · visualisation",
+  "zoomIn": "Enlarge the façade",
+  "zoomOut": "Reduce the façade",
+  "openFloor": "Open floor",
+  "pickHint": "Selected floor"
+ },
+ "net": {
+  "offline": "No internet connection. What you have entered stays in the form.",
+  "online": "Back online."
  }
 }

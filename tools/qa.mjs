@@ -85,6 +85,7 @@ for (const lang of LANGS) {
   const p = await ctx.newPage(); await fontRoute(p);
   await p.goto(`${BASE}/en/`, { waitUntil: 'domcontentloaded' });
   await p.evaluate(() => { window.__marker = 42; });
+  if (await p.isVisible('[data-filters-toggle]')) await p.click('[data-filters-toggle]');  // phones: filters live behind a toggle
   await p.locator('label.chip:has(input[name=rooms][value="2"])').click();
   await p.fill('#lead-name', 'Keep me');
   await p.evaluate(() => document.querySelector('[data-theme-toggle]').click());

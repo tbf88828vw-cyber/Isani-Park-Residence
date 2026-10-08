@@ -9,7 +9,7 @@
     "build:preview": "node build.mjs --preview --out dist-preview",
     "dev": "node build.mjs && node tools/dev-server.mjs",
     "test": "node tools/test-api.mjs && node tools/qa.mjs && node tools/qa-picker.mjs",
-    "audit": "node tools/audit-functional.mjs && node tools/audit-responsive.mjs && node tools/audit-perf.mjs"
+    "audit": "node tools/audit-functional.mjs && node tools/audit-mobile.mjs && node tools/audit-responsive.mjs && node tools/audit-perf.mjs"
   },
   "engines": {
     "node": ">=20"

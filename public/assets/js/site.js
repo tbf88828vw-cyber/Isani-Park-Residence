@@ -93,11 +93,24 @@
     sections.forEach(function (s) { io.observe(s); });
   }
 
-  // ---------- mobile nav sheet ----------
+  // ---------- mobile nav sheet: short slide-in/out, page scroll locked behind it ----------
   var sheet = $('#nav-sheet');
-  $$('[data-menu-open]').forEach(function (b) { b.addEventListener('click', function () { if (sheet && sheet.showModal) sheet.showModal(); }); });
-  $$('[data-menu-close]').forEach(function (b) { b.addEventListener('click', function () { sheet.close(); }); });
-  if (sheet) $$('a[href^="#"]', sheet).forEach(function (a) { a.addEventListener('click', function () { sheet.close(); }); });
+  function lockScroll(on) { document.documentElement.classList.toggle('is-locked', on); }
+  function closeSheet(instant) {
+    if (!sheet || !sheet.open || sheet.classList.contains('is-closing')) return;
+    lockScroll(false);
+    if (instant || reduceMotion.matches) { sheet.close(); return; }
+    sheet.classList.add('is-closing');
+    setTimeout(function () { sheet.classList.remove('is-closing'); sheet.close(); }, 160);
+  }
+  $$('[data-menu-open]').forEach(function (b) { b.addEventListener('click', function () { if (sheet && sheet.showModal) { sheet.showModal(); lockScroll(true); setMobileBar(); } }); });
+  $$('[data-menu-close]').forEach(function (b) { b.addEventListener('click', function () { closeSheet(); }); });
+  if (sheet) {
+    $$('a[href^="#"]', sheet).forEach(function (a) { a.addEventListener('click', function () { closeSheet(true); }); });
+    sheet.addEventListener('cancel', function (e) { e.preventDefault(); closeSheet(); });   // Esc / Android back gesture
+    sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
+    sheet.addEventListener('close', function () { lockScroll(false); });
+  }
 
   // ---------- language switch keeps section, open apartment and form draft ----------
   $$('[data-lang-link]').forEach(function (a) {
@@ -115,7 +128,7 @@
     var v = $('[data-hero-video]'), btn = $('[data-video-toggle]');
     if (!v) return;
     var conn = navigator.connection || {};
-    var lowData = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '');
+    var lowData = conn.saveData || /(^|-)(2g|3g)$/.test(conn.effectiveType || '');
     var userPaused = local.get('ipr-video') === 'paused';
     function setBtn(paused) {
       btn.hidden = false;
@@ -141,10 +154,16 @@
     var start = function () { play(); };
     if (document.readyState === 'complete') setTimeout(start, 200); else window.addEventListener('load', function () { setTimeout(start, 200); }, { once: true });
     // pause when off-screen to save battery
+    var inView = true;
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
+      inView = e[0].isIntersecting;
       if (!v.src || btn.classList.contains('is-paused')) return;
-      if (e[0].isIntersecting) v.play().catch(function () {}); else v.pause();
+      if (inView) v.play().catch(function () {}); else v.pause();
     }).observe(v);
+    // mobile browsers pause muted video when the user switches apps; resume on return
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && v.src && inView && !btn.classList.contains('is-paused')) v.play().catch(function () {});
+    });
   })();
 
   // ---------- catalog ----------
@@ -192,7 +211,54 @@
     countEl.textContent = filtered.length && shown < filtered.length ? fmt(T.catalog.shown, { shown: shown, total: filtered.length }) : fmt(T.catalog.found, { n: filtered.length });
     emptyEl.hidden = filtered.length > 0;
     moreBtn.hidden = shown >= filtered.length;
+    session.set('ipr-limit', String(limit));
+    renderActive();
   }
+  // phones: collapsible filter panel, sticky bar with count, removable chips for active filters
+  var fBar = $('[data-filters-bar]'), fToggle = $('[data-filters-toggle]'), fN = $('[data-filters-n]'), fCount = $('[data-count-bar]');
+  var fActive = $('[data-filters-active]'), fApply = $('[data-filters-apply]');
+  var mqPhone = window.matchMedia('(max-width: 700px)');
+  function setPanel(open) {
+    form.classList.toggle('is-open', open);
+    fToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function renderActive() {
+    if (!fBar) return;
+    var f = readFilters(), items = [];
+    if (f.rooms !== 'all') items.push(['rooms', T.catalog.roomsLabel[f.rooms]]);
+    if (f.area !== 'all' && bands[f.area]) items.push(['area', bands[f.area].label]);
+    if (f.floor !== 'all') items.push(['floor', fmt(T.catalog.floorShort, { n: f.floor })]);
+    fActive.textContent = '';
+    items.forEach(function (it) {
+      var li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip-x'; b.setAttribute('data-remove-filter', it[0]);
+      b.setAttribute('aria-label', T.catalog.removeFilter + ': ' + it[1]);
+      b.innerHTML = '<span></span><i aria-hidden="true">×</i>'; b.firstChild.textContent = it[1];
+      li.appendChild(b); fActive.appendChild(li);
+    });
+    fActive.hidden = !items.length;
+    fN.textContent = items.length; fN.hidden = !items.length;
+    $$('[data-filters-clear]').forEach(function (b) { if (b.closest('[data-filters-bar]')) b.hidden = !items.length && f.sort === 'floor'; });
+    fCount.textContent = fmt(T.catalog.countShort, { n: filtered.length });
+    fApply.textContent = fmt(T.catalog.showN, { n: filtered.length });
+  }
+  if (fBar) {
+    setPanel(!mqPhone.matches);
+    if (mqPhone.addEventListener) mqPhone.addEventListener('change', function () { setPanel(!mqPhone.matches); });
+    fToggle.addEventListener('click', function () { setPanel(!form.classList.contains('is-open')); });
+    fActive.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-remove-filter]'); if (!b) return;
+      var k = b.getAttribute('data-remove-filter'), f = readFilters(); f[k] = 'all'; writeFilters(f); applyFilters();
+      var next = $('[data-remove-filter]', fActive); (next || fToggle).focus({ preventScroll: true });
+    });
+    fApply.addEventListener('click', function () {
+      setPanel(false);
+      var top = list.getBoundingClientRect().top + window.pageYOffset - fBar.offsetHeight - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h'), 10) || 72) - 12;
+      window.scrollTo({ top: top, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      fToggle.focus({ preventScroll: true });
+    });
+  }
+  $$('[data-filters-clear]').forEach(function (b) { b.addEventListener('click', function () { form.reset(); }); });
   form.addEventListener('change', function () { applyFilters(); });
   form.addEventListener('reset', function () { setTimeout(function () { applyFilters(); }, 0); });
   form.addEventListener('submit', function (e) { e.preventDefault(); });
@@ -202,7 +268,10 @@
     if (firstNew) { var b = $('[data-open-apt]', cards[firstNew.id]); if (b) b.focus({ preventScroll: false }); }
   });
   try { var saved = JSON.parse(session.get('ipr-filters') || 'null'); if (saved) writeFilters(saved); } catch (e) {}
-  applyFilters();
+  // keep "show more" depth across reloads / Back so the browser can restore the scroll position
+  var savedLimit = parseInt(session.get('ipr-limit') || '', 10);
+  if (savedLimit > PAGE && savedLimit <= APTS.length) limit = savedLimit;
+  applyFilters({ keepLimit: true });
 
   // typical layouts -> similar apartments
   $$('[data-similar-rooms]').forEach(function (b) {
@@ -236,9 +305,25 @@
 
   // ---------- apartment dialog ----------
   var dlg = $('#apt-dialog');
-  var openApt = null, pushed = false, lastFocus = null;
+  var openApt = null, pushed = false, lastFocus = null, keepY = null;
+  // the list position is ours to keep: history traversal (Back / closing via history) must not jump the page
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function restoreY() { if (keepY === null) return; var y = keepY; window.scrollTo(0, y); requestAnimationFrame(function () { window.scrollTo(0, y); }); }
+  window.addEventListener('popstate', function () { if (!dlg.open) { restoreY(); setTimeout(function () { keepY = null; }, 100); } });
+  // reload / coming back from another page: put the reader where they were (manual restoration is on)
+  window.addEventListener('pagehide', function () { session.set('ipr-y:' + location.pathname, String(Math.round(window.pageYOffset))); });
+  (function () {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    var y = parseInt(session.get('ipr-y:' + location.pathname) || '', 10);
+    if (nav && (nav.type === 'reload' || nav.type === 'back_forward') && y > 0 && !/^#(apt|floor)-/.test(location.hash)) {
+      var go = function () { window.scrollTo(0, y); };
+      if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true });
+      requestAnimationFrame(go);
+    }
+  })();
   var planView = $('[data-plan-view]', dlg), planImg = $('[data-plan-img]', dlg), planNone = $('[data-plan-none]', dlg), planScroll = $('[data-plan-scroll]', dlg);
   var zoomIn = $('[data-zoom="in"]', dlg), zoomOut = $('[data-zoom="out"]', dlg);
+  var planOrig = $('[data-plan-original]', dlg);
   var v3d = $('[data-v3d]', dlg), v3dImg = $('[data-v3d-img]', dlg), vTabs = $$('[data-view]', dlg), no3d = $('[data-no3d]', dlg);
   var planErr = $('[data-plan-error]', dlg), err3d = $('[data-err3d]', dlg), failed3d = {};
   // a render or plan that fails to load never shows as a broken image
@@ -277,18 +362,21 @@
     var rows = [[c.apartment, c.no + ' ' + a.id], [c.floor, fmt(c.floorShort, { n: a.floor })], [c.rooms, c.roomsLabel[a.rooms]], [c.total, area(a.area)], [c.interior, area(a.inner)], [c.summer + ' (' + c.summerHint + ')', area(a.summer)]];
     var specs = $('[data-apt-specs]', dlg); specs.textContent = '';
     rows.forEach(function (r) { var d = document.createElement('div'); var dt = document.createElement('dt'); dt.textContent = r[0]; var dd = document.createElement('dd'); dd.textContent = r[1]; d.appendChild(dt); d.appendChild(dd); specs.appendChild(d); });
-    planView.classList.remove('is-zoomed'); zoomIn.disabled = false; zoomOut.disabled = true;
+    pz.reset();
     planErr.hidden = true; err3d.hidden = true;
     if (a.plan) {
       planImg.hidden = false; planNone.hidden = true;
+      planImg.removeAttribute('srcset');
       planImg.src = D.assets + 'plans/img/apt-' + a.id + '-1000.webp';
+      if (D.pdf !== false) { planImg.srcset = D.assets + 'plans/img/apt-' + a.id + '-1000.webp 1000w, ' + D.assets + 'plans/img/apt-' + a.id + '-2000.webp 2000w'; planImg.sizes = '(min-width: 900px) 640px, 100vw'; }
+      planOrig.href = D.assets + 'plans/pdf/isani-park-residence-E-apartment-' + a.id + '.pdf'; planOrig.hidden = D.pdf === false;
       planImg.height = Math.round(1000 * a.ratio);
       planImg.alt = fmt(c.planAlt, { n: a.id, floor: a.floor });
       $('[data-apt-pdf]', dlg).href = D.assets + 'plans/pdf/isani-park-residence-E-apartment-' + a.id + '.pdf';
       $('[data-apt-pdf]', dlg).hidden = D.pdf === false;
       zoomIn.hidden = zoomOut.hidden = false;
     } else {
-      planImg.hidden = true; planNone.hidden = false; $('[data-apt-pdf]', dlg).hidden = true; zoomIn.hidden = zoomOut.hidden = true;
+      planImg.hidden = true; planNone.hidden = false; $('[data-apt-pdf]', dlg).hidden = true; zoomIn.hidden = zoomOut.hidden = planOrig.hidden = true;
     }
     var has3d = a.t3d && !failed3d[a.t3d];
     if (has3d) {
@@ -310,7 +398,7 @@
     openApt = a.id;
     fillDialog(a);
     setView(opts && opts.view ? opts.view : '3d');
-    if (!dlg.open) { dlg.showModal(); document.body.style.overflow = 'hidden'; }
+    if (!dlg.open) { keepY = window.pageYOffset; dlg.showModal(); document.body.style.overflow = 'hidden'; }
     if (!opts || !opts.fromHistory) {
       var h = '#apt-' + a.id;
       if (pushed) history.replaceState({ apt: a.id }, '', h); else { history.pushState({ apt: a.id }, '', h); pushed = true; }
@@ -324,6 +412,7 @@
   }
   dlg.addEventListener('close', function () {
     document.body.style.overflow = '';
+    restoreY();
     openApt = null;
     if (pushed) { pushed = false; if (location.hash.indexOf('#apt-') === 0) history.back(); }
     if (lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
@@ -333,16 +422,97 @@
   $('[data-apt-close]', dlg).addEventListener('click', function () { dlg.close(); });
   $('[data-apt-prev]', dlg).addEventListener('click', function () { var i = filtered.indexOf(byId[openApt]); if (i > 0) openDialog(filtered[i - 1].id); });
   $('[data-apt-next]', dlg).addEventListener('click', function () { var i = filtered.indexOf(byId[openApt]); if (i >= 0 && i < filtered.length - 1) openDialog(filtered[i + 1].id); });
-  zoomIn.addEventListener('click', function () { planView.classList.add('is-zoomed'); zoomIn.disabled = true; zoomOut.disabled = false; zoomOut.focus(); });
-  zoomOut.addEventListener('click', function () { planView.classList.remove('is-zoomed'); zoomIn.disabled = false; zoomOut.disabled = true; zoomIn.focus(); });
+  // plan viewer: pinch (2 fingers), pan (1 finger when zoomed), double-tap, ctrl+wheel / trackpad pinch, +/- buttons.
+  // At 1x a one-finger vertical drag scrolls the dialog, so the plan never traps the page.
+  var pz = (function () {
+    var lastType = 'mouse', box = planScroll, im = planImg, s = 1, tx = 0, ty = 0, MAX = 5, pts = {}, start = null, lastTap = 0, body = $('.apt-dialog__body', dlg), hint = $('[data-zoom-hint]', dlg);
+    function base() { return { w: im.offsetWidth, h: im.offsetHeight, bw: box.clientWidth, bh: box.clientHeight, ox: im.offsetLeft, oy: im.offsetTop }; }
+    function clamp() {
+      var b = base(), w = b.w * s, h = b.h * s;
+      // keep the plan covering the viewport when it is larger, centred when smaller
+      var minX = Math.min(0, b.bw - w - b.ox) , maxX = Math.max(0, -b.ox);
+      var minY = Math.min(0, b.bh - h - b.oy), maxY = Math.max(0, -b.oy);
+      if (w <= b.bw) tx = (b.w - w) / 2; else tx = Math.min(maxX, Math.max(minX, tx));
+      if (h <= b.bh) ty = (b.h - h) / 2; else ty = Math.min(maxY, Math.max(minY, ty));
+    }
+    function apply(anim) {
+      clamp();
+      im.style.transition = anim && !reduceMotion.matches ? 'transform 0.2s ease' : 'none';
+      im.style.transform = s === 1 ? '' : 'translate(' + tx + 'px,' + ty + 'px) scale(' + s + ')';
+      planView.classList.toggle('is-zoomed', s > 1.01);
+      zoomIn.disabled = s >= MAX - 0.01; zoomOut.disabled = s <= 1.01;
+      if (s > 1.3 && /-1000\.webp$/.test(im.currentSrc || im.src) && D.pdf !== false) { im.srcset = ''; im.src = im.src.replace(/-1000\.webp$/, '-2000.webp'); }
+      if (s > 1.01 && hint) hint.hidden = true;
+    }
+    function zoomAt(ns, cx, cy, anim) {  // cx, cy: point in box coordinates that stays put
+      ns = Math.min(MAX, Math.max(1, ns));
+      var b = base(), px = cx - b.ox, py = cy - b.oy;
+      tx = px - (px - tx) * ns / s; ty = py - (py - ty) * ns / s; s = ns;
+      if (s === 1) { tx = 0; ty = 0; }
+      apply(anim);
+    }
+    function local(e) { var r = box.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    box.addEventListener('pointerdown', function (e) {
+      lastType = e.pointerType || 'mouse';
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      pts[e.pointerId] = local(e); box.setPointerCapture && box.setPointerCapture(e.pointerId);
+      var ids = Object.keys(pts);
+      if (ids.length === 2) { var a = pts[ids[0]], c = pts[ids[1]]; start = { d: Math.hypot(a.x - c.x, a.y - c.y), s: s, mx: (a.x + c.x) / 2, my: (a.y + c.y) / 2, tx: tx, ty: ty }; }
+      else start = { x: pts[ids[0]].x, y: pts[ids[0]].y, tx: tx, ty: ty, st: body ? body.scrollTop : 0, moved: false };
+    });
+    box.addEventListener('pointermove', function (e) {
+      if (!pts[e.pointerId] || !start) return;
+      pts[e.pointerId] = local(e);
+      var ids = Object.keys(pts);
+      if (ids.length >= 2 && start.d) {
+        var a = pts[ids[0]], c = pts[ids[1]], d = Math.hypot(a.x - c.x, a.y - c.y), mx = (a.x + c.x) / 2, my = (a.y + c.y) / 2;
+        s = start.s; tx = start.tx + (mx - start.mx); ty = start.ty + (my - start.my);
+        zoomAt(start.s * d / start.d, mx, my, false);
+      } else if (ids.length === 1 && start.x !== undefined) {
+        var p = pts[ids[0]], dx = p.x - start.x, dy = p.y - start.y;
+        if (Math.abs(dx) + Math.abs(dy) > 6) start.moved = true;
+        if (s > 1.01) { tx = start.tx + dx; ty = start.ty + dy; apply(false); }
+        else if (body && e.pointerType !== 'mouse') body.scrollTop = start.st - dy;
+      }
+    });
+    function end(e) {
+      if (!pts[e.pointerId]) return;
+      var wasTap = start && start.x !== undefined && !start.moved && Object.keys(pts).length === 1;
+      delete pts[e.pointerId];
+      var ids = Object.keys(pts);
+      if (ids.length === 1) start = { x: pts[ids[0]].x, y: pts[ids[0]].y, tx: tx, ty: ty, st: body ? body.scrollTop : 0, moved: true };
+      else start = null;
+      if (wasTap && e.type === 'pointerup' && e.pointerType !== 'mouse') {
+        var now = Date.now(), p = local(e);
+        if (now - lastTap < 320) { zoomAt(s > 1.01 ? 1 : 2.5, p.x, p.y, true); lastTap = 0; } else lastTap = now;
+      }
+    }
+    box.addEventListener('pointerup', end); box.addEventListener('pointercancel', end);
+    box.addEventListener('dblclick', function (e) { if (lastType !== 'mouse') return; var p = local(e); zoomAt(s > 1.01 ? 1 : 2.5, p.x, p.y, true); });
+    box.addEventListener('wheel', function (e) { if (!e.ctrlKey && s <= 1.01) return; e.preventDefault(); var p = local(e); if (e.ctrlKey) zoomAt(s * Math.exp(-e.deltaY / 200), p.x, p.y, false); else { tx -= e.deltaX; ty -= e.deltaY; apply(false); } }, { passive: false });
+    zoomIn.addEventListener('click', function () { zoomAt(s * 1.6, box.clientWidth / 2, box.clientHeight / 2, true); });
+    zoomOut.addEventListener('click', function () { zoomAt(s / 1.6, box.clientWidth / 2, box.clientHeight / 2, true); (zoomOut.disabled ? zoomIn : zoomOut).focus(); });
+    box.addEventListener('keydown', function (e) {
+      if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomIn.click(); }
+      else if (e.key === '-') { e.preventDefault(); zoomOut.click(); }
+      else if (s > 1.01 && /^Arrow/.test(e.key)) { e.preventDefault(); var k = { ArrowLeft: [40, 0], ArrowRight: [-40, 0], ArrowUp: [0, 40], ArrowDown: [0, -40] }[e.key]; tx += k[0]; ty += k[1]; apply(false); }
+    });
+    window.addEventListener('resize', function () { if (s > 1.01) apply(false); });
+    return { reset: function () { s = 1; tx = ty = 0; pts = {}; start = null; im.style.transform = ''; planView.classList.remove('is-zoomed'); zoomIn.disabled = false; zoomOut.disabled = true; if (hint) hint.hidden = false; } };
+  })();
   $('[data-apt-request]', dlg).addEventListener('click', function (e) {
     e.preventDefault();
     var id = openApt;
     pushed = false; // replace the #apt- entry instead of going back
+    keepY = null;
     dlg.close();
     history.replaceState(null, '', '#contact');
     selectApartment(id);
     goToForm();
+  });
+  list.addEventListener('click', function (e) {
+    if (e.target.closest('a, button')) return;
+    var li = e.target.closest('[data-apt]'); if (li && window.matchMedia('(max-width: 560px)').matches) openDialog(parseInt(li.getAttribute('data-apt'), 10));
   });
   document.addEventListener('click', function (e) {
     var o = e.target.closest('[data-open-apt]');
@@ -379,15 +549,51 @@
       var x = e.clientX - r.left + box.scrollLeft, y = e.clientY - r.top + box.scrollTop;
       el.style.left = x + 'px'; el.style.top = y + 'px';
     }
-    // facade
-    var frame = $('.picker__frame', facade);
-    $$('[data-floor-pick]', facade).forEach(function (b) {
+    // facade: mouse click opens a floor; a tap first selects (highlight + confirm), a second tap or the button opens it
+    var frame = $('.picker__canvas', facade), pan = $('[data-pk-pan]', facade), zoomBtn = $('[data-pk-zoom]', facade);
+    var pick = $('[data-pk-pick]', root), pickLabel = $('[data-pk-pick-label]', root), selected = null, lastPointer = 'mouse';
+    var bands = $$('[data-floor-pick]', facade);
+    function markFloor(f) {
+      selected = f;
+      bands.forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-floor-pick') === String(f)); });
+      fbtns.forEach(function (b) { b.classList.toggle('is-last', b.getAttribute('data-floor-btn') === String(f)); });
+    }
+    function selectFloor(f) {
+      markFloor(f);
+      pickLabel.textContent = fmt(T.picker.floorCount, { n: f, count: (byFloor[f] || []).length });
+      pick.hidden = false;
+    }
+    bands.forEach(function (b) {
+      b.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType || 'mouse'; });
       b.addEventListener('mousemove', function (e) { showTip(tip, frame, b.getAttribute('data-tip'), e); });
       b.addEventListener('mouseleave', function () { tip.hidden = true; });
-      b.addEventListener('click', function (e) { e.preventDefault(); tip.hidden = true; openFloor(parseInt(b.getAttribute('data-floor-pick'), 10), true); });
+      b.addEventListener('click', function (e) {
+        e.preventDefault(); tip.hidden = true;
+        var f = parseInt(b.getAttribute('data-floor-pick'), 10);
+        if (lastPointer === 'touch' && selected !== f) { selectFloor(f); return; }
+        openFloor(f, true);
+      });
     });
-    function openFloor(f, focus) {
-      cur = f;
+    $('[data-pk-pick-open]', root).addEventListener('click', function () { if (selected) openFloor(selected, true); });
+    function setZoom(on) {
+      facade.classList.toggle('is-zoomed', on);
+      zoomBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      zoomBtn.setAttribute('aria-label', zoomBtn.getAttribute(on ? 'data-label-out' : 'data-label-in'));
+      if (on) pan.scrollLeft = (pan.scrollWidth - pan.clientWidth) / 2;
+    }
+    zoomBtn.addEventListener('click', function () { setZoom(!facade.classList.contains('is-zoomed')); });
+    function showFacade() {
+      floorBox.hidden = true; facade.hidden = false; tip2.hidden = true;
+      fbtns.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+      if (cur) { selectFloor(cur); }
+    }
+    function openFloor(f, focus, fromHistory) {
+      var wasOpen = !floorBox.hidden;
+      cur = f; markFloor(f); pick.hidden = true;
+      if (!fromHistory) {
+        if (wasOpen && /^#floor-\d+$/.test(location.hash)) history.replaceState({ pkFloor: f }, '', '#floor-' + f);
+        else history.pushState({ pkFloor: f }, '', '#floor-' + f);
+      }
       var apts = byFloor[f] || [], fid = f === 1 ? 'floor-1' : 'floor-typical', shapes = D.floormap.shapes[fid];
       title.textContent = fmt(T.picker.floorCount, { n: f, count: apts.length });
       img.src = D.assets + 'img/floors/' + fid + '-1200.webp';
@@ -431,10 +637,15 @@
       b.addEventListener('click', function () { var n = cur + parseInt(b.getAttribute('data-pk-step'), 10); if (byFloor[n]) { openFloor(n); b.disabled ? title.focus() : b.focus(); } });
     });
     $('[data-pk-back]', root).addEventListener('click', function () {
-      floorBox.hidden = true; facade.hidden = false; tip2.hidden = true;
-      fbtns.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
-      var back = $('[data-floor-pick="' + cur + '"]', facade); if (back) back.focus();
+      if (/^#floor-\d+$/.test(location.hash) && history.state && history.state.pkFloor) history.back(); else { history.replaceState(null, '', '#choose'); showFacade(); }
+      var back = $('[data-floor-pick="' + cur + '"]', facade); if (back) back.focus({ preventScroll: true });
     });
+    window.addEventListener('popstate', function () {
+      var m = /^#floor-(\d+)$/.exec(location.hash);
+      if (m && byFloor[m[1]]) { if (floorBox.hidden || cur !== +m[1]) openFloor(+m[1], false, true); }
+      else if (!/^#apt-/.test(location.hash) && !floorBox.hidden) showFacade();
+    });
+    (function () { var m = /^#floor-(\d+)$/.exec(location.hash); if (m && byFloor[m[1]]) { openFloor(+m[1], false, true); root.scrollIntoView(); } })();
   })();
 
   // ---------- gallery ----------
@@ -541,13 +752,16 @@
   }
   $('[data-selected-remove]').addEventListener('click', function () { lf.elements.apartment.value = ''; selBox.hidden = true; saveDraft(); lf.elements.name.focus(); });
 
+  var DRAFT_TTL = 14 * 864e5;
   function saveDraft() {
     if (!lf) return;
-    session.set('ipr-draft', JSON.stringify({ name: lf.elements.name.value, phone: lf.elements.phone.value, comment: lf.elements.comment.value, apartment: lf.elements.apartment.value }));
+    var d = { name: lf.elements.name.value, phone: lf.elements.phone.value, comment: lf.elements.comment.value, apartment: lf.elements.apartment.value, t: Date.now() };
+    if (d.name || d.phone || d.comment || d.apartment) local.set('ipr-draft', JSON.stringify(d)); else local.del('ipr-draft');
   }
   (function restoreDraft() {
     try {
-      var d = JSON.parse(session.get('ipr-draft') || 'null'); if (!d) return;
+      var d = JSON.parse(local.get('ipr-draft') || session.get('ipr-draft') || 'null'); if (!d) return;
+      if (d.t && Date.now() - d.t > DRAFT_TTL) { local.del('ipr-draft'); return; }
       ['name', 'phone', 'comment'].forEach(function (k) { if (d[k] && !lf.elements[k].value) lf.elements[k].value = d[k]; });
       if (d.apartment && byId[d.apartment]) selectApartment(parseInt(d.apartment, 10));
     } catch (e) {}
@@ -606,6 +820,7 @@
       page: location.pathname,
       attribution: attr
     };
+    if (navigator.onLine === false) { showStatus(T.contact.errors.network); return; }
     sending = true; submitBtn.disabled = true; submitBtn.setAttribute('aria-busy', 'true'); submitText.textContent = T.contact.sending;
     var ctrl = window.AbortController ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 20000);
@@ -617,7 +832,7 @@
           if (window.gtag && D.config.analytics.googleAdsId && D.config.analytics.googleAdsLeadLabel) {
             window.gtag('event', 'conversion', { send_to: D.config.analytics.googleAdsId + '/' + D.config.analytics.googleAdsLeadLabel, transaction_id: submissionId });
           }
-          lf.reset(); lf.elements.apartment.value = ''; selBox.hidden = true; session.del('ipr-draft');
+          lf.reset(); lf.elements.apartment.value = ''; selBox.hidden = true; session.del('ipr-draft'); local.del('ipr-draft');
           submissionId = uuid(); started = false;
           lf.hidden = true; success.hidden = false; success.focus();
         } else {
@@ -628,12 +843,24 @@
       .then(function () { clearTimeout(timer); sending = false; submitBtn.disabled = false; submitBtn.removeAttribute('aria-busy'); submitText.textContent = T.contact.submit; });
   });
   function showStatus(msg) { statusEl.textContent = msg; statusEl.hidden = false; }
+  window.addEventListener('pagehide', saveDraft);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') saveDraft(); });
+
+  // ---------- connection state: a short, non-blocking notice ----------
+  (function () {
+    var n = document.createElement('p'); n.className = 'net-note'; n.setAttribute('role', 'status'); n.hidden = true; document.body.appendChild(n);
+    var t = null;
+    function show(msg, ms) { clearTimeout(t); n.textContent = msg; n.hidden = false; if (ms) t = setTimeout(function () { n.hidden = true; }, ms); }
+    window.addEventListener('offline', function () { show(T.net.offline); });
+    window.addEventListener('online', function () { show(T.net.online, 3000); if (!statusEl.hidden && statusEl.textContent === T.contact.errors.network) statusEl.hidden = true; });
+    if (navigator.onLine === false) show(T.net.offline);
+  })();
   $('[data-lead-again]').addEventListener('click', function () { success.hidden = true; lf.hidden = false; startedAt = Date.now(); lf.elements.name.focus(); });
 
   // ---------- mobile bottom bar: never covers the form, dialogs or the keyboard ----------
   var bar = $('[data-mobile-bar]');
   var formVisible = false, typing = false, heroVisible = true;
-  function setMobileBar() { if (bar) bar.classList.toggle('is-hidden', heroVisible || formVisible || typing || (dlg && dlg.open) || (sheet && sheet.open)); }
+  function setMobileBar() { if (bar) bar.classList.toggle('is-hidden', heroVisible || formVisible || typing || !!document.querySelector('dialog[open]')); }
   if (bar && 'IntersectionObserver' in window) {
     new IntersectionObserver(function (e) { formVisible = e[0].isIntersecting; setMobileBar(); }, { rootMargin: '0px 0px -10% 0px' }).observe($('.lead-card'));
     new IntersectionObserver(function (e) { heroVisible = e[0].isIntersecting; setMobileBar(); }, { threshold: 0 }).observe($('.hero__actions'));

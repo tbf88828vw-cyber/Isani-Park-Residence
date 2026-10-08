@@ -37,6 +37,23 @@
     }
   }
 
+  // ---------- header: fall back to the menu button when the nav doesn't fit ----------
+  (function () {
+    var hd = $('.site-header'), inner = hd && $('.site-header__inner', hd);
+    if (!inner) return;
+    var fit = function () {
+      hd.classList.remove('is-compact');
+      if (inner.scrollWidth > inner.clientWidth + 1) hd.classList.add('is-compact');
+    };
+    fit();
+    window.addEventListener('resize', fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    if ('ResizeObserver' in window) {
+      var ro = new ResizeObserver(fit);
+      $$('.site-nav, .site-header__tools', inner).forEach(function (el) { ro.observe(el); });
+    }
+  })();
+
   // ---------- theme ----------
   function syncThemeLabels() {
     var light = root.getAttribute('data-theme') === 'light';
@@ -138,7 +155,8 @@
     function load() {
       if (v.src) return;
       var tall = window.matchMedia('(max-aspect-ratio: 4/5)').matches;
-      var src = tall ? v.getAttribute('data-src-tall') : v.getAttribute('data-src-wide');
+      var big = window.innerWidth * (window.devicePixelRatio || 1) > 1700;
+      var src = tall ? v.getAttribute('data-src-tall') : v.getAttribute(big ? 'data-src-xl' : 'data-src-wide');
       // H.264 for Safari/Chrome/Edge; VP9 WebM where H.264 is unavailable (e.g. some Chromium builds, Firefox on Linux)
       if (!v.canPlayType('video/mp4; codecs="avc1.640028"') && v.canPlayType('video/webm; codecs="vp9"')) src = src.replace(/\.mp4$/, '.webm');
       v.src = src;
@@ -394,6 +412,7 @@
   }
   function openDialog(id, opts) {
     var a = byId[id]; if (!a) return;
+    if (dlg.open && !reduceMotion.matches) { var bd = $('.apt-dialog__body', dlg); bd.classList.remove('is-swapping'); void bd.offsetWidth; bd.classList.add('is-swapping'); }
     if (!dlg.open) lastFocus = document.activeElement;
     openApt = a.id;
     fillDialog(a);
@@ -512,7 +531,7 @@
   });
   list.addEventListener('click', function (e) {
     if (e.target.closest('a, button')) return;
-    var li = e.target.closest('[data-apt]'); if (li && window.matchMedia('(max-width: 560px)').matches) openDialog(parseInt(li.getAttribute('data-apt'), 10));
+    var li = e.target.closest('[data-apt]'); if (li && !window.getSelection().toString()) openDialog(parseInt(li.getAttribute('data-apt'), 10));
   });
   document.addEventListener('click', function (e) {
     var o = e.target.closest('[data-open-apt]');
@@ -627,6 +646,7 @@
       });
       $$('[data-pk-step]', root).forEach(function (b) { var n = f + parseInt(b.getAttribute('data-pk-step'), 10); b.disabled = !byFloor[n]; });
       fbtns.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-floor-btn') === String(f) ? 'true' : 'false'); });
+      if (wasOpen && !reduceMotion.matches) { box3d.classList.add('is-swapping'); var done = function () { box3d.classList.remove('is-swapping'); }; img.addEventListener('load', done, { once: true }); setTimeout(done, 400); }
       scene.style.setProperty('--n', f);
       facade.hidden = true; floorBox.hidden = false; size3d();
       if (focus) { title.focus({ preventScroll: true }); var top = root.getBoundingClientRect().top + window.pageYOffset - 90; if (Math.abs(window.pageYOffset - top) > 40) window.scrollTo({ top: top, behavior: reduce() ? 'auto' : 'smooth' }); }
@@ -653,8 +673,10 @@
     var track = $('[data-gallery-track]'); if (!track) return;
     var slides = $$('.gallery__slide', track), thumbs = $$('[data-gallery-go]'), counter = $('[data-gallery-counter]');
     var cur = 0;
+    if (slides[0]) slides[0].classList.add('is-current');
     function setCur(i) {
       cur = i; counter.textContent = fmt(T.gallery.counter, { i: i + 1, n: slides.length });
+      slides.forEach(function (s, k) { s.classList.toggle('is-current', k === i); });
       thumbs.forEach(function (t, k) { if (k === i) t.setAttribute('aria-current', 'true'); else t.removeAttribute('aria-current'); });
       var th = thumbs[i]; if (th) { var p = th.parentNode.parentNode; var l = th.offsetLeft - p.clientWidth / 2 + th.offsetWidth / 2; p.scrollTo({ left: l, behavior: 'auto' }); }
     }

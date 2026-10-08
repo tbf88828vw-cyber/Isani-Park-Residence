@@ -233,7 +233,7 @@ function hero(t, lang) {
 <section class="hero" id="top" aria-labelledby="hero-title">
   <div class="hero__media" data-hero-media>
     <picture><source media="(max-width: 700px)" srcset="${A}img/hero-poster-540.webp"><img class="hero__poster" src="${A}img/hero-poster-1280.webp" alt="" width="1280" height="720" fetchpriority="high"></picture>
-    <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-hero-video data-src-wide="${A}video/hero-1280.mp4" data-src-tall="${A}video/hero-540x960.mp4"></video>
+    <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-hero-video data-src-wide="${A}video/hero-1280.mp4" data-src-xl="${A}video/hero-1600.mp4" data-src-tall="${A}video/hero-608x1080.mp4"></video>
     <div class="hero__veil"></div>
   </div>
   <div class="hero__content container">
@@ -242,7 +242,7 @@ function hero(t, lang) {
     <p class="hero__by"><span class="hero__rule" aria-hidden="true"></span><span>${esc(t.hero.by)}</span></p>
     <p class="hero__offer"><span class="hero__offer-long">${esc(t.hero.offer)}</span><span class="hero__offer-short">${esc(t.hero.offerShort)}</span></p>
     <div class="hero__actions">
-      <a class="btn btn--primary" href="#choose" data-cta="hero-choose">${esc(t.hero.ctaPrimary)} ${ICON.arrow}</a>
+      <a class="btn btn--primary" href="#choose" data-cta="hero-choose">${esc(t.hero.ctaPrimary)}</a>
       <a class="btn btn--ghost" href="#contact" data-cta="hero-price">${esc(t.hero.ctaSecondary)}</a>
     </div>
   </div>
@@ -273,13 +273,21 @@ function project(t, lang) {
 }
 
 function living(t) {
+  const g = media.gallery.find((x) => x.id === 'garden-front');
   return `
 <section class="section living" id="living" aria-labelledby="living-title">
-  <div class="pattern pattern--band" aria-hidden="true"></div>
   <div class="container">
-    <p class="eyebrow">${esc(t.living.eyebrow)}</p>
-    <h2 class="h2" id="living-title">${esc(t.living.title)}</h2>
-    <ul class="benefits">${t.living.items.map((it) => `<li class="benefit"><h3 class="h3">${esc(it.title)}</h3><p>${esc(it.text)}</p></li>`).join('')}</ul>
+    <div class="section-head">
+      <p class="eyebrow">${esc(t.living.eyebrow)}</p>
+      <h2 class="h2" id="living-title">${esc(t.living.title)}</h2>
+    </div>
+    <div class="living__grid">
+      <figure class="living__figure">
+        ${picture('../assets/img/gallery/' + g.id, '(min-width: 1000px) 46vw, 100vw', g.w, g.h, t.gallery.items[g.id], { cls: 'living__img' })}
+        <figcaption><span class="badge">${esc(t.gallery.badge)}</span> ${esc(t.gallery.items[g.id])}</figcaption>
+      </figure>
+      <ul class="benefits">${t.living.items.map((it) => `<li class="benefit"><h3 class="h3">${esc(it.title)}</h3><p>${esc(it.text)}</p></li>`).join('')}</ul>
+    </div>
   </div>
 </section>`;
 }
@@ -315,7 +323,7 @@ function picker(t, lang) {
           <span class="badge picker__badge">${esc(p.badge)}</span>
           <button class="icon-btn picker__zoom" type="button" data-pk-zoom aria-pressed="false" aria-label="${esc(p.zoomIn)}" data-label-in="${esc(p.zoomIn)}" data-label-out="${esc(p.zoomOut)}"><span class="i-in">${ICON.plus}</span><span class="i-out">${ICON.minus}</span></button>
         </div>
-        <div class="picker__pick" data-pk-pick hidden><p class="picker__pick-label" aria-live="polite"><span class="sr-only">${esc(p.pickHint)}: </span><span data-pk-pick-label></span></p><button class="btn btn--primary btn--sm" type="button" data-pk-pick-open>${esc(p.openFloor)} ${ICON.arrow}</button></div>
+        <div class="picker__pick" data-pk-pick hidden><p class="picker__pick-label" aria-live="polite"><span class="sr-only">${esc(p.pickHint)}: </span><span data-pk-pick-label></span></p><button class="btn btn--primary btn--sm" type="button" data-pk-pick-open>${esc(p.openFloor)}</button></div>
         <p class="picker__hint">${esc(p.hintFacade)}</p>
       </div>
       <div class="picker__floor" data-pk-floor hidden>
@@ -362,7 +370,7 @@ function aptCard(a, t, lang, i) {
   <article>
     <button class="apt-card__plan" type="button" data-open-apt="${a.id}" aria-label="${esc(title)} — ${esc(c.details)}">${img}</button>
     <div class="apt-card__body">
-      <p class="apt-card__meta">${esc(c.block)} · ${esc(fmt(c.floorShort, { n: a.floor }))}</p>
+      <p class="apt-card__meta">${esc(fmt(c.floorShort, { n: a.floor }))}</p>
       <h3 class="apt-card__title">${esc(title)}</h3>
       <p class="apt-card__area"><span>${num(lang, a.area)}</span> ${m2[lang]}</p>
       <dl class="apt-card__specs">
@@ -387,7 +395,7 @@ function catalog(t, lang) {
       <img src="../assets/img/layouts/${l.id}-600.webp" srcset="../assets/img/layouts/${l.id}-600.webp 600w, ../assets/img/layouts/${l.id}-1200.webp 1200w" sizes="(min-width: 900px) 30vw, 80vw" width="${l.w}" height="${l.h}" alt="${esc(fmt(c.typicalAlt, { n: l.rooms, area: num(lang, l.area) }))}" loading="lazy" decoding="async">
       <figcaption><span class="layout__area">≈ ${num(lang, l.area)} ${m2[lang]}</span><span class="layout__rooms">${esc(c.roomsLabel[l.rooms])}</span></figcaption>
     </figure>
-    <button class="btn btn--text btn--sm" type="button" data-similar-rooms="${l.rooms}" data-similar-area="${l.area}">${esc(c.typicalShow)} ${ICON.arrow}</button>
+    <button class="btn btn--text btn--sm" type="button" data-similar-rooms="${l.rooms}" data-similar-area="${l.area}">${esc(c.typicalShow)}</button>
   </li>`).join('');
   const floorImg = (f) => `<img src="../assets/img/floors/${f.id}-1200.webp" srcset="../assets/img/floors/${f.id}-1200.webp 1200w, ../assets/img/floors/${f.id}-2400.webp 2400w" sizes="(min-width: 1300px) 1240px, 1200px" width="${f.w}" height="${f.h}" alt="${esc(c.floorAlt[f.id])}" loading="lazy" decoding="async">`;
   return `
@@ -514,7 +522,7 @@ function purchase(t) {
         <p class="installment__figure" aria-hidden="true">0%</p>
         <h3 class="h3">${esc(p.installmentTitle)}</h3>
         <p>${esc(p.installmentText)}</p>
-        <a class="btn btn--primary" href="#contact" data-cta="installment">${esc(p.installmentCta)} ${ICON.arrow}</a>
+        <a class="btn btn--primary" href="#contact" data-cta="installment">${esc(p.installmentCta)}</a>
       </div>
       <div class="steps">
         <h3 class="h4">${esc(p.stepsTitle)}</h3>
@@ -536,7 +544,9 @@ function developer(t, lang) {
       <p class="eyebrow">${esc(d.eyebrow)}</p>
       <h2 class="h2" id="developer-title">${esc(d.title)}</h2>
       <p class="lead">${esc(d.text)}</p>
-      <p><a class="link-arrow" href="${config.contacts.instagram}" target="_blank" rel="noopener">${esc(d.link)} ${ICON.ext}</a></p>
+      <h3 class="developer__mat-title">${esc(d.materialsTitle)}</h3>
+      <ul class="materials">${d.materials.map(([title, note, href]) => `<li><a href="${href}"><span class="materials__t">${esc(title)}</span><span class="materials__n">${esc(note)}</span></a></li>`).join('')}</ul>
+      <p class="developer__ig"><a class="link-arrow" href="${config.contacts.instagram}" target="_blank" rel="noopener">${esc(d.link)} ${ICON.ext}</a></p>
     </div>
   </div>
 </section>`;
@@ -561,7 +571,7 @@ function contact(t, lang, depth) {
   const privacyLink = `<a href="${pageHref(depth, lang, 'privacy')}">${esc(c.consentLink)}</a>`;
   return `
 <section class="section contact" id="contact" aria-labelledby="contact-title">
-  <div class="pattern pattern--band" aria-hidden="true"></div>
+  
   <div class="container contact__grid">
     <div class="contact__intro">
       <p class="eyebrow">${esc(c.eyebrow)}</p>
@@ -743,7 +753,7 @@ let ASSET_V = {};
 function homePage(lang) {
   const t = I18N[lang];
   const depth = 1;
-  const preload = `<link rel="preload" as="image" href="../assets/img/hero-poster-540.webp" media="(max-width: 700px)" fetchpriority="high"><link rel="preload" as="image" href="../assets/img/hero-poster-1280.webp" media="(min-width: 701px)" fetchpriority="high">${jsonLd(lang, t)}`;
+  const preload = `<link rel="preload" as="image" href="../assets/img/hero-poster-540.webp" media="(max-width: 700px)"><link rel="preload" as="image" href="../assets/img/hero-poster-1280.webp" media="(min-width: 701px)">${jsonLd(lang, t)}`;
   return `${head({ lang, t, depth, title: t.meta.title, description: t.meta.description, extraHead: preload })}
 <body class="page-home lang-${lang}">
 ${header({ lang, t, depth, home: true })}

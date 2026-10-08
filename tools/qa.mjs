@@ -150,7 +150,7 @@ for (const lang of LANGS) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
   const p = await ctx.newPage(); await fontRoute(p);
   await p.goto(`${BASE}/ru/`, { waitUntil: 'domcontentloaded' });
-  await p.addStyleTag({ content: 'html{font-size:200% !important}' });
+  await p.addStyleTag({ content: 'html{font-size:200% !important}' }); await p.waitForTimeout(300);
   const ov = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   ok(ov <= 0, `200% text: overflow ${ov}`);
   await ctx.close();

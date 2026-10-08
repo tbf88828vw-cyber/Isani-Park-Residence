@@ -288,7 +288,30 @@
   "eyebrow": "Developer",
   "title": "Mono Capitals",
   "text": "Mono Capitals is a property developer based in Tbilisi. Our aim is the peace and comfort of future residents: a healthy environment, quality construction and modern infrastructure. Isani Park Residence is our multifunctional residential complex in the Isani district.",
-  "link": "Mono Capitals on Instagram"
+  "link": "Mono Capitals on Instagram",
+  "materialsTitle": "What you can review before visiting",
+  "materials": [
+   [
+    "Plans of all 219 apartments",
+    "with room dimensions, as PDF",
+    "#apartments"
+   ],
+   [
+    "3D views of typical apartments",
+    "furniture and finishes are an example",
+    "#apartments"
+   ],
+   [
+    "Visualisations of the block and courtyard",
+    "12 high-resolution images",
+    "#gallery"
+   ],
+   [
+    "Sales office on the site",
+    "34 S. Tsuladze St. · 10:00–18:00",
+    "#location"
+   ]
+  ]
  },
  "faq": {
   "eyebrow": "Questions and answers",

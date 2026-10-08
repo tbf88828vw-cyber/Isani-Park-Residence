@@ -158,7 +158,7 @@
       var big = window.innerWidth * (window.devicePixelRatio || 1) > 1700;
       var src = tall ? v.getAttribute('data-src-tall') : v.getAttribute(big ? 'data-src-xl' : 'data-src-wide');
       // H.264 for Safari/Chrome/Edge; VP9 WebM where H.264 is unavailable (e.g. some Chromium builds, Firefox on Linux)
-      if (!v.canPlayType('video/mp4; codecs="avc1.640028"') && v.canPlayType('video/webm; codecs="vp9"')) src = src.replace(/\.mp4$/, '.webm');
+      if (!v.canPlayType('video/mp4; codecs="avc1.640028"') && v.canPlayType('video/webm; codecs="vp9"')) src = src.replace(/\.mp4(\?|$)/, '.webm$1');
       v.src = src;
       v.addEventListener('playing', function () { v.classList.add('is-playing'); }, { once: true });
     }

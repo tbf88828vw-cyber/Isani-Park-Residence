@@ -174,7 +174,7 @@ for (const lang of LANGS) {
   const p3 = await ctx3.newPage(); await fontRoute(p3);
   await p3.goto(`${BASE}/en/`, { waitUntil: 'load' }); await p3.waitForTimeout(2500);
   const v = await p3.evaluate(() => { const v = document.querySelector('[data-hero-video]'); return { src: v.currentSrc.split('/').pop(), playing: !v.paused, muted: v.muted, inline: v.playsInline }; });
-  ok(/^hero-1280\.(mp4|webm)$/.test(v.src) && v.playing && v.muted && v.inline, `video autoplay muted inline ${JSON.stringify(v)}`);
+  ok(/^hero-1280\.(mp4|webm)(\?v=\w+)?$/.test(v.src) && v.playing && v.muted && v.inline, `video autoplay muted inline ${JSON.stringify(v)}`);
   await p3.click('[data-video-toggle]');
   ok(await p3.evaluate(() => document.querySelector('[data-hero-video]').paused), 'pause control works');
   await ctx3.close();

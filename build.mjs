@@ -40,6 +40,13 @@ const numLocale = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' };
 const num = (lang, v, digits = 1) => new Intl.NumberFormat(numLocale[lang], { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v);
 const m2 = { ka: 'მ²', en: 'm²', ru: 'м²' };
 
+// cache-busting query for media whose URL never changes (hero poster/video: 30-day browser cache)
+const MEDIA_V = {};
+function hv(rel) {
+  if (PREVIEW) return '';
+  if (!(rel in MEDIA_V)) { const f = path.join(OUT, 'assets', rel); MEDIA_V[rel] = fs.existsSync(f) ? '?v=' + hashFile(f).slice(0, 8) : ''; }
+  return MEDIA_V[rel];
+}
 function hashFile(p) { return crypto.createHash('sha1').update(fs.readFileSync(p)).digest('hex').slice(0, 10); }
 function rmrf(p) { fs.rmSync(p, { recursive: true, force: true }); }
 function copyDir(src, dst) {
@@ -232,8 +239,8 @@ function hero(t, lang) {
   return `
 <section class="hero" id="top" aria-labelledby="hero-title">
   <div class="hero__media" data-hero-media>
-    <picture><source media="(max-width: 700px)" srcset="${A}img/hero-poster-540.webp"><img class="hero__poster" src="${A}img/hero-poster-1280.webp" alt="" width="1280" height="720" fetchpriority="high"></picture>
-    <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-hero-video data-src-wide="${A}video/hero-1280.mp4" data-src-xl="${A}video/hero-1600.mp4" data-src-tall="${A}video/hero-608x1080.mp4"></video>
+    <picture><source media="(max-width: 700px)" srcset="${A}img/hero-poster-540.webp${hv('img/hero-poster-540.webp')}"><img class="hero__poster" src="${A}img/hero-poster-1280.webp${hv('img/hero-poster-1280.webp')}" alt="" width="1280" height="720" fetchpriority="high"></picture>
+    <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-hero-video data-src-wide="${A}video/hero-1280.mp4${hv('video/hero-1280.mp4')}" data-src-xl="${A}video/hero-1600.mp4${hv('video/hero-1600.mp4')}" data-src-tall="${A}video/hero-608x1080.mp4${hv('video/hero-608x1080.mp4')}"></video>
     <div class="hero__veil"></div>
   </div>
   <div class="hero__content container">
@@ -753,7 +760,7 @@ let ASSET_V = {};
 function homePage(lang) {
   const t = I18N[lang];
   const depth = 1;
-  const preload = `<link rel="preload" as="image" href="../assets/img/hero-poster-540.webp" media="(max-width: 700px)"><link rel="preload" as="image" href="../assets/img/hero-poster-1280.webp" media="(min-width: 701px)">${jsonLd(lang, t)}`;
+  const preload = `<link rel="preload" as="image" href="../assets/img/hero-poster-540.webp${hv('img/hero-poster-540.webp')}" media="(max-width: 700px)"><link rel="preload" as="image" href="../assets/img/hero-poster-1280.webp${hv('img/hero-poster-1280.webp')}" media="(min-width: 701px)">${jsonLd(lang, t)}`;
   return `${head({ lang, t, depth, title: t.meta.title, description: t.meta.description, extraHead: preload })}
 <body class="page-home lang-${lang}">
 ${header({ lang, t, depth, home: true })}
@@ -827,7 +834,7 @@ function chooserPage() {
   const langs = ['ka', 'en', 'ru'];
   const body = `
 <main class="chooser" id="main">
-  <div class="hero__media"><picture><source media="(max-width: 700px)" srcset="assets/img/hero-poster-540.webp"><img class="hero__poster" src="assets/img/hero-poster-1280.webp" alt="" width="1280" height="720"></picture><div class="hero__veil"></div></div>
+  <div class="hero__media"><picture><source media="(max-width: 700px)" srcset="assets/img/hero-poster-540.webp${hv('img/hero-poster-540.webp')}"><img class="hero__poster" src="assets/img/hero-poster-1280.webp${hv('img/hero-poster-1280.webp')}" alt="" width="1280" height="720"></picture><div class="hero__veil"></div></div>
   <div class="chooser__inner">
     <p class="eyebrow">Tbilisi · Isani</p>
     <h1 class="chooser__title"><span class="sr-only">Isani Park Residence</span>${heroTitleSvg()}</h1>

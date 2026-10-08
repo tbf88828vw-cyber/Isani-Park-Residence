@@ -71,8 +71,8 @@ const apartments = aptsSrc.map((a) => ({
 // ---------- SVG marks ----------
 const svgStroke = (d, extra = '') => `<path d="${d}" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"${extra}/>`;
 function monogram(cls = 'monogram') {
-  const m = logo.mc;
-  return `<svg class="${cls} mc-mark" viewBox="0 0 160 160" aria-hidden="true" focusable="false"><path class="mg-c" d="${m.c}" fill="currentColor"/><g transform="translate(${m.mtx} 114)"><path class="mg-m" d="${m.m}" fill="currentColor"/></g></svg>`;
+  const m = logo.mark;
+  return `<svg class="${cls} mc-mark" viewBox="${m.viewBox}" aria-hidden="true" focusable="false"><path class="mg-c" d="${m.c}" fill="none" stroke="currentColor" stroke-width="${m.cw}" stroke-linecap="round"/><path class="mg-m" d="${m.m}" fill="currentColor"/></svg>`;
 }
 function mcWord(cls, label = '') {
   const m = logo.mc;
@@ -112,8 +112,8 @@ function fontsHref(lang) {
 }
 
 // ---------- picture helper ----------
-function picture(base, sizes, w, h, alt, { widths = [640, 1280, 2000], avif = !PREVIEW, cls = '', loading = 'lazy', fetchpriority = '' } = {}) {
-  const ws = widths.filter((x) => !(PREVIEW && x === 2000)).map((x) => Math.min(x, w));
+function picture(base, sizes, w, h, alt, { widths = [640, 1280, 1920, 2560, 3840], avif = !PREVIEW, cls = '', loading = 'lazy', fetchpriority = '' } = {}) {
+  const ws = [...new Set(widths.filter((x) => !(PREVIEW && x > 1280)).map((x) => Math.min(x, w)))];
   const srcset = (ext) => ws.map((x) => `${base}-${x}.${ext} ${x}w`).join(', ');
   return `<picture class="${cls}">${avif ? `<source type="image/avif" srcset="${srcset('avif')}" sizes="${sizes}">` : ''}<source type="image/webp" srcset="${srcset('webp')}" sizes="${sizes}"><img src="${base}-${ws[Math.min(1, ws.length - 1)]}.webp" width="${w}" height="${h}" alt="${esc(alt)}" loading="${loading}" decoding="async"${fetchpriority ? ` fetchpriority="${fetchpriority}"` : ''}></picture>`;
 }
@@ -525,7 +525,6 @@ function developer(t, lang) {
       <h2 class="h2" id="developer-title">${esc(d.title)}</h2>
       <p class="lead">${esc(d.text)}</p>
       <p><a class="link-arrow" href="${config.contacts.instagram}" target="_blank" rel="noopener">${esc(d.link)} ${ICON.ext}</a></p>
-      <p class="note">${esc(d.logoNote)}</p>
     </div>
   </div>
 </section>`;
@@ -832,7 +831,7 @@ if (PREVIEW) {
   // the preview host limits file counts: drop AVIF duplicates, small plan thumbnails and PDFs
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
   for (const f of walk(path.join(OUT, 'assets'))) {
-    if (f.endsWith('.avif') || /plans\/img\/apt-\d+-440\.webp$/.test(f) || f.endsWith('.pdf') || /gallery\/.*-2000\.webp$/.test(f)) fs.rmSync(f);
+    if (f.endsWith('.avif') || /plans\/img\/apt-\d+-440\.webp$/.test(f) || f.endsWith('.pdf') || /gallery\/.*-(1920|2560|3840|3072)\.webp$/.test(f)) fs.rmSync(f);
   }
 }
 ASSET_V = { css: hashFile(path.join(OUT, 'assets/css/site.css')), js: hashFile(path.join(OUT, 'assets/js/site.js')) };

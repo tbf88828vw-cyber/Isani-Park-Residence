@@ -459,7 +459,7 @@
     track.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
     });
-    // full-screen viewer: the slide's own <picture> (AVIF/WebP up to 2000px) shown at viewport size
+    // full-screen viewer: the slide's own <picture> (AVIF/WebP up to 3840px) shown at viewport size
     var lb = $('[data-lightbox]');
     if (lb && lb.showModal) {
       var stage = $('[data-lb-stage]', lb), cap = $('[data-lb-caption]', lb), cnt = $('[data-lb-count]', lb), lbCur = 0, lastF = null;

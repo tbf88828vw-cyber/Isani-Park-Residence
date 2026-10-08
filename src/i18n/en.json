@@ -215,13 +215,13 @@
   "items": {
    "front": "Main façade of Block E from the courtyard",
    "corner-west": "Block E from the corner: vertical piers and balconies",
-   "park-facade": "The façade above the landscaped grounds",
+   "corner-east": "Block E from the east corner, with the garden in front",
    "aerial-courtyard": "Aerial view: the building, paths and green grounds",
    "aerial-paths": "Footpaths and planting from above",
    "corner-tower": "End elevation of Block E and the site entrance",
    "garden-walk": "Walkway along the façade",
    "evening-light": "Block E in soft daylight",
-   "street-view": "View from the internal driveway",
+   "front-trees": "The Block E façade behind the courtyard trees",
    "garden-front": "Planting in front of the main façade",
    "portrait-corner": "End elevation with balconies",
    "east-facade": "The long façade of Block E"
@@ -279,8 +279,7 @@
   "eyebrow": "Developer",
   "title": "Mono Capitals",
   "text": "Mono Capitals is a property developer based in Tbilisi. The company describes its aim as the peace and comfort of future residents: a healthy environment, quality construction and modern infrastructure. Isani Park Residence is its multifunctional residential complex in the Isani district.",
-  "link": "Mono Capitals on Instagram",
-  "logoNote": "The mark on this site is a concept for a new identity, not the company's approved logo."
+  "link": "Mono Capitals on Instagram"
  },
  "faq": {
   "eyebrow": "Questions and answers",

@@ -43,12 +43,12 @@
   "title": "Ten floors above a green courtyard",
   "lead": "Isani Park Residence is a residential complex by Mono Capitals on Beri Gabriel Salosi Avenue in Tbilisi's Isani district. Apartments in Block E are now for sale, from compact 1-room units to 4-room homes with generous terraces.",
   "imageAlt": "Visualisation of Block E: a ten-storey building with terracotta piers and balconies above a landscaped courtyard",
-  "imageCaption": "The design may be refined during construction.",
+  "imageCaption": "Block E seen from the west corner",
   "facts": [
    {
     "value": "219",
     "label": "apartments in Block E",
-    "note": "per floor plans dated 23 April 2026"
+    "note": "each with a balcony or terrace"
    },
    {
     "value": "10",
@@ -65,8 +65,7 @@
     "label": "of recreation areas",
     "note": "on an 8,550 m² site (Blocks F and E)"
    }
-  ],
-  "source": "Site and recreation areas are taken from the official Mono Capitals website. Apartment, floor and parking-space counts come from the Block E design plans."
+  ]
  },
  "living": {
   "eyebrow": "Life at the complex",
@@ -78,23 +77,22 @@
    },
    {
     "title": "A courtyard for walks and play",
-    "text": "The developer lists landscaped recreation areas with benches, children's playgrounds, sports grounds and footpaths — 4,530 m² on the Block F and E site."
+    "text": "Landscaped recreation areas with benches, children's playgrounds, sports grounds and footpaths — 4,530 m² on the Block F and E site."
    },
    {
     "title": "Parking below the building",
-    "text": "Two underground parking levels are planned beneath Block E, with 86 spaces on the plans. Ask the sales team about buying or renting a space."
+    "text": "Block E has two underground parking levels with 86 spaces. Our sales team will explain the terms for buying or renting a space."
    },
    {
     "title": "A layout for how you live",
     "text": "1-room apartments from 30 m², 2-room around 50–52 m², 3-room from 61 to 79 m² and 4-room around 101–103 m². Each apartment has its own plan with room dimensions."
    }
-  ],
-  "complexNote": "The developer's description of the whole complex also mentions an outdoor swimming pool, car-free zones and 24/7 security. Ask the sales team which of these belong to the phase that includes Block E, and when they will open."
+  ]
  },
  "catalog": {
   "eyebrow": "Floor plan catalogue",
   "title": "Choose an apartment in Block E",
-  "lead": "All 219 apartments with numbers, floors and areas from the design plans. The sales team confirms availability and the price of any specific apartment.",
+  "lead": "All 219 Block E apartments with numbers, floors and areas. Our sales team will confirm availability and the price of any apartment.",
   "filters": "Filters",
   "rooms": "Rooms",
   "roomsAny": "All",
@@ -163,7 +161,7 @@
   "details": "Details",
   "planAlt": "Floor plan of apartment {n}, Block E, floor {floor}",
   "typicalTitle": "What the layouts look like",
-  "typicalLead": "3D visualisations of typical apartments from the developer's materials. Select one to see similar apartments in the catalogue.",
+  "typicalLead": "3D visualisations of typical apartments. Select one to see similar apartments in the catalogue.",
   "typicalAlt": "Interior visualisation of a typical {n}-room apartment of about {area} m²",
   "typicalShow": "Similar apartments",
   "floorsTitle": "Floor plans",
@@ -185,7 +183,7 @@
   "zoomOut": "Zoom out",
   "pdf": "Open the plan as PDF",
   "request": "Ask for price and terms",
-  "note": "Plan from the developer's design documents. The price, availability and finish of this apartment are available from the sales team.",
+  "note": "Our sales team will give you the price, availability and finish of this apartment.",
   "close": "Close",
   "prev": "Previous apartment",
   "next": "Next apartment",
@@ -203,7 +201,7 @@
  "gallery": {
   "eyebrow": "Architecture and grounds",
   "title": "Terracotta piers, glass and plenty of green",
-  "lead": "All images below are the developer's visualisations. Construction photos will be added here once they are provided.",
+  "lead": "Visualisations of Block E and the landscaped grounds of the complex.",
   "badge": "Visualisation",
   "prev": "Previous image",
   "next": "Next image",
@@ -239,7 +237,7 @@
   "mapLink": "Open in Google Maps",
   "mapNote": "The map loads from Google only after you press the button.",
   "mapTitle": "Map: Isani Park Residence, 34 S. Tsuladze St., Tbilisi",
-  "nearbyTitle": "Nearby, according to the developer's map",
+  "nearbyTitle": "Nearby",
   "nearby": [
    "Samgori metro station",
    "Isani metro station",
@@ -249,14 +247,13 @@
    "St Barbara's Church",
    "Shevardeni rugby stadium",
    "Supermarkets and public transport stops"
-  ],
-  "nearbyNote": "We don't list travel times because the developer doesn't say how they were measured. Google Maps can plan a route to any destination."
+  ]
  },
  "purchase": {
   "eyebrow": "Buying",
   "title": "How to buy an apartment",
   "installmentTitle": "In-house instalment plan at 0%",
-  "installmentText": "The official Mono Capitals website lists an in-house instalment plan from the developer at 0%. The down payment, term and schedule depend on the apartment — the sales team will calculate them for you.",
+  "installmentText": "We offer an in-house instalment plan at 0%. The down payment, term and schedule depend on the apartment — our sales team will calculate them for you.",
   "installmentCta": "Get a payment plan",
   "stepsTitle": "Three steps",
   "steps": [
@@ -278,7 +275,7 @@
  "developer": {
   "eyebrow": "Developer",
   "title": "Mono Capitals",
-  "text": "Mono Capitals is a property developer based in Tbilisi. The company describes its aim as the peace and comfort of future residents: a healthy environment, quality construction and modern infrastructure. Isani Park Residence is its multifunctional residential complex in the Isani district.",
+  "text": "Mono Capitals is a property developer based in Tbilisi. Our aim is the peace and comfort of future residents: a healthy environment, quality construction and modern infrastructure. Isani Park Residence is our multifunctional residential complex in the Isani district.",
   "link": "Mono Capitals on Instagram"
  },
  "faq": {
@@ -287,7 +284,7 @@
   "items": [
    {
     "q": "Which apartments are in Block E?",
-    "a": "According to the design plans, Block E has 219 apartments on floors 1–10: 30 one-room (30–31 m²), 110 two-room (50–52 m²), 59 three-room (61–79 m²) and 20 four-room (101–103 m²). The sales team confirms which are available now."
+    "a": "Block E has 219 apartments on floors 1–10: 30 one-room (30–31 m²), 110 two-room (50–52 m²), 59 three-room (61–79 m²) and 20 four-room (101–103 m²). Our sales team will tell you which are available now."
    },
    {
     "q": "How are rooms counted?",
@@ -303,11 +300,11 @@
    },
    {
     "q": "Is there an instalment plan?",
-    "a": "The developer's official website lists an in-house instalment plan at 0%. The down payment and term are agreed individually — ask the sales team for a calculation."
+    "a": "Yes, we offer an in-house instalment plan at 0%. The down payment and term are agreed individually — ask our sales team for a calculation."
    },
    {
     "q": "When will Block E be completed?",
-    "a": "An official completion date for Block E has not been published on the developer's website. Ask the sales team about the current construction stage and timeline."
+    "a": "Our sales team will tell you the current construction stage and the completion timeline for Block E."
    },
    {
     "q": "Where can I see the materials and discuss a purchase?",
@@ -349,8 +346,8 @@
   "copy": "Copy number",
   "copied": "Number copied",
   "emailLabel": "Email",
-  "messengers": "Messengers (official Mono Capitals links)",
-  "hours": "Office hours: 10:00–18:00. Please call to confirm opening days.",
+  "messengers": "Messengers and social media",
+  "hours": "Office hours: 10:00–18:00.",
   "whatsappText": "Hello! I found you on the Isani Park Residence website. Could you tell me about prices and which apartments are available?"
  },
  "footer": {
@@ -377,7 +374,7 @@
    {
     "h": "Who handles your data",
     "p": [
-     "This site is about the Isani Park Residence complex. Enquiries are received by the sales team of the developer, Mono Capitals: 34 S. Tsuladze St., Isani, Tbilisi; info@monocapitals.ge; +995 544 77 77 88."
+     "The data controller is Mono Capitals, the developer of Isani Park Residence: 34 S. Tsuladze St., Isani, Tbilisi; info@monocapitals.ge; +995 544 77 77 88. Enquiries from this site go to our sales team."
     ]
    },
    {

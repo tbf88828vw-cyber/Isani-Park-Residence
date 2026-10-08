@@ -266,7 +266,6 @@ function project(t, lang) {
   </div>
   <div class="container">
     <dl class="facts">${t.project.facts.map((f) => `<div class="fact"><dt>${esc(f.label)}</dt><dd class="fact__value">${esc(f.value)}</dd><dd class="fact__note">${esc(f.note)}</dd></div>`).join('')}</dl>
-    <p class="source-note">${esc(t.project.source)}</p>
   </div>
 </section>`;
 }
@@ -279,7 +278,6 @@ function living(t) {
     <p class="eyebrow">${esc(t.living.eyebrow)}</p>
     <h2 class="h2" id="living-title">${esc(t.living.title)}</h2>
     <ul class="benefits">${t.living.items.map((it) => `<li class="benefit"><h3 class="h3">${esc(it.title)}</h3><p>${esc(it.text)}</p></li>`).join('')}</ul>
-    <p class="note">${esc(t.living.complexNote)}</p>
   </div>
 </section>`;
 }
@@ -470,7 +468,6 @@ function location(t, lang) {
       </dl>
       <h3 class="h4">${esc(l.nearbyTitle)}</h3>
       <ul class="nearby">${l.nearby.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
-      <p class="note">${esc(l.nearbyNote)}</p>
     </div>
     <div class="map" data-map data-map-src="https://www.google.com/maps?q=${q}&amp;hl=${lang}&amp;z=16&amp;output=embed" data-map-title="${esc(l.mapTitle)}">
       ${picture('../assets/img/gallery/aerial-courtyard', '(min-width: 1000px) 50vw, 100vw', aerial.w, aerial.h, '', { cls: 'map__bg' })}

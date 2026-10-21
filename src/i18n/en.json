@@ -91,6 +91,7 @@
   ]
  },
  "catalog": {
+  "sold": "Sold",
   "eyebrow": "Floor plan catalogue",
   "title": "Choose an apartment in Block E",
   "lead": "All 219 Block E apartments with numbers, floors and areas. Our sales team will confirm availability and the price of any apartment.",
@@ -187,6 +188,8 @@
   "countShort": "{n} apts"
  },
  "modal": {
+  "soldNote": "This apartment has been sold. Our sales team will help you find a similar one.",
+  "soldCta": "Find a similar one",
   "title": "Apartment {n}",
   "subtitle": "Block E · floor {floor} · {rooms}",
   "zoomIn": "Zoom in on the plan",

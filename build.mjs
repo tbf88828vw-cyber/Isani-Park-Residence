@@ -32,6 +32,7 @@ const media = read('src/data/media.json');
 const logo = read('src/data/logo.json');
 const aptsSrc = read('src/data/apartments.source.json');
 const floormap = read('src/data/floormap.json');
+const SOLD = new Set(read('src/data/status.json').sold);
 
 // ---------- helpers ----------
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -72,7 +73,7 @@ const absUrl = (lang, sub = '') => SITE ? `${SITE}/${lang}/${sub ? sub + '/' : '
 // ---------- data ----------
 const apartments = aptsSrc.map((a) => ({
   id: a.id, floor: a.floor, rooms: a.rooms, area: a.area, inner: a.inner, summer: a.summer,
-  plan: Boolean(a.planRatio), ratio: a.planRatio || 1.35,
+  plan: Boolean(a.planRatio), ratio: a.planRatio || 1.35, sold: SOLD.has(a.id),
 })).sort((a, b) => a.floor - b.floor || a.id - b.id);
 
 // ---------- SVG marks ----------
@@ -128,7 +129,13 @@ function picture(base, sizes, w, h, alt, { widths = [640, 1280, 1920, 2560, 3840
 }
 
 // ---------- page chrome ----------
-function head({ lang, t, depth, title, description, sub = '', robots = 'index,follow', extraHead = '', canonical = '' }) {
+// Russian pages keep Russian content, but their link previews (WhatsApp, Telegram, Facebook) are in English
+function ogFor(lang, key) {
+  if (lang !== 'ru') return {};
+  const m = I18N.en.meta;
+  return { title: m[key + 'Title'] || m.title, description: m[key + 'Description'] || m.description, locale: I18N.en.ogLocale };
+}
+function head({ lang, t, depth, title, description, sub = '', robots = 'index,follow', extraHead = '', canonical = '', og = {} }) {
   const A = up(depth) + 'assets/';
   // a noindex page (404) carries no canonical or hreflang; the root chooser is canonical to itself
   const alternates = SITE && !/noindex/.test(robots) ? [
@@ -148,10 +155,10 @@ function head({ lang, t, depth, title, description, sub = '', robots = 'index,fo
 ${alternates}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Isani Park Residence">
-<meta property="og:title" content="${esc(title)}">
-<meta property="og:description" content="${esc(description)}">
-<meta property="og:locale" content="${t.ogLocale}">
-${LANGS.filter((l) => l !== lang).map((l) => `<meta property="og:locale:alternate" content="${I18N[l].ogLocale}">`).join('')}
+<meta property="og:title" content="${esc(og.title || title)}">
+<meta property="og:description" content="${esc(og.description || description)}">
+<meta property="og:locale" content="${og.locale || t.ogLocale}">
+${LANGS.map((l) => I18N[l].ogLocale).filter((loc) => loc !== (og.locale || t.ogLocale)).map((loc) => `<meta property="og:locale:alternate" content="${loc}">`).join('')}
 ${SITE && !/noindex/.test(robots) ? `<meta property="og:url" content="${canonical || absUrl(lang, sub)}">` : ''}
 <meta property="og:image" content="${ogImg}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
@@ -373,7 +380,7 @@ function aptCard(a, t, lang, i) {
   const img = a.plan
     ? `<img src="../assets/plans/img/apt-${a.id}-${PREVIEW ? 1000 : 440}.webp" width="440" height="${Math.round(440 * a.ratio)}" alt="${esc(fmt(c.planAlt, { n: a.id, floor: a.floor }))}" loading="lazy" decoding="async">`
     : `<span class="apt-card__noplan">${esc(t.modal.noPlan)}</span>`;
-  return `<li class="apt-card" data-apt="${a.id}" data-rooms="${a.rooms}" data-floor="${a.floor}" data-area="${a.area}">
+  return `<li class="apt-card${a.sold ? ' apt-card--sold' : ''}" data-apt="${a.id}" data-rooms="${a.rooms}" data-floor="${a.floor}" data-area="${a.area}"${a.sold ? ' data-sold' : ''}>
   <article>
     <button class="apt-card__plan" type="button" data-open-apt="${a.id}" aria-label="${esc(title)} — ${esc(c.details)}">${img}</button>
     <div class="apt-card__body">
@@ -386,7 +393,7 @@ function aptCard(a, t, lang, i) {
         <div><dt>${esc(c.summer)}</dt><dd>${num(lang, a.summer)} ${m2[lang]}<span class="apt-card__short"> ${esc(c.summerShort)}</span></dd></div>
       </dl>
       <div class="apt-card__actions">
-        <a class="btn btn--primary btn--sm" href="#contact" data-request-apt="${a.id}">${esc(c.priceCta)}</a>
+        ${a.sold ? `<p class="apt-card__status">${esc(c.sold)}</p>` : `<a class="btn btn--primary btn--sm" href="#contact" data-request-apt="${a.id}">${esc(c.priceCta)}</a>`}
         <button class="btn btn--text btn--sm" type="button" data-open-apt="${a.id}">${esc(c.details)}</button>
       </div>
     </div>
@@ -679,6 +686,7 @@ function aptDialog(t) {
       </div>
       <div class="apt-dialog__side">
         <p class="apt-dialog__area"><span data-apt-area></span></p>
+        <p class="apt-dialog__sold" data-apt-sold hidden><span class="apt-card__status">${esc(t.catalog.sold)}</span> ${esc(m.soldNote)}</p>
         <h3 class="sr-only">${esc(m.specs)}</h3>
         <dl class="specs" data-apt-specs></dl>
         <div class="apt-dialog__actions">
@@ -739,8 +747,8 @@ function clientData(lang, t) {
     config: { analytics: config.analytics, phone: config.contacts.phoneDisplay, api: '/api/lead' },
     pdf: !PREVIEW,
     t: {
-      catalog: { shown: t.catalog.shown, found: t.catalog.found, floorShort: t.catalog.floorShort, roomsLabel: t.catalog.roomsLabel, total: t.catalog.total, interior: t.catalog.interior, summer: t.catalog.summer, summerHint: t.catalog.summerHint, planAlt: t.catalog.planAlt, apartment: t.catalog.apartment, no: t.catalog.no, block: t.catalog.block, floor: t.catalog.floor, rooms: t.catalog.rooms, areaBands: t.catalog.areaBands, showN: t.catalog.showN, countShort: t.catalog.countShort, removeFilter: t.catalog.removeFilter },
-      modal: { title: t.modal.title, subtitle: t.modal.subtitle, alt3d: t.modal.alt3d },
+      catalog: { shown: t.catalog.shown, found: t.catalog.found, floorShort: t.catalog.floorShort, roomsLabel: t.catalog.roomsLabel, total: t.catalog.total, interior: t.catalog.interior, summer: t.catalog.summer, summerHint: t.catalog.summerHint, planAlt: t.catalog.planAlt, apartment: t.catalog.apartment, no: t.catalog.no, block: t.catalog.block, floor: t.catalog.floor, rooms: t.catalog.rooms, areaBands: t.catalog.areaBands, showN: t.catalog.showN, countShort: t.catalog.countShort, removeFilter: t.catalog.removeFilter, sold: t.catalog.sold },
+      modal: { title: t.modal.title, subtitle: t.modal.subtitle, alt3d: t.modal.alt3d, request: t.modal.request, soldCta: t.modal.soldCta },
       picker: { floorLabel: t.picker.floorLabel, floorCount: t.picker.floorCount, planAlt: t.picker.planAlt },
       gallery: { counter: t.gallery.counter },
       hero: { pause: t.hero.pause, play: t.hero.play },
@@ -748,7 +756,7 @@ function clientData(lang, t) {
       nav: { themeToLight: t.nav.themeToLight, themeToDark: t.nav.themeToDark },
       net: t.net,
     },
-    apartments: apartments.map((a) => [a.id, a.floor, a.rooms, a.area, a.inner, a.summer, a.plan ? 1 : 0, a.ratio, floormap.apartments[a.id].pos, floormap.apartments[a.id].t3d || 0]),
+    apartments: apartments.map((a) => [a.id, a.floor, a.rooms, a.area, a.inner, a.summer, a.plan ? 1 : 0, a.ratio, floormap.apartments[a.id].pos, floormap.apartments[a.id].t3d || 0, a.sold ? 1 : 0]),
     floormap: { w: floormap.w, h: floormap.h, shapes: floormap.shapes, renders: floormap.renders },
   };
   return `<script id="ipr-data" type="application/json">${JSON.stringify(js).replace(/</g, '\\u003c')}</script>`;
@@ -761,7 +769,7 @@ function homePage(lang) {
   const t = I18N[lang];
   const depth = 1;
   const preload = `<link rel="preload" as="image" href="../assets/img/hero-poster-540.webp${hv('img/hero-poster-540.webp')}" media="(max-width: 700px)"><link rel="preload" as="image" href="../assets/img/hero-poster-1280.webp${hv('img/hero-poster-1280.webp')}" media="(min-width: 701px)">${jsonLd(lang, t)}`;
-  return `${head({ lang, t, depth, title: t.meta.title, description: t.meta.description, extraHead: preload })}
+  return `${head({ lang, t, depth, title: t.meta.title, description: t.meta.description, extraHead: preload, og: ogFor(lang, '') })}
 <body class="page-home lang-${lang}">
 ${header({ lang, t, depth, home: true })}
 <main id="main" tabindex="-1">
@@ -793,7 +801,7 @@ function privacyPage(lang) {
   const depth = 2;
   const p = t.privacy;
   const crumbs = SITE ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Isani Park Residence', item: absUrl(lang) }, { '@type': 'ListItem', position: 2, name: p.title, item: absUrl(lang, 'privacy') }] }).replace(/</g, '\\u003c')}</script>` : '';
-  return `${head({ lang, t, depth, title: t.meta.privacyTitle, description: t.meta.privacyDescription, sub: 'privacy', extraHead: crumbs })}
+  return `${head({ lang, t, depth, title: t.meta.privacyTitle, description: t.meta.privacyDescription, sub: 'privacy', extraHead: crumbs, og: ogFor(lang, 'privacy') })}
 <body class="page-doc lang-${lang}">
 ${header({ lang, t, depth, sub: 'privacy' })}
 <main id="main" class="doc container" tabindex="-1">
@@ -851,7 +859,7 @@ function chooserPage() {
 ${body}`;
   }
   const t = I18N.en;
-  return `${head({ lang: 'en', t, depth: 0, title: 'Isani Park Residence — Tbilisi | Mono Capitals', description: t.meta.description, canonical: SITE ? SITE + '/' : '' }).replace('<html lang="en"', '<html lang="en"').replace(/href="\.\/assets/g, 'href="/assets')}
+  return `${head({ lang: 'en', t, depth: 0, title: 'Isani Park Residence — Tbilisi | Mono Capitals', description: t.meta.description, canonical: SITE ? SITE + '/' : ''}).replace('<html lang="en"', '<html lang="en"').replace(/href="\.\/assets/g, 'href="/assets')}
 <body class="page-chooser">${body}
 </body>
 </html>

@@ -934,3 +934,22 @@ select:hover, input:hover, textarea:hover { border-color: var(--fg-muted); }
 @keyframes rise-in { from { opacity: 0; transform: translateY(-4px); } }
 @media (max-width: 860px) and (prefers-reduced-motion: no-preference) { .apt-dialog[open] { animation: sheet-up 0.24s cubic-bezier(0.2, 0.7, 0.2, 1); } }
 @keyframes sheet-up { from { opacity: 0.6; transform: translateY(24px); } }
+
+/* ---------- sold apartments ---------- */
+.apt-card__status { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 0.3em 0.85em; border: 1px solid var(--line-strong); border-radius: var(--radius-pill); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.01em; color: var(--fg-muted); white-space: nowrap; }
+.apt-card__status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+.apt-card--sold .apt-card__plan img { opacity: 0.45; filter: grayscale(1); }
+.apt-card--sold .apt-card__area, .apt-card--sold .apt-card__title { color: var(--fg-muted); }
+.apt-card--sold .apt-card__actions { min-height: 36px; }
+.apt-dialog__sold { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0; font-size: 0.875rem; color: var(--fg-muted); }
+.apt-dialog__sold[hidden] { display: none; }
+.pk-apt--sold polygon { fill: #6f685e; fill-opacity: 0.38; stroke-opacity: 0.3; }
+.pk-apt--sold:hover polygon, .pk-apt--sold:focus-visible polygon { fill: #6f685e; fill-opacity: 0.55; }
+.pk-apt--sold .pk-apt__tag circle { stroke: rgba(255, 250, 240, 0.35); }
+.pk-apt--sold .pk-apt__tag text { fill: rgba(243, 236, 223, 0.6); text-decoration: line-through; }
+.pk-apt--sold:hover .pk-apt__tag circle, .pk-apt--sold:focus-visible .pk-apt__tag circle { fill: #4a453e; }
+.pk-apt--sold:hover .pk-apt__tag text, .pk-apt--sold:focus-visible .pk-apt__tag text { fill: #f3ecdf; }
+.chip-btn--sold { border-style: dashed; color: var(--fg-muted); }
+.chip-btn--sold b { font-weight: 500; text-decoration: line-through; text-decoration-thickness: 1px; }
+.pk3d .pk-apt--sold polygon, .picker__plan .pk-apt--sold polygon { fill: #14120f; fill-opacity: 0.62; stroke: #fffaf0; stroke-opacity: 0.25; }
+.pk3d .pk-apt--sold:hover polygon, .pk3d .pk-apt--sold:focus-visible polygon { fill-opacity: 0.72; }

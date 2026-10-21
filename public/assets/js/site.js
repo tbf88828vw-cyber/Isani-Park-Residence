@@ -185,7 +185,7 @@
   })();
 
   // ---------- catalog ----------
-  var APTS = D.apartments.map(function (a) { return { id: a[0], floor: a[1], rooms: a[2], area: a[3], inner: a[4], summer: a[5], plan: !!a[6], ratio: a[7], pos: a[8], t3d: a[9] || null }; });
+  var APTS = D.apartments.map(function (a) { return { id: a[0], floor: a[1], rooms: a[2], area: a[3], inner: a[4], summer: a[5], plan: !!a[6], ratio: a[7], pos: a[8], t3d: a[9] || null, sold: !!a[10] }; });
   var byId = {}; APTS.forEach(function (a) { byId[a.id] = a; });
   var list = $('[data-apt-list]');
   var cards = {}; $$('[data-apt]', list).forEach(function (li) { cards[li.getAttribute('data-apt')] = li; });
@@ -377,6 +377,8 @@
     $('[data-apt-title]', dlg).textContent = fmt(T.modal.title, { n: a.id });
     $('[data-apt-sub]', dlg).textContent = fmt(T.modal.subtitle, { floor: a.floor, rooms: c.roomsLabel[a.rooms] });
     $('[data-apt-area]', dlg).textContent = area(a.area);
+    $('[data-apt-sold]', dlg).hidden = !a.sold;
+    $('[data-apt-request]', dlg).textContent = a.sold ? T.modal.soldCta : T.modal.request;
     var rows = [[c.apartment, c.no + ' ' + a.id], [c.floor, fmt(c.floorShort, { n: a.floor })], [c.rooms, c.roomsLabel[a.rooms]], [c.total, area(a.area)], [c.interior, area(a.inner)], [c.summer + ' (' + c.summerHint + ')', area(a.summer)]];
     var specs = $('[data-apt-specs]', dlg); specs.textContent = '';
     rows.forEach(function (r) { var d = document.createElement('div'); var dt = document.createElement('dt'); dt.textContent = r[0]; var dd = document.createElement('dd'); dd.textContent = r[1]; d.appendChild(dt); d.appendChild(dd); specs.appendChild(d); });
@@ -526,7 +528,7 @@
     keepY = null;
     dlg.close();
     history.replaceState(null, '', '#contact');
-    selectApartment(id);
+    if (!byId[id] || !byId[id].sold) selectApartment(id);
     goToForm();
   });
   list.addEventListener('click', function (e) {
@@ -560,7 +562,7 @@
     var byFloor = {}; APTS.forEach(function (a) { (byFloor[a.floor] = byFloor[a.floor] || []).push(a); });
     Object.keys(byFloor).forEach(function (f) { byFloor[f].sort(function (a, b) { return a.pos - b.pos; }); });
     var fine = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
-    function aptLabel(a) { return T.catalog.apartment + ' ' + T.catalog.no + ' ' + a.id + ' · ' + T.catalog.roomsLabel[a.rooms] + ' · ' + area(a.area); }
+    function aptLabel(a) { return T.catalog.apartment + ' ' + T.catalog.no + ' ' + a.id + ' · ' + T.catalog.roomsLabel[a.rooms] + ' · ' + area(a.area) + (a.sold ? ' · ' + T.catalog.sold : ''); }
     function showTip(el, box, text, e) {
       if (!fine) return;
       var r = box.getBoundingClientRect();
@@ -625,7 +627,7 @@
         var pts = shapes[a.pos]; if (!pts) return;
         var link = document.createElementNS(NS, 'a');
         link.setAttribute('href', '#apt-' + a.id); link.setAttribute('data-open-apt', a.id);
-        link.setAttribute('class', 'pk-apt pk-apt--r' + a.rooms); link.setAttribute('aria-label', aptLabel(a));
+        link.setAttribute('class', 'pk-apt pk-apt--r' + a.rooms + (a.sold ? ' pk-apt--sold' : '')); link.setAttribute('aria-label', aptLabel(a));
         var poly = document.createElementNS(NS, 'polygon');
         poly.setAttribute('points', pts.map(function (p) { return p[0] + ',' + p[1]; }).join(' '));
         var cx = 0, cy = 0; pts.forEach(function (p) { cx += p[0]; cy += p[1]; }); cx /= pts.length; cy /= pts.length;
@@ -638,10 +640,10 @@
         link.addEventListener('click', function () { tip2.hidden = true; track('picker_select', { apartment_id: a.id, apartment_floor: a.floor }); });
         svg.appendChild(link);
         var li = document.createElement('li'), btn = document.createElement('button');
-        btn.type = 'button'; btn.className = 'chip-btn'; btn.setAttribute('data-open-apt', a.id);
+        btn.type = 'button'; btn.className = 'chip-btn' + (a.sold ? ' chip-btn--sold' : ''); btn.setAttribute('data-open-apt', a.id);
         btn.innerHTML = '<b></b><span></span>';
         btn.firstChild.textContent = T.catalog.no + ' ' + a.id;
-        btn.lastChild.textContent = T.catalog.roomsLabel[a.rooms] + ' · ' + area(a.area);
+        btn.lastChild.textContent = T.catalog.roomsLabel[a.rooms] + ' · ' + area(a.area) + (a.sold ? ' · ' + T.catalog.sold : '');
         li.appendChild(btn); list.appendChild(li);
       });
       $$('[data-pk-step]', root).forEach(function (b) { var n = f + parseInt(b.getAttribute('data-pk-step'), 10); b.disabled = !byFloor[n]; });

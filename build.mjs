@@ -34,6 +34,8 @@ const aptsSrc = read('src/data/apartments.source.json');
 const floormap = read('src/data/floormap.json');
 const SOLD = new Set(read('src/data/status.json').sold);
 const nearby = read('src/data/nearby.json').items;
+const SCRIPT = read('src/data/script.json');
+const scriptSvg = (k, cls, label = '') => { const x = SCRIPT[k]; return `<svg class="${cls}" viewBox="${x.vb.join(' ')}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'}><path d="${x.d}" fill="currentColor"/></svg>`; };
 
 // ---------- helpers ----------
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -226,10 +228,10 @@ function footer({ lang, t, depth, sub = '' }) {
   const A = up(depth) + 'assets/';
   return `
 <footer class="site-footer">
-  <div class="pattern pattern--footer pattern--gold" aria-hidden="true"></div>
+  <div class="script-pattern script-pattern--footer" aria-hidden="true"></div>
   <div class="container site-footer__inner">
     <div class="site-footer__brand">
-      <p class="site-footer__lockup"><img class="footer-script footer-script--deep" src="${A}logo/isani-script-gold-deep.svg" alt="Isani Park Residence" width="903" height="99" loading="lazy"><img class="footer-script footer-script--light" src="${A}logo/isani-script-gold.svg" alt="" width="903" height="99" loading="lazy"></p>
+      <p class="site-footer__name">Isani Park Residence</p>
       <p class="site-footer__by"><span class="site-footer__by-word">by</span>${monogram('footer-by__mark')}${mcWord('footer-by', 'Mono Capitals')}</p>
     </div>
     <div class="site-footer__cols">
@@ -265,12 +267,11 @@ function hero(t, lang) {
   </div>
   <div class="hero__content container">
     <p class="hero__context">${esc(h.context)}</p>
-    <h1 class="hero__title" id="hero-title"><img class="hero__script" src="${A}logo/isani-script-gold.svg${hv('logo/isani-script-gold.svg')}" alt="Isani Park Residence" width="903" height="99" decoding="async"></h1>
-    <p class="hero__by">${esc(h.by)}</p>
-    <p class="hero__slogan">${h.slogan.map((x, i) => `<span style="--i:${i}">${esc(x)}</span>`).join(' ')} <strong class="hero__all gold-text" style="--i:3">${esc(h.sloganAll)}</strong></p>
+    <h1 class="hero__title" id="hero-title"><span class="sr-only">Isani Park Residence — </span>${h.slogan.map((x, i) => `<span class="hero__line" style="--i:${i}">${esc(x)}</span>`).join(' ')}</h1>
+    <p class="hero__accent" style="--i:3">${SCRIPT[lang] ? scriptSvg(lang, 'hero__accent-svg', h.sloganAll) : `<span class="hero__accent-text">${esc(h.sloganAll)}</span>`}</p>
     <div class="hero__actions">
-      <a class="btn btn--gold" href="#choose" data-cta="hero-choose">${esc(h.ctaPrimary)}</a>
-      <a class="btn btn--ghost" href="#contact" data-cta="hero-price">${esc(h.ctaSecondary)}</a>
+      <a class="btn btn--ivory" href="#choose" data-cta="hero-choose">${esc(h.ctaPrimary)}</a>
+      <a class="btn btn--hair" href="#contact" data-cta="hero-price">${esc(h.ctaSecondary)}</a>
     </div>
   </div>
   <button class="hero__toggle icon-btn" type="button" data-video-toggle hidden aria-label="${esc(h.pause)}" data-label-pause="${esc(h.pause)}" data-label-play="${esc(h.play)}"><span class="i-pause">${ICON.pause}</span><span class="i-play">${ICON.play}</span></button>
@@ -300,10 +301,13 @@ function story(t, lang) {
 
 <section class="chapter chapter--nature" aria-labelledby="nature-title">
   <div class="container chapter__split">
-    <figure class="chapter__photo" data-reveal>
-      ${img('garden-walk', '(min-width: 1000px) 58vw, 100vw', t.gallery.items['garden-walk'] || '', 'chapter__img')}
-      <figcaption><span class="badge">${esc(t.gallery.badge)}</span> ${esc(t.gallery.items['garden-walk'] || '')}</figcaption>
-    </figure>
+    <div class="collage" data-reveal>
+      <p class="collage__side" aria-hidden="true">Isani Park</p>
+      <figure class="collage__main">${img('garden-walk', '(min-width: 1000px) 40vw, 100vw', t.gallery.items['garden-walk'] || '', 'collage__img')}</figure>
+      <figure class="collage__a">${img('aerial-courtyard', '(min-width: 1000px) 22vw, 50vw', t.gallery.items['aerial-courtyard'] || '', 'collage__img')}</figure>
+      <figure class="collage__b">${img('front-trees', '(min-width: 1000px) 22vw, 50vw', t.gallery.items['front-trees'] || '', 'collage__img')}</figure>
+      <p class="collage__cap"><span class="badge">${esc(t.gallery.badge)}</span></p>
+    </div>
     <div class="chapter__text" data-reveal>
       <p class="chapter__kicker">${esc(st.nature.kicker)}</p>
       <h2 class="chapter__title chapter__title--md" id="nature-title">${esc(st.nature.title)}</h2>
@@ -646,7 +650,7 @@ function contact(t, lang, depth) {
   const privacyLink = `<a href="${pageHref(depth, lang, 'privacy')}">${esc(c.consentLink)}</a>`;
   return `
 <section class="section contact" id="contact" aria-labelledby="contact-title">
-  <div class="pattern pattern--gold pattern--contact" aria-hidden="true"></div>
+  <div class="script-pattern script-pattern--contact" aria-hidden="true"></div>
   <div class="container contact__grid">
     <div class="contact__intro">
       <p class="eyebrow">${esc(c.eyebrow)}</p>
@@ -904,13 +908,13 @@ function notFoundPage() {
 function chooserPage() {
   const langs = ['ka', 'en', 'ru'];
   const body = `
-<main class="chooser" id="main">
+<main class="chooser on-dark" id="main">
   <div class="hero__media"><picture><source media="(max-width: 700px)" srcset="assets/img/hero-poster-540.webp${hv('img/hero-poster-540.webp')}"><img class="hero__poster" src="assets/img/hero-poster-1280.webp${hv('img/hero-poster-1280.webp')}" alt="" width="1280" height="720"></picture><div class="hero__veil"></div></div>
   <div class="chooser__inner">
-    <p class="eyebrow">Tbilisi · Isani</p>
-    <h1 class="chooser__title"><span class="sr-only">Isani Park Residence</span>${heroTitleSvg()}</h1>
-    <p class="hero__by"><span class="hero__rule" aria-hidden="true"></span><span>by Mono Capitals</span></p>
-    <ul class="chooser__langs">${langs.map((l) => `<li><a class="btn btn--ghost" href="${PREVIEW ? `${l}/index.html` : `/${l}/`}" hreflang="${l}" lang="${I18N[l].htmlLang}" data-lang-link="${l}"><span class="chooser__label">${esc(I18N[l].labelLong)}</span><span class="chooser__hint">${esc(I18N[l].chooser.prompt)}</span></a></li>`).join('')}</ul>
+    <p class="chooser__context">Tbilisi · Isani</p>
+    <h1 class="chooser__title">Isani Park Residence</h1>
+    <p class="chooser__by">by Mono Capitals</p>
+    <ul class="chooser__langs">${langs.map((l) => `<li><a class="btn btn--hair" href="${PREVIEW ? `${l}/index.html` : `/${l}/`}" hreflang="${l}" lang="${I18N[l].htmlLang}" data-lang-link="${l}"><span class="chooser__label">${esc(I18N[l].labelLong)}</span><span class="chooser__hint">${esc(I18N[l].chooser.prompt)}</span></a></li>`).join('')}</ul>
   </div>
 </main>
 <script>(function(){try{var s=localStorage.getItem('ipr-lang');if(s){var a=document.querySelector('[data-lang-link="'+s+'"]');if(a)a.classList.add('is-last');}document.querySelectorAll('[data-lang-link]').forEach(function(a){a.addEventListener('click',function(){try{localStorage.setItem('ipr-lang',a.getAttribute('data-lang-link'))}catch(e){}})})}catch(e){}})()</script>`;

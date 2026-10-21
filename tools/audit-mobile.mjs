@@ -27,7 +27,7 @@ await block('hero', async () => {
       await p.goto(`${BASE}/${lang}/`);
       const r = await p.evaluate(() => {
         const vis = (s) => { const e = [...document.querySelectorAll(s)].find((x) => x.offsetParent); if (!e) return null; const b = e.getBoundingClientRect(); return b.top >= 0 && b.bottom <= innerHeight + 1; };
-        return { ctx: vis('.hero__context'), title: vis('.hero__script') ?? vis('.hero__title'), offer: vis('.hero__slogan'), cta: vis('.hero__actions .btn--gold'), ctaHref: document.querySelector('.hero__actions .btn--gold').getAttribute('href') };
+        return { ctx: vis('.hero__context'), title: vis('.hero__title'), offer: vis('.hero__accent'), cta: vis('.hero__actions .btn--ivory'), ctaHref: document.querySelector('.hero__actions .btn--ivory').getAttribute('href') };
       });
       ok('hero', r.ctx && r.title && r.offer && r.cta && r.ctaHref === '#choose', `${lang} ${w}x${h}: place, name, benefit and "choose" CTA on first screen`, r);
       await p.context().close();
@@ -239,7 +239,7 @@ await block('network', async () => {
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
   const t0 = Date.now();
   await p.goto(`${BASE}/ru/`, { waitUntil: 'domcontentloaded', timeout: 120000 });
-  await p.waitForSelector('.hero__actions .btn--gold', { state: 'visible' });
+  await p.waitForSelector('.hero__actions .btn--ivory', { state: 'visible' });
   const dcl = Date.now() - t0;
   const fcp = await p.evaluate(() => Math.round((performance.getEntriesByName('first-contentful-paint')[0] || {}).startTime || 0));
   await p.waitForTimeout(3000);

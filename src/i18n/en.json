@@ -253,7 +253,7 @@
   "complexAddress": "34 S. Tsuladze St. (Beri Gabriel Salosi Ave.), Isani district, Tbilisi",
   "officeLabel": "Sales office",
   "officeAddress": "34 S. Tsuladze St., Isani, Tbilisi",
-  "officeHours": "Opening hours: 10:00–18:00",
+  "officeHours": "Opening hours: 10:00–18:30",
   "mapButton": "Show interactive map",
   "mapLink": "Open in Google Maps",
   "mapNote": "The map loads from Google only after you press the button.",
@@ -317,7 +317,7 @@
    ],
    [
     "Sales office on the site",
-    "34 S. Tsuladze St. · 10:00–18:00",
+    "34 S. Tsuladze St. · 10:00–18:30",
     "#location"
    ]
   ]
@@ -352,7 +352,7 @@
    },
    {
     "q": "Where can I see the materials and discuss a purchase?",
-    "a": "At the Mono Capitals sales office: 34 S. Tsuladze St., Isani, Tbilisi, open 10:00–18:00. Book a visit on +995 544 77 77 88."
+    "a": "At the Mono Capitals sales office: 34 S. Tsuladze St., Isani, Tbilisi, open 10:00–18:30. Book a visit on +995 544 77 77 88."
    }
   ]
  },
@@ -373,7 +373,7 @@
   "consent": "By pressing “Send enquiry” you agree that your name and phone number will be used to contact you. See our {link}.",
   "consentLink": "privacy policy",
   "successTitle": "Enquiry received",
-  "successText": "Thank you! The sales team will contact you during office hours (10:00–18:00).",
+  "successText": "Thank you! The sales team will contact you during office hours (10:00–18:30).",
   "successAgain": "Send another enquiry",
   "errors": {
    "name": "Enter your name — at least two letters.",
@@ -391,12 +391,12 @@
   "copied": "Number copied",
   "emailLabel": "Email",
   "messengers": "Messengers and social media",
-  "hours": "Office hours: 10:00–18:00.",
+  "hours": "Office hours: 10:00–18:30.",
   "whatsappText": "Hello! I found you on the Isani Park Residence website. Could you tell me about prices and which apartments are available?"
  },
  "footer": {
   "seller": "Seller and developer: Mono Capitals",
-  "officeLine": "Sales office: 34 S. Tsuladze St., Isani, Tbilisi · 10:00–18:00",
+  "officeLine": "Sales office: 34 S. Tsuladze St., Isani, Tbilisi · 10:00–18:30",
   "disclaimer": "All images on this site are visualisations. The design, layouts and landscaping may be refined. The information on this site is not a public offer.",
   "privacy": "Privacy policy",
   "rights": "© 2026 Mono Capitals"
@@ -520,7 +520,7 @@
    "car": "min by car",
    "km": "km by road",
    "or": "or",
-   "note": "Travel times are calculated from OpenStreetMap routes starting at S. Tsuladze St. Driving can take longer at rush hour.",
+   "note": "Travel times are calculated from OpenStreetMap routes starting at S. Tsuladze St.; the airport time assumes no traffic. Driving can take longer at rush hour.",
    "cats": {
     "education": "Education",
     "transport": "Transport",

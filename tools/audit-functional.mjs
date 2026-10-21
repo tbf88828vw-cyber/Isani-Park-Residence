@@ -67,9 +67,9 @@ try {
   await p.goto(`${BASE}/en/`);
   const seq = [];
   for (let i = 0; i < 3; i++) { await p.click('.site-header [data-theme-toggle]'); seq.push(await p.evaluate(() => document.documentElement.dataset.theme)); }
-  ok('theme', seq.join() === 'light,dark,light', 'theme toggles each click', seq);
+  ok('theme', seq.join() === 'dark,light,dark', 'theme toggles each click', seq);
   const label = await p.$eval('.site-header [data-theme-toggle]', (b) => b.getAttribute('aria-label') || b.textContent.trim());
-  ok('theme', /dark|тём|მუქ/i.test(label), 'toggle label describes next theme', label);
+  ok('theme', /light|светл|ნათ/i.test(label), 'toggle label describes next theme', label);
   await p.context().close();
 }
 

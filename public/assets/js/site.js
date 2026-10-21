@@ -884,7 +884,12 @@
   // ---------- mobile bottom bar: never covers the form, dialogs or the keyboard ----------
   var bar = $('[data-mobile-bar]');
   var formVisible = false, typing = false, heroVisible = true;
-  function setMobileBar() { if (bar) bar.classList.toggle('is-hidden', heroVisible || formVisible || typing || !!document.querySelector('dialog[open]')); }
+  var dock = $('[data-social-dock]');
+  function setMobileBar() {
+    var barHidden = heroVisible || formVisible || typing || !!document.querySelector('dialog[open]');
+    if (bar) bar.classList.toggle('is-hidden', barHidden);
+    if (dock) { dock.classList.toggle('is-raised', !!bar && !barHidden); dock.classList.toggle('is-hidden', typing || !!document.querySelector('dialog[open]')); }
+  }
   if (bar && 'IntersectionObserver' in window) {
     new IntersectionObserver(function (e) { formVisible = e[0].isIntersecting; setMobileBar(); }, { rootMargin: '0px 0px -10% 0px' }).observe($('.lead-card'));
     new IntersectionObserver(function (e) { heroVisible = e[0].isIntersecting; setMobileBar(); }, { threshold: 0 }).observe($('.hero__actions'));
@@ -924,5 +929,15 @@
     else if (choice !== 'denied') banner.hidden = false;
     $('[data-consent-accept]').addEventListener('click', function () { local.set('ipr-consent', 'granted'); banner.hidden = true; grant(); });
     $('[data-consent-decline]').addEventListener('click', function () { local.set('ipr-consent', 'denied'); banner.hidden = true; });
+  })();
+  // ---------- reveal: one gentle rise per block as it enters the screen ----------
+  (function () {
+    var els = $$('[data-reveal]');
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window) || reduceMotion.matches) { els.forEach(function (el) { el.classList.add('is-in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    els.forEach(function (el) { io.observe(el); });
   })();
 })();

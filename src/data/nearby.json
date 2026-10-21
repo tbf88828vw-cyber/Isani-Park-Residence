@@ -1,0 +1,20 @@
+{
+  "_comment": "Время и расстояния: маршруты OpenStreetMap (Valhalla) от ул. С. Цуладзе, октябрь 2026. walk/car — минуты; km — расстояние по дороге.",
+  "items": [
+    { "id": "square",   "cat": "nature",    "walk": 3 },
+    { "id": "gymnasium","cat": "education", "walk": 4 },
+    { "id": "pharmacy", "cat": "daily",     "walk": 6 },
+    { "id": "school85", "cat": "education", "walk": 9 },
+    { "id": "stadium",  "cat": "nature",    "walk": 10 },
+    { "id": "supermarket","cat": "shopping","walk": 11 },
+    { "id": "kindergarten","cat": "education","walk": 12 },
+    { "id": "bank",     "cat": "daily",     "walk": 13 },
+    { "id": "bazaar",   "cat": "shopping",  "walk": 15, "car": 4 },
+    { "id": "samgori",  "cat": "transport", "walk": 17, "car": 5 },
+    { "id": "mall",     "cat": "shopping",  "walk": 17, "car": 4 },
+    { "id": "isani",    "cat": "transport", "car": 7 },
+    { "id": "center",   "cat": "transport", "car": 14 },
+    { "id": "eastpoint","cat": "shopping",  "car": 17 },
+    { "id": "airport",  "cat": "transport", "km": 14 }
+  ]
+}

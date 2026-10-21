@@ -95,8 +95,8 @@ for (const lang of LANGS) {
   const st = await p.evaluate(() => ({ m: window.__marker, name: document.getElementById('lead-name').value, rooms: document.querySelector('input[name=rooms]:checked').value, theme: document.documentElement.dataset.theme }));
   ok(st.m === 42, 'no reload on theme/resize/zoom');
   ok(st.name === 'Keep me' && st.rooms === '2', 'form and filters kept');
-  ok(st.theme === 'light', 'theme toggled without reload');
-  await p.reload(); ok(await p.evaluate(() => document.documentElement.dataset.theme) === 'light', 'theme persisted');
+  ok(st.theme === 'dark', 'theme toggled without reload');
+  await p.reload(); ok(await p.evaluate(() => document.documentElement.dataset.theme) === 'dark', 'theme persisted');
   await ctx.close();
 }
 

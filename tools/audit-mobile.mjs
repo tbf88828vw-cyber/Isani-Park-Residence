@@ -27,7 +27,7 @@ await block('hero', async () => {
       await p.goto(`${BASE}/${lang}/`);
       const r = await p.evaluate(() => {
         const vis = (s) => { const e = [...document.querySelectorAll(s)].find((x) => x.offsetParent); if (!e) return null; const b = e.getBoundingClientRect(); return b.top >= 0 && b.bottom <= innerHeight + 1; };
-        return { ctx: vis('.hero__context'), title: vis('.hero__title svg:not([style*="none"])') ?? vis('.hero__title'), offer: vis('.hero__offer'), cta: vis('.hero__actions .btn--primary'), ctaHref: document.querySelector('.hero__actions .btn--primary').getAttribute('href') };
+        return { ctx: vis('.hero__context'), title: vis('.hero__script') ?? vis('.hero__title'), offer: vis('.hero__slogan'), cta: vis('.hero__actions .btn--gold'), ctaHref: document.querySelector('.hero__actions .btn--gold').getAttribute('href') };
       });
       ok('hero', r.ctx && r.title && r.offer && r.cta && r.ctaHref === '#choose', `${lang} ${w}x${h}: place, name, benefit and "choose" CTA on first screen`, r);
       await p.context().close();
@@ -217,7 +217,7 @@ await block('bar', async () => {
   ok('bar', await hid(), 'hidden on the first screen (hero has its own buttons)');
   await p.evaluate(() => document.getElementById('apartments').scrollIntoView()); await p.waitForTimeout(250);
   ok('bar', !(await hid()), 'appears once the hero is scrolled away');
-  const bar = await p.evaluate(() => { const b = document.querySelector('[data-mobile-bar]'); const r = b.getBoundingClientRect(); return { h: Math.round(r.height), tel: b.querySelector('a[href^="tel:"]')?.getAttribute('href'), wa: /^https:\/\/wa\.me\/995544777788\?text=/.test(b.querySelector('a[href*="wa.me"]')?.getAttribute('href') || ''), oneLine: [...b.querySelectorAll('.btn')].every((x) => x.scrollHeight <= x.clientHeight + 2) }; });
+  const bar = await p.evaluate(() => { const b = document.querySelector('[data-mobile-bar]'); const r = b.getBoundingClientRect(); return { h: Math.round(r.height), tel: b.querySelector('a[href^="tel:"]')?.getAttribute('href'), wa: /^https:\/\/wa\.me\/995544777788\?text=/.test(document.querySelector('[data-social-dock] a[href*="wa.me"]')?.getAttribute('href') || ''), oneLine: [...b.querySelectorAll('.btn')].every((x) => x.scrollHeight <= x.clientHeight + 2) }; });
   ok('bar', bar.h <= 66 && bar.tel === 'tel:+995544777788' && bar.wa && bar.oneLine, 'compact (≤66px): choose + call + WhatsApp, labels on one line', bar);
   await p.tap('[data-apt-list] > li:not([hidden]) [data-open-apt]'); await p.waitForTimeout(200);
   ok('bar', await hid(), 'hidden while an apartment is open'); await p.tap('[data-apt-close]');
@@ -239,7 +239,7 @@ await block('network', async () => {
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
   const t0 = Date.now();
   await p.goto(`${BASE}/ru/`, { waitUntil: 'domcontentloaded', timeout: 120000 });
-  await p.waitForSelector('.hero__actions .btn--primary', { state: 'visible' });
+  await p.waitForSelector('.hero__actions .btn--gold', { state: 'visible' });
   const dcl = Date.now() - t0;
   const fcp = await p.evaluate(() => Math.round((performance.getEntriesByName('first-contentful-paint')[0] || {}).startTime || 0));
   await p.waitForTimeout(3000);

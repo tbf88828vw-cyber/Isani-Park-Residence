@@ -33,6 +33,7 @@ const logo = read('src/data/logo.json');
 const aptsSrc = read('src/data/apartments.source.json');
 const floormap = read('src/data/floormap.json');
 const SOLD = new Set(read('src/data/status.json').sold);
+const nearby = read('src/data/nearby.json').items;
 
 // ---------- helpers ----------
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -94,6 +95,16 @@ const heroTitleSvg = () => `
   <svg class="hero__mark hero__mark--one" viewBox="-4 -4 ${logo.isaniPark.w + 8} 128" aria-hidden="true" focusable="false">${svgStroke(logo.isaniPark.d, ' pathLength="1"')}</svg>
   <svg class="hero__mark hero__mark--two" viewBox="-4 -4 ${Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) + 8} 288" aria-hidden="true" focusable="false"><g transform="translate(${(Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) - logo.isaniPark2.w1) / 2} 0)">${svgStroke(logo.isaniPark2.l1, ' pathLength="1"')}</g><g transform="translate(${(Math.max(logo.isaniPark2.w1, logo.isaniPark2.w2) - logo.isaniPark2.w2) / 2} 160)">${svgStroke(logo.isaniPark2.l2, ' pathLength="1"')}</g></svg>`;
 
+const FB_URL = 'https://www.facebook.com/profile.php?id=61559812628771';
+const MESSENGER_URL = 'https://m.me/61559812628771';
+const BRAND = {
+  whatsapp: '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16.04 3C9 3 3.27 8.7 3.27 15.72c0 2.24.59 4.43 1.71 6.36L3 29l7.1-1.86a12.8 12.8 0 0 0 5.94 1.48h.01c7.04 0 12.77-5.7 12.77-12.72C28.82 8.7 23.09 3 16.04 3Zm0 23.3h-.01a10.6 10.6 0 0 1-5.4-1.47l-.39-.23-4.2 1.1 1.12-4.08-.25-.42a10.5 10.5 0 0 1-1.62-5.6c0-5.84 4.77-10.58 10.75-10.58 5.84 0 10.6 4.74 10.6 10.58 0 5.85-4.76 10.7-10.6 10.7Zm5.8-7.92c-.32-.16-1.89-.93-2.18-1.03-.3-.11-.5-.16-.72.16-.21.32-.82 1.03-1.01 1.24-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.58-.95-.85-1.59-1.89-1.78-2.2-.19-.32-.02-.5.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.72-1.72-.98-2.36-.26-.62-.52-.53-.72-.54h-.61c-.21 0-.56.08-.85.4-.3.32-1.12 1.09-1.12 2.65 0 1.57 1.15 3.08 1.31 3.3.16.2 2.25 3.43 5.45 4.81.76.33 1.36.53 1.82.67.77.24 1.46.21 2.01.13.61-.09 1.89-.77 2.15-1.51.27-.74.27-1.38.19-1.51-.08-.13-.29-.21-.61-.37Z"/></svg>',
+  messenger: '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C8.82 3 3.25 8.26 3.25 15.36c0 3.71 1.52 6.92 4 9.13.21.19.33.45.34.73l.07 2.27a1.02 1.02 0 0 0 1.43.9l2.53-1.12c.21-.09.45-.11.68-.05 1.16.32 2.4.49 3.7.49 7.18 0 12.75-5.26 12.75-12.35S23.18 3 16 3Zm7.66 9.52-3.75 5.94a1.92 1.92 0 0 1-2.77.51l-2.98-2.23a.77.77 0 0 0-.92 0l-4.03 3.06c-.54.41-1.24-.24-.88-.81l3.75-5.94a1.92 1.92 0 0 1 2.77-.51l2.98 2.23c.27.2.65.2.92 0l4.03-3.06c.54-.41 1.24.24.88.81Z"/></svg>',
+  facebook: '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M29 16.08C29 8.85 23.18 3 16 3S3 8.85 3 16.08C3 22.6 7.75 28 13.97 29v-9.13h-3.3v-3.79h3.3v-2.88c0-3.28 1.95-5.1 4.92-5.1 1.43 0 2.92.26 2.92.26v3.22h-1.64c-1.62 0-2.13 1.01-2.13 2.04v2.46h3.62l-.58 3.79h-3.04V29C24.25 28 29 22.6 29 16.08Z"/></svg>',
+  walk: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="13" cy="4.5" r="1.8" fill="currentColor"/><path d="M10 21l2.2-6.2 2.6 2.4V21M8.5 11.5l2.5-3.6 3 .9 1.8 3.2 2.2 1M11 8l-1.2 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  car: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5V12l1.8-4.6A1.6 1.6 0 0 1 7.3 6.4h9.4a1.6 1.6 0 0 1 1.5 1l1.8 4.6v4.5M4 12h16M4 16.5h16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="7.5" cy="16.5" r="1.7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="16.5" cy="16.5" r="1.7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+  road: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3 6 21M15 3l3 18M12 4v3M12 10.5v3M12 17v3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+};
 const ICON = {
   sliders: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
   whatsapp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5l1.1-3.9A8 8 0 1 1 8.6 18.6Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.2 8.6c.2-.5.6-.5.9-.5h.4c.2 0 .4.1.5.4l.6 1.4c.1.2 0 .5-.1.6l-.4.5c-.1.1-.2.3 0 .5.5.9 1.3 1.6 2.2 2.1.2.1.4.1.5 0l.5-.6c.2-.2.4-.2.6-.1l1.4.7c.2.1.3.3.3.5 0 .9-.6 1.6-1.5 1.7-2.6.3-6.1-2.9-5.9-5.5.1-.6.3-1.2.4-1.7Z" fill="currentColor"/></svg>',
@@ -145,7 +156,7 @@ function head({ lang, t, depth, title, description, sub = '', robots = 'index,fo
   ].join('\n') : '';
   const ogImg = SITE ? `${SITE}/assets/img/og-image.jpg` : `${A}img/og-image.jpg`;
   return `<!doctype html>
-<html lang="${t.htmlLang}" data-theme="dark" class="no-js">
+<html lang="${t.htmlLang}" data-theme="light" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -163,7 +174,7 @@ ${SITE && !/noindex/.test(robots) ? `<meta property="og:url" content="${canonica
 <meta property="og:image" content="${ogImg}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0c0b09">
+<meta name="theme-color" content="#fbfaf7">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="${A}logo/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="${A}logo/apple-touch-icon.png">
@@ -215,10 +226,10 @@ function footer({ lang, t, depth, sub = '' }) {
   const A = up(depth) + 'assets/';
   return `
 <footer class="site-footer">
-  <div class="pattern pattern--footer" aria-hidden="true"></div>
+  <div class="pattern pattern--footer pattern--gold" aria-hidden="true"></div>
   <div class="container site-footer__inner">
     <div class="site-footer__brand">
-      <p class="site-footer__lockup">${wordSvg(logo.isaniPark.d, logo.isaniPark.w, 'footer-mark', 'Isani Park Residence')}</p>
+      <p class="site-footer__lockup"><img class="footer-script footer-script--deep" src="${A}logo/isani-script-gold-deep.svg" alt="Isani Park Residence" width="903" height="99" loading="lazy"><img class="footer-script footer-script--light" src="${A}logo/isani-script-gold.svg" alt="" width="903" height="99" loading="lazy"></p>
       <p class="site-footer__by"><span class="site-footer__by-word">by</span>${monogram('footer-by__mark')}${mcWord('footer-by', 'Mono Capitals')}</p>
     </div>
     <div class="site-footer__cols">
@@ -243,67 +254,117 @@ function footer({ lang, t, depth, sub = '' }) {
 // ---------- sections ----------
 function hero(t, lang) {
   const A = '../assets/';
+  const h = t.hero;
   return `
-<section class="hero" id="top" aria-labelledby="hero-title">
+<section class="hero on-dark" id="top" aria-labelledby="hero-title">
   <div class="hero__media" data-hero-media>
     <picture><source media="(max-width: 700px)" srcset="${A}img/hero-poster-540.webp${hv('img/hero-poster-540.webp')}"><img class="hero__poster" src="${A}img/hero-poster-1280.webp${hv('img/hero-poster-1280.webp')}" alt="" width="1280" height="720" fetchpriority="high"></picture>
     <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-hero-video data-src-wide="${A}video/hero-1280.mp4${hv('video/hero-1280.mp4')}" data-src-xl="${A}video/hero-1600.mp4${hv('video/hero-1600.mp4')}" data-src-tall="${A}video/hero-608x1080.mp4${hv('video/hero-608x1080.mp4')}"></video>
     <div class="hero__veil"></div>
+    <div class="hero__grain" aria-hidden="true"></div>
   </div>
   <div class="hero__content container">
-    <p class="hero__context eyebrow">${esc(t.hero.context)}</p>
-    <h1 class="hero__title" id="hero-title"><span class="sr-only">Isani Park Residence</span>${heroTitleSvg()}</h1>
-    <p class="hero__by"><span class="hero__rule" aria-hidden="true"></span><span>${esc(t.hero.by)}</span></p>
-    <p class="hero__offer"><span class="hero__offer-long">${esc(t.hero.offer)}</span><span class="hero__offer-short">${esc(t.hero.offerShort)}</span></p>
+    <p class="hero__context">${esc(h.context)}</p>
+    <h1 class="hero__title" id="hero-title"><img class="hero__script" src="${A}logo/isani-script-gold.svg${hv('logo/isani-script-gold.svg')}" alt="Isani Park Residence" width="903" height="99" decoding="async"></h1>
+    <p class="hero__by">${esc(h.by)}</p>
+    <p class="hero__slogan">${h.slogan.map((x, i) => `<span style="--i:${i}">${esc(x)}</span>`).join(' ')} <strong class="hero__all gold-text" style="--i:3">${esc(h.sloganAll)}</strong></p>
     <div class="hero__actions">
-      <a class="btn btn--primary" href="#choose" data-cta="hero-choose">${esc(t.hero.ctaPrimary)}</a>
-      <a class="btn btn--ghost" href="#contact" data-cta="hero-price">${esc(t.hero.ctaSecondary)}</a>
+      <a class="btn btn--gold" href="#choose" data-cta="hero-choose">${esc(h.ctaPrimary)}</a>
+      <a class="btn btn--ghost" href="#contact" data-cta="hero-price">${esc(h.ctaSecondary)}</a>
     </div>
   </div>
-  <button class="hero__toggle icon-btn" type="button" data-video-toggle hidden aria-label="${esc(t.hero.pause)}" data-label-pause="${esc(t.hero.pause)}" data-label-play="${esc(t.hero.play)}"><span class="i-pause">${ICON.pause}</span><span class="i-play">${ICON.play}</span></button>
-  <a class="hero__scroll" href="#project"><span>${esc(t.hero.scroll)}</span><i aria-hidden="true"></i></a>
+  <button class="hero__toggle icon-btn" type="button" data-video-toggle hidden aria-label="${esc(h.pause)}" data-label-pause="${esc(h.pause)}" data-label-play="${esc(h.play)}"><span class="i-pause">${ICON.pause}</span><span class="i-play">${ICON.play}</span></button>
+  <a class="hero__scroll" href="#project"><span>${esc(h.scroll)}</span><i aria-hidden="true"></i></a>
 </section>`;
 }
 
-function project(t, lang) {
-  const g = media.gallery.find((x) => x.id === 'corner-west');
+// One idea per screen: the four lines of the slogan, each explained with real facts.
+function story(t, lang) {
+  const st = t.story;
+  const img = (id, sizes, alt, cls) => { const g = media.gallery.find((x) => x.id === id); return picture('../assets/img/gallery/' + id, sizes, g.w, g.h, alt, { cls }); };
   return `
-<section class="section project" id="project" aria-labelledby="project-title">
-  <div class="container project__grid">
-    <div class="project__text">
-      <p class="eyebrow">${esc(t.project.eyebrow)}</p>
-      <h2 class="h2" id="project-title">${esc(t.project.title)}</h2>
-      <p class="lead">${esc(t.project.lead)}</p>
-    </div>
-    <figure class="project__figure">
-      ${picture('../assets/img/gallery/corner-west', '(min-width: 1100px) 60vw, 100vw', g.w, g.h, t.project.imageAlt, { cls: 'project__img' })}
-      <figcaption><span class="badge">${esc(t.gallery.badge)}</span> ${esc(t.project.imageCaption)}</figcaption>
+<section class="chapter chapter--live" id="project" aria-labelledby="live-title">
+  <div class="container chapter__head" data-reveal>
+    <p class="chapter__kicker">${esc(st.live.kicker)}</p>
+    <h2 class="chapter__title" id="live-title">${esc(st.live.title)}</h2>
+    <p class="chapter__lead">${esc(st.live.lead)}</p>
+  </div>
+  <figure class="chapter__wide" data-reveal>
+    ${img('corner-west', '100vw', t.project.imageAlt, 'chapter__img')}
+    <figcaption class="container"><span class="badge">${esc(t.gallery.badge)}</span> ${esc(t.project.imageCaption)}</figcaption>
+  </figure>
+  <div class="container">
+    <dl class="facts" data-reveal>${t.project.facts.map((f) => `<div class="fact"><dt>${esc(f.label)}</dt><dd class="fact__value">${esc(f.value)}</dd><dd class="fact__note">${esc(f.note)}</dd></div>`).join('')}</dl>
+  </div>
+</section>
+
+<section class="chapter chapter--nature" aria-labelledby="nature-title">
+  <div class="container chapter__split">
+    <figure class="chapter__photo" data-reveal>
+      ${img('garden-walk', '(min-width: 1000px) 58vw, 100vw', t.gallery.items['garden-walk'] || '', 'chapter__img')}
+      <figcaption><span class="badge">${esc(t.gallery.badge)}</span> ${esc(t.gallery.items['garden-walk'] || '')}</figcaption>
     </figure>
+    <div class="chapter__text" data-reveal>
+      <p class="chapter__kicker">${esc(st.nature.kicker)}</p>
+      <h2 class="chapter__title chapter__title--md" id="nature-title">${esc(st.nature.title)}</h2>
+      <p class="chapter__lead">${esc(st.nature.lead)}</p>
+      <p class="chapter__stat"><span class="gold-text">${esc(st.nature.stat)}</span><span>${esc(st.nature.statNote)}</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="chapter chapter--comfort" id="living" aria-labelledby="comfort-title">
+  <div class="container chapter__head" data-reveal>
+    <p class="chapter__kicker">${esc(st.comfort.kicker)}</p>
+    <h2 class="chapter__title" id="comfort-title">${esc(st.comfort.title)}</h2>
+    <p class="chapter__lead">${esc(st.comfort.lead)}</p>
   </div>
   <div class="container">
-    <dl class="facts">${t.project.facts.map((f) => `<div class="fact"><dt>${esc(f.label)}</dt><dd class="fact__value">${esc(f.value)}</dd><dd class="fact__note">${esc(f.note)}</dd></div>`).join('')}</dl>
+    <ul class="benefits" data-reveal>${t.living.items.map((it) => `<li class="benefit"><h3 class="h3">${esc(it.title)}</h3><p>${esc(it.text)}</p></li>`).join('')}</ul>
+  </div>
+  <figure class="chapter__wide chapter__wide--last" data-reveal>
+    ${img('evening-light', '100vw', t.gallery.items['evening-light'] || '', 'chapter__img')}
+    <figcaption class="container"><span class="badge">${esc(t.gallery.badge)}</span> ${esc(t.gallery.items['evening-light'] || '')}</figcaption>
+  </figure>
+</section>`;
+}
+
+function nearbySection(t, lang) {
+  const a = t.story.all;
+  const tile = (n, i) => {
+    const name = a.items[n.id];
+    const note = a.notes[n.id] || '';
+    let value, unit, icon;
+    if (n.walk) { value = n.walk; unit = a.walk; icon = BRAND.walk; }
+    else if (n.car) { value = n.car; unit = a.car; icon = BRAND.car; }
+    else { value = n.km; unit = a.km; icon = BRAND.road; }
+    const alt = n.walk && n.car && n.id !== 'samgori' ? `<span class="near__alt">${esc(a.or)} ${n.car} ${esc(a.car)}</span>` : '';
+    const g = media.gallery.find((x) => x.id === 'aerial-paths');
+    const bg = i === 0 ? `<div class="near__bg" aria-hidden="true">${picture('../assets/img/gallery/aerial-paths', '(min-width: 1000px) 50vw, 100vw', g.w, g.h, '', { widths: [640, 1280, 1920] })}</div>` : '';
+    return `<li class="near near--${n.cat}${i < 3 ? ' near--top' : ''}${i === 0 ? ' near--feature on-dark' : ''}">${bg}<p class="near__cat">${esc(a.cats[n.cat])}</p><p class="near__time"><span class="near__num">${n.walk || n.car || n.km}</span><span class="near__unit">${icon}${esc(unit)}</span></p><h3 class="near__name">${esc(name)}</h3>${note ? `<p class="near__note">${esc(note)}</p>` : ''}${alt}</li>`;
+  };
+  return `
+<section class="chapter chapter--all" id="nearby" aria-labelledby="all-title">
+  <div class="container">
+    <div class="all__intro" data-reveal>
+      <p class="chapter__kicker">${esc(a.kicker)}</p>
+      <h2 class="chapter__title all__title gold-text" id="all-title">${esc(a.title)}</h2>
+      <p class="chapter__lead">${esc(a.lead)}</p>
+    </div>
+    <ul class="near-grid" data-reveal>${nearby.map(tile).join('')}</ul>
+    <p class="note near__fine">${esc(a.note)}</p>
   </div>
 </section>`;
 }
 
-function living(t) {
-  const g = media.gallery.find((x) => x.id === 'garden-front');
-  return `
-<section class="section living" id="living" aria-labelledby="living-title">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">${esc(t.living.eyebrow)}</p>
-      <h2 class="h2" id="living-title">${esc(t.living.title)}</h2>
-    </div>
-    <div class="living__grid">
-      <figure class="living__figure">
-        ${picture('../assets/img/gallery/' + g.id, '(min-width: 1000px) 46vw, 100vw', g.w, g.h, t.gallery.items[g.id], { cls: 'living__img' })}
-        <figcaption><span class="badge">${esc(t.gallery.badge)}</span> ${esc(t.gallery.items[g.id])}</figcaption>
-      </figure>
-      <ul class="benefits">${t.living.items.map((it) => `<li class="benefit"><h3 class="h3">${esc(it.title)}</h3><p>${esc(it.text)}</p></li>`).join('')}</ul>
-    </div>
-  </div>
-</section>`;
+function socialDock(t) {
+  const wa = `${config.contacts.whatsapp}?text=${encodeURIComponent(t.contact.whatsappText.replace(/[ ⁠]/g, ' '))}`;
+  const s = t.social;
+  return `<nav class="social-dock" aria-label="${esc(s.label)}" data-social-dock>
+  <a class="social-dock__btn social-dock__btn--wa" href="${wa}" target="_blank" rel="noopener" data-cta="dock-whatsapp" aria-label="${esc(s.whatsapp)}">${BRAND.whatsapp}<span class="social-dock__tip">${esc(s.whatsapp)}</span></a>
+  <a class="social-dock__btn social-dock__btn--ms" href="${MESSENGER_URL}" target="_blank" rel="noopener" data-cta="dock-messenger" aria-label="${esc(s.messenger)}">${BRAND.messenger}<span class="social-dock__tip">${esc(s.messenger)}</span></a>
+  <a class="social-dock__btn social-dock__btn--fb" href="${FB_URL}" target="_blank" rel="noopener" data-cta="dock-facebook" aria-label="${esc(s.facebook)}">${BRAND.facebook}<span class="social-dock__tip">${esc(s.facebook)}</span></a>
+</nav>`;
 }
 
 function picker(t, lang) {
@@ -585,7 +646,7 @@ function contact(t, lang, depth) {
   const privacyLink = `<a href="${pageHref(depth, lang, 'privacy')}">${esc(c.consentLink)}</a>`;
   return `
 <section class="section contact" id="contact" aria-labelledby="contact-title">
-  
+  <div class="pattern pattern--gold pattern--contact" aria-hidden="true"></div>
   <div class="container contact__grid">
     <div class="contact__intro">
       <p class="eyebrow">${esc(c.eyebrow)}</p>
@@ -603,6 +664,8 @@ function contact(t, lang, depth) {
           <li><a href="${config.contacts.whatsapp}?text=${encodeURIComponent(t.contact.whatsappText.replace(/[\u00a0\u2060]/g, " "))}" target="_blank" rel="noopener">WhatsApp ${ICON.ext}</a></li>
           <li><a href="${config.contacts.telegram}" target="_blank" rel="noopener">Telegram ${ICON.ext}</a></li>
           <li><a href="${config.contacts.instagram}" target="_blank" rel="noopener">Instagram ${ICON.ext}</a></li>
+          <li><a href="${MESSENGER_URL}" target="_blank" rel="noopener" data-cta="contact-messenger">Messenger ${ICON.ext}</a></li>
+          <li><a href="${FB_URL}" target="_blank" rel="noopener" data-cta="contact-facebook">Facebook ${ICON.ext}</a></li>
         </ul>
         <p class="note">${esc(t.location.officeAddress)}. ${esc(c.hours)}</p>
       </div>
@@ -709,7 +772,6 @@ function mobileBar(t) {
   return `<div class="mobile-bar is-hidden" data-mobile-bar>
   <a class="btn btn--primary mobile-bar__main" href="#choose" data-cta="bar-choose">${esc(t.mobileBar.choose)}</a>
   <a class="icon-btn mobile-bar__icon" href="tel:${config.contacts.phoneE164}" data-phone-link aria-label="${esc(t.mobileBar.callLabel)}">${ICON.phone}</a>
-  <a class="icon-btn mobile-bar__icon" href="${wa}" target="_blank" rel="noopener" data-cta="bar-whatsapp" aria-label="${esc(t.mobileBar.whatsapp)}">${ICON.whatsapp}</a>
 </div>`;
 }
 
@@ -725,7 +787,7 @@ function jsonLd(lang, t) {
     logo: 'https://www.monocapitals.ge/assets/logo/mono-capitals-logo-512.png', image: 'https://www.monocapitals.ge/assets/img/og-image.jpg',
     email: config.contacts.email, telephone: config.contacts.phoneE164,
     address: { '@type': 'PostalAddress', streetAddress: lang === 'ka' ? 'ს. წულაძის ქ. N34' : (lang === 'ru' ? 'ул. С. Цуладзе, 34' : '34 S. Tsuladze St.'), addressLocality: lang === 'ka' ? 'თბილისი' : (lang === 'ru' ? 'Тбилиси' : 'Tbilisi'), addressCountry: 'GE' },
-    sameAs: [config.contacts.instagram],
+    sameAs: [config.contacts.instagram, FB_URL],
   };
   const complex = {
     '@type': 'ApartmentComplex', name: 'Isani Park Residence', description: t.meta.description,
@@ -774,8 +836,8 @@ function homePage(lang) {
 ${header({ lang, t, depth, home: true })}
 <main id="main" tabindex="-1">
 ${hero(t, lang)}
-${project(t, lang)}
-${living(t)}
+${story(t, lang)}
+${nearbySection(t, lang)}
 ${picker(t, lang)}
 ${catalog(t, lang)}
 ${gallery(t)}
@@ -787,6 +849,7 @@ ${contact(t, lang, depth)}
 </main>
 ${footer({ lang, t, depth })}
 ${mobileBar(t)}
+${socialDock(t)}
 ${aptDialog(t)}
 ${consentBanner(t)}
 ${clientData(lang, t)}
@@ -875,6 +938,17 @@ if (PREVIEW) {
   for (const f of walk(path.join(OUT, 'assets'))) {
     if (f.endsWith('.avif') || /plans\/img\/apt-\d+-440\.webp$/.test(f) || f.endsWith('.pdf') || /gallery\/.*-(1920|2560|3840|3072)\.webp$/.test(f)) fs.rmSync(f);
   }
+}
+if (!PREVIEW) {
+  // light minification of the stylesheet: comments and layout whitespace only
+  const cssPath = path.join(OUT, 'assets/css/site.css');
+  const css = fs.readFileSync(cssPath, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\s*\n\s*/g, '\n')
+    .replace(/\s*([{};])\s*/g, '$1')
+    .replace(/\n+/g, '')
+    .replace(/;}/g, '}');
+  fs.writeFileSync(cssPath, css);
 }
 ASSET_V = { css: hashFile(path.join(OUT, 'assets/css/site.css')), js: hashFile(path.join(OUT, 'assets/js/site.js')) };
 

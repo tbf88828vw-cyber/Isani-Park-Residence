@@ -37,7 +37,13 @@
   "play": "Play video",
   "videoLabel": "Exterior animation of Block E (visualisation)",
   "scroll": "Scroll down",
-  "offerShort": "1–4-room apartments from 30 to 103 m², each with a balcony or terrace. 4,530 m² of green recreation space."
+  "offerShort": "1–4-room apartments from 30 to 103 m², each with a balcony or terrace. 4,530 m² of green recreation space.",
+  "slogan": [
+   "Live.",
+   "Enjoy nature.",
+   "Be comfortable."
+  ],
+  "sloganAll": "All at once!"
  },
  "project": {
   "eyebrow": "Block E",
@@ -487,5 +493,69 @@
  "net": {
   "offline": "No internet connection. What you have entered stays in the form.",
   "online": "Back online."
+ },
+ "story": {
+  "live": {
+   "kicker": "Block E",
+   "title": "Live.",
+   "lead": "219 apartments from 30 to 103 m² — from compact one-room homes to four-room apartments with terraces. Every apartment has its own balcony or terrace."
+  },
+  "nature": {
+   "kicker": "Courtyard and greenery",
+   "title": "Enjoy nature.",
+   "lead": "The courtyard holds 4,530 m² of green recreation space: paths, benches, playgrounds and sports grounds. Shalva Dolidze Square is a three-minute walk away.",
+   "stat": "4,530 m²",
+   "statNote": "of green recreation space on the Block F and E site"
+  },
+  "comfort": {
+   "kicker": "Every day",
+   "title": "Be comfortable.",
+   "lead": "Your own terrace, a quiet courtyard, parking below the building and a layout where every metre is thought through."
+  },
+  "all": {
+   "kicker": "Around the corner",
+   "title": "All at once!",
+   "lead": "A school, a kindergarten, the metro, a market and a shopping mall — everything you need every day is a few minutes from home.",
+   "walk": "min walk",
+   "car": "min by car",
+   "km": "km by road",
+   "or": "or",
+   "note": "Travel times are calculated from OpenStreetMap routes starting at S. Tsuladze St. Driving can take longer at rush hour.",
+   "cats": {
+    "education": "Education",
+    "transport": "Transport",
+    "shopping": "Shopping",
+    "daily": "Everyday",
+    "nature": "Leisure"
+   },
+   "items": {
+    "square": "Shalva Dolidze Square",
+    "gymnasium": "Shavnabada Gymnasium",
+    "pharmacy": "Pharmacy",
+    "school85": "Public School No. 85",
+    "stadium": "Shevardeni Stadium",
+    "supermarket": "Universami supermarket",
+    "kindergarten": "Kindergarten",
+    "bank": "Bank and ATMs",
+    "bazaar": "Navtlughi Market",
+    "samgori": "Samgori metro station",
+    "mall": "Samgori Mall",
+    "isani": "Isani metro station",
+    "center": "City centre, Freedom Square",
+    "eastpoint": "East Point mall",
+    "airport": "Tbilisi International Airport"
+   },
+   "notes": {
+    "bazaar": "fresh produce every day",
+    "mall": "shops and cafés",
+    "samgori": "or 5 minutes by car"
+   }
+  }
+ },
+ "social": {
+  "label": "Message us",
+  "whatsapp": "WhatsApp",
+  "messenger": "Messenger",
+  "facebook": "Facebook"
  }
 }

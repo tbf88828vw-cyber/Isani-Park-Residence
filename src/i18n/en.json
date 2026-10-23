@@ -43,7 +43,10 @@
    "Enjoy nature.",
    "Be comfortable."
   ],
-  "sloganAll": "All at once!"
+  "sloganAll": "All at once!",
+  "promise": "The city close by. Nature at home.",
+  "promiseSub": "Apartments from 30 to 103 m² with balconies and terraces in the Isani district.",
+  "ctaOffer": "Get an offer"
  },
  "project": {
   "eyebrow": "Block E",
@@ -488,7 +491,11 @@
   "zoomIn": "Enlarge the façade",
   "zoomOut": "Reduce the façade",
   "openFloor": "Open floor",
-  "pickHint": "Selected floor"
+  "pickHint": "Selected floor",
+  "legend": {
+   "available": "For sale",
+   "sold": "Sold"
+  }
  },
  "net": {
   "offline": "No internet connection. What you have entered stays in the form.",
@@ -549,7 +556,9 @@
     "bazaar": "fresh produce every day",
     "mall": "shops and cafés",
     "samgori": "or 5 minutes by car"
-   }
+   },
+   "more": "Show all places ({n})",
+   "less": "Show less"
   }
  },
  "social": {
@@ -557,5 +566,47 @@
   "whatsapp": "WhatsApp",
   "messenger": "Messenger",
   "facebook": "Facebook"
+ },
+ "day": {
+  "kicker": "A day here",
+  "title": "A day at Isani Park",
+  "items": [
+   {
+    "key": "morning",
+    "label": "Morning",
+    "title": "Mornings start on the balcony",
+    "text": "Every apartment has its own balcony or terrace — a place for the first cup of coffee."
+   },
+   {
+    "key": "day",
+    "label": "Day",
+    "title": "Days unfold in the courtyard",
+    "text": "4,530 m² of green space: paths, benches, playgrounds and sports grounds next to home."
+   },
+   {
+    "key": "evening",
+    "label": "Evening",
+    "title": "Evenings at home",
+    "text": "The car stays in the underground parking, and the evening belongs to the terrace above the green courtyard."
+   }
+  ]
+ },
+ "compare": {
+  "add": "Compare",
+  "added": "Comparing",
+  "addLong": "Add to comparison",
+  "addedLong": "Added to comparison",
+  "bar": "Comparing: {n}",
+  "open": "Compare",
+  "clear": "Clear",
+  "title": "Compare apartments",
+  "max": "You can compare up to 3 apartments",
+  "request": "Get an offer for these apartments",
+  "remove": "Remove from comparison",
+  "status": "Status",
+  "available": "For sale",
+  "pdf": "Plan (PDF)",
+  "commentPrefix": "Apartments to compare:",
+  "close": "Close"
  }
 }

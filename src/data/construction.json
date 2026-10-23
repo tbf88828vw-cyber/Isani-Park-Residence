@@ -1,0 +1,10 @@
+{
+  "_comment": "Ход строительства. Показывается на сайте только при visible: true и заполненных данных. Не вносить предварительные или оценочные цифры.",
+  "visible": false,
+  "progressPercent": null,
+  "handover": null,
+  "updated": null,
+  "stages": [],
+  "photos": [],
+  "documents": []
+}

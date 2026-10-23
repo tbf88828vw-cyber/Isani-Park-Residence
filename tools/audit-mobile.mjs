@@ -27,7 +27,7 @@ await block('hero', async () => {
       await p.goto(`${BASE}/${lang}/`);
       const r = await p.evaluate(() => {
         const vis = (s) => { const e = [...document.querySelectorAll(s)].find((x) => x.offsetParent); if (!e) return null; const b = e.getBoundingClientRect(); return b.top >= 0 && b.bottom <= innerHeight + 1; };
-        return { ctx: vis('.hero__context'), title: vis('.hero__title'), offer: vis('.hero__accent'), cta: vis('.hero__actions .btn--ivory'), ctaHref: document.querySelector('.hero__actions .btn--ivory').getAttribute('href') };
+        return { ctx: vis('.hero__brand'), title: vis('.hero__title'), offer: vis('.hero__sub'), cta: vis('.hero__actions .btn--ivory'), ctaHref: document.querySelector('.hero__actions .btn--ivory').getAttribute('href') };
       });
       ok('hero', r.ctx && r.title && r.offer && r.cta && r.ctaHref === '#choose', `${lang} ${w}x${h}: place, name, benefit and "choose" CTA on first screen`, r);
       await p.context().close();

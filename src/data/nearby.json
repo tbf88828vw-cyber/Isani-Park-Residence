@@ -4,7 +4,46 @@
     {
       "id": "square",
       "cat": "nature",
-      "walk": 3
+      "walk": 3,
+      "key": true
+    },
+    {
+      "id": "samgori",
+      "cat": "transport",
+      "walk": 17,
+      "car": 5,
+      "key": true
+    },
+    {
+      "id": "school85",
+      "cat": "education",
+      "walk": 9,
+      "key": true
+    },
+    {
+      "id": "kindergarten",
+      "cat": "education",
+      "walk": 12,
+      "key": true
+    },
+    {
+      "id": "bazaar",
+      "cat": "shopping",
+      "walk": 15,
+      "car": 4,
+      "key": true
+    },
+    {
+      "id": "supermarket",
+      "cat": "shopping",
+      "walk": 11,
+      "key": true
+    },
+    {
+      "id": "pharmacy",
+      "cat": "daily",
+      "walk": 6,
+      "key": true
     },
     {
       "id": "gymnasium",
@@ -12,46 +51,14 @@
       "walk": 4
     },
     {
-      "id": "pharmacy",
-      "cat": "daily",
-      "walk": 6
-    },
-    {
-      "id": "school85",
-      "cat": "education",
-      "walk": 9
-    },
-    {
       "id": "stadium",
       "cat": "nature",
       "walk": 10
     },
     {
-      "id": "supermarket",
-      "cat": "shopping",
-      "walk": 11
-    },
-    {
-      "id": "kindergarten",
-      "cat": "education",
-      "walk": 12
-    },
-    {
       "id": "bank",
       "cat": "daily",
       "walk": 13
-    },
-    {
-      "id": "bazaar",
-      "cat": "shopping",
-      "walk": 15,
-      "car": 4
-    },
-    {
-      "id": "samgori",
-      "cat": "transport",
-      "walk": 17,
-      "car": 5
     },
     {
       "id": "mall",

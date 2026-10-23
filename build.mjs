@@ -35,6 +35,7 @@ const floormap = read('src/data/floormap.json');
 const SOLD = new Set(read('src/data/status.json').sold);
 const nearby = read('src/data/nearby.json').items;
 const SCRIPT = read('src/data/script.json');
+const construction = read('src/data/construction.json');
 const scriptSvg = (k, cls, label = '') => { const x = SCRIPT[k]; return `<svg class="${cls}" viewBox="${x.vb.join(' ')}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'}><path d="${x.d}" fill="currentColor"/></svg>`; };
 
 // ---------- helpers ----------
@@ -180,7 +181,7 @@ ${SITE && !/noindex/.test(robots) ? `<meta property="og:url" content="${canonica
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="${A}logo/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="${A}logo/apple-touch-icon.png">
-<script>(function(d){d.classList.remove('no-js');d.classList.add('js');try{var s=localStorage.getItem('ipr-theme');if(s==='light'||s==='dark')d.setAttribute('data-theme',s);}catch(e){}})(document.documentElement)</script>
+<script>(function(d){d.classList.remove('no-js');d.classList.add('js');try{if(sessionStorage.getItem('ipr-intro')){sessionStorage.removeItem('ipr-intro');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro');}}catch(e){}try{var s=localStorage.getItem('ipr-theme');if(s==='light'||s==='dark')d.setAttribute('data-theme',s);}catch(e){}})(document.documentElement)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="${fontsHref(lang)}" onload="this.onload=null;this.rel='stylesheet'">
@@ -266,12 +267,12 @@ function hero(t, lang) {
     <div class="hero__grain" aria-hidden="true"></div>
   </div>
   <div class="hero__content container">
-    <p class="hero__context">${esc(h.context)}</p>
-    <h1 class="hero__title" id="hero-title"><span class="sr-only">Isani Park Residence — </span>${h.slogan.map((x, i) => `<span class="hero__line" style="--i:${i}">${esc(x)}</span>`).join(' ')}</h1>
-    <p class="hero__accent" style="--i:3">${SCRIPT[lang] ? scriptSvg(lang, 'hero__accent-svg', h.sloganAll) : `<span class="hero__accent-text">${esc(h.sloganAll)}</span>`}</p>
+    <p class="hero__brand">Isani Park Residence</p>
+    <h1 class="hero__title" id="hero-title">${esc(h.promise)}</h1>
+    <p class="hero__sub">${esc(h.promiseSub)}</p>
     <div class="hero__actions">
       <a class="btn btn--ivory" href="#choose" data-cta="hero-choose">${esc(h.ctaPrimary)}</a>
-      <a class="btn btn--hair" href="#contact" data-cta="hero-price">${esc(h.ctaSecondary)}</a>
+      <a class="btn btn--hair" href="#contact" data-cta="hero-price">${esc(h.ctaOffer)}</a>
     </div>
   </div>
   <button class="hero__toggle icon-btn" type="button" data-video-toggle hidden aria-label="${esc(h.pause)}" data-label-pause="${esc(h.pause)}" data-label-play="${esc(h.play)}"><span class="i-pause">${ICON.pause}</span><span class="i-play">${ICON.play}</span></button>
@@ -333,6 +334,31 @@ function story(t, lang) {
 </section>`;
 }
 
+// «Один день»: three moods of the same place, switched by the visitor (no autoplay)
+function daySection(t) {
+  const d = t.day;
+  const pics = { morning: 'corner-east', day: 'aerial-courtyard', evening: 'evening-light' };
+  return `
+<section class="chapter day on-dark" id="day" aria-labelledby="day-title" data-day>
+  <div class="day__media">${d.items.map((it, i) => { const g = media.gallery.find((x) => x.id === pics[it.key]); return `<div class="day__frame${i === 0 ? ' is-on' : ''}" data-day-frame="${it.key}">${picture('../assets/img/gallery/' + g.id, '100vw', g.w, g.h, '', { widths: [640, 1280, 1920, 2560] })}</div>`; }).join('')}<div class="day__shade" aria-hidden="true"></div></div>
+  <div class="container day__inner">
+    <p class="chapter__kicker">${esc(d.kicker)}</p>
+    <h2 class="day__title" id="day-title">${esc(d.title)}</h2>
+    <div class="day__tabs" role="tablist" aria-label="${esc(d.title)}">${d.items.map((it, i) => `<button class="day__tab" type="button" role="tab" id="day-tab-${it.key}" aria-controls="day-panel-${it.key}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-day-tab="${it.key}">${esc(it.label)}</button>`).join('')}</div>
+    ${d.items.map((it, i) => `<div class="day__panel" role="tabpanel" id="day-panel-${it.key}" aria-labelledby="day-tab-${it.key}"${i === 0 ? '' : ' hidden'}><h3 class="day__head">${esc(it.title)}</h3><p class="day__text">${esc(it.text)}</p></div>`).join('')}
+    <p class="day__badge"><span class="badge">${esc(t.gallery.badge)}</span></p>
+  </div>
+</section>`;
+}
+
+// Construction progress renders only with real, filled-in data (src/data/construction.json → visible: true)
+function constructionSection(t) {
+  const c = construction;
+  if (!c.visible || c.progressPercent == null || !c.updated) return '';
+  return `
+<section class="section build" id="construction"><div class="container"><p class="eyebrow">${esc(c.title || '')}</p><p class="build__pct">${Number(c.progressPercent)}%</p><p class="note">${esc(c.updated)}</p></div></section>`;
+}
+
 function nearbySection(t, lang) {
   const a = t.story.all;
   const tile = (n, i) => {
@@ -345,7 +371,7 @@ function nearbySection(t, lang) {
     const alt = n.walk && n.car && n.id !== 'samgori' ? `<span class="near__alt">${esc(a.or)} ${n.car} ${esc(a.car)}</span>` : '';
     const g = media.gallery.find((x) => x.id === 'aerial-paths');
     const bg = i === 0 ? `<div class="near__bg" aria-hidden="true">${picture('../assets/img/gallery/aerial-paths', '(min-width: 1000px) 50vw, 100vw', g.w, g.h, '', { widths: [640, 1280, 1920] })}</div>` : '';
-    return `<li class="near near--${n.cat}${i < 3 ? ' near--top' : ''}${i === 0 ? ' near--feature on-dark' : ''}">${bg}<p class="near__cat">${esc(a.cats[n.cat])}</p><p class="near__time"><span class="near__num">${n.walk || n.car || n.km}</span><span class="near__unit">${icon}${esc(unit)}</span></p><h3 class="near__name">${esc(name)}</h3>${note ? `<p class="near__note">${esc(note)}</p>` : ''}${alt}</li>`;
+    return `<li class="near near--${n.cat}${i < 3 ? ' near--top' : ''}${i === 0 ? ' near--feature on-dark' : ''}${n.key ? '' : ' near--more'}">${bg}<p class="near__cat">${esc(a.cats[n.cat])}</p><p class="near__time"><span class="near__num">${n.walk || n.car || n.km}</span><span class="near__unit">${icon}${esc(unit)}</span></p><h3 class="near__name">${esc(name)}</h3>${note ? `<p class="near__note">${esc(note)}</p>` : ''}${alt}</li>`;
   };
   return `
 <section class="chapter chapter--all" id="nearby" aria-labelledby="all-title">
@@ -355,10 +381,21 @@ function nearbySection(t, lang) {
       <h2 class="chapter__title all__title gold-text" id="all-title">${esc(a.title)}</h2>
       <p class="chapter__lead">${esc(a.lead)}</p>
     </div>
-    <ul class="near-grid" data-reveal>${nearby.map(tile).join('')}</ul>
+    <ul class="near-grid" data-reveal data-near-grid>${nearby.map(tile).join('')}</ul>
+    <p class="near__toggle-wrap"><button class="btn btn--hair near__toggle" type="button" data-near-toggle aria-expanded="false" data-more="${esc(fmt(a.more, { n: nearby.length }))}" data-less="${esc(a.less)}">${esc(fmt(a.more, { n: nearby.length }))}</button></p>
     <p class="note near__fine">${esc(a.note)}</p>
   </div>
 </section>`;
+}
+
+function compareUi(t) {
+  const c = t.compare;
+  return `<div class="cmp-bar" data-cmp-bar hidden><span class="cmp-bar__count" data-cmp-count aria-live="polite"></span><button class="btn btn--primary btn--sm" type="button" data-cmp-open>${esc(c.open)}</button><button class="icon-btn icon-btn--sm" type="button" data-cmp-clear aria-label="${esc(c.clear)}">${ICON.close}</button></div>
+<dialog class="cmp-dialog" data-cmp-dialog aria-labelledby="cmp-title">
+  <div class="cmp-dialog__head"><h2 class="h3" id="cmp-title">${esc(c.title)}</h2><button class="icon-btn" type="button" data-cmp-close aria-label="${esc(c.close)}">${ICON.close}</button></div>
+  <div class="cmp-dialog__body" data-cmp-body></div>
+  <div class="cmp-dialog__foot"><p class="note" data-cmp-max>${esc(c.max)}</p><a class="btn btn--primary" href="#contact" data-cmp-request>${esc(c.request)}</a></div>
+</dialog>`;
 }
 
 function socialDock(t) {
@@ -432,6 +469,7 @@ function picker(t, lang) {
           <span class="badge picker__badge">${esc(p.badge3d)}</span>
         </div>
         <p class="picker__hint">${esc(p.hintFloor)}</p>
+        <ul class="pk-legend" aria-label="${esc(p.legend.available)} / ${esc(p.legend.sold)}"><li><i class="pk-legend__dot pk-legend__dot--free" aria-hidden="true"></i>${esc(p.legend.available)}</li><li><i class="pk-legend__dot pk-legend__dot--sold" aria-hidden="true"></i>${esc(p.legend.sold)}</li></ul>
         <ul class="picker__list" data-pk-list aria-label="${esc(p.listLabel)}"></ul>
       </div>
     </div>
@@ -448,6 +486,7 @@ function aptCard(a, t, lang, i) {
   return `<li class="apt-card${a.sold ? ' apt-card--sold' : ''}" data-apt="${a.id}" data-rooms="${a.rooms}" data-floor="${a.floor}" data-area="${a.area}"${a.sold ? ' data-sold' : ''}>
   <article>
     <button class="apt-card__plan" type="button" data-open-apt="${a.id}" aria-label="${esc(title)} — ${esc(c.details)}">${img}</button>
+    <button class="apt-card__cmp" type="button" data-compare="${a.id}" aria-pressed="false" aria-label="${esc(t.compare.addLong)}: ${esc(title)}"><span aria-hidden="true">${ICON.plus}</span><span class="apt-card__cmp-label">${esc(t.compare.add)}</span></button>
     <div class="apt-card__body">
       <p class="apt-card__meta">${esc(fmt(c.floorShort, { n: a.floor }))}</p>
       <h3 class="apt-card__title">${esc(title)}</h3>
@@ -568,8 +607,7 @@ function location(t, lang) {
         <div><dt>${esc(l.complexLabel)}</dt><dd>${esc(l.complexAddress)}</dd></div>
         <div><dt>${esc(l.officeLabel)}</dt><dd>${esc(l.officeAddress)}<br>${esc(l.officeHours)}</dd></div>
       </dl>
-      <h3 class="h4">${esc(l.nearbyTitle)}</h3>
-      <ul class="nearby">${l.nearby.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
+      <p class="location__more"><a class="btn btn--hair btn--sm" href="#nearby">${esc(l.nearbyTitle)}</a></p>
     </div>
     <div class="map" data-map data-map-src="https://www.google.com/maps?q=${q}&amp;hl=${lang}&amp;z=16&amp;output=embed" data-map-title="${esc(l.mapTitle)}">
       ${picture('../assets/img/gallery/aerial-courtyard', '(min-width: 1000px) 50vw, 100vw', aerial.w, aerial.h, '', { cls: 'map__bg' })}
@@ -758,7 +796,8 @@ function aptDialog(t) {
         <dl class="specs" data-apt-specs></dl>
         <div class="apt-dialog__actions">
           <a class="btn btn--primary btn--block" href="#contact" data-apt-request>${esc(m.request)}</a>
-          <a class="btn btn--ghost btn--block" data-apt-pdf href="../assets/plans/pdf/isani-park-residence-E-apartment-1.pdf" target="_blank" rel="noopener">${esc(m.pdf)} ${ICON.ext}</a>
+          <a class="btn btn--ghost btn--block" data-apt-pdf data-cta="pdf-dialog" href="../assets/plans/pdf/isani-park-residence-E-apartment-1.pdf" target="_blank" rel="noopener">${esc(m.pdf)} ${ICON.ext}</a>
+          <button class="btn btn--hair btn--block apt-dialog__cmp" type="button" data-compare-current aria-pressed="false">${esc(t.compare.addLong)}</button>
         </div>
         <p class="note">${esc(m.note)}</p>
         <div class="apt-dialog__nav">
@@ -814,7 +853,8 @@ function clientData(lang, t) {
     pdf: !PREVIEW,
     t: {
       catalog: { shown: t.catalog.shown, found: t.catalog.found, floorShort: t.catalog.floorShort, roomsLabel: t.catalog.roomsLabel, total: t.catalog.total, interior: t.catalog.interior, summer: t.catalog.summer, summerHint: t.catalog.summerHint, planAlt: t.catalog.planAlt, apartment: t.catalog.apartment, no: t.catalog.no, block: t.catalog.block, floor: t.catalog.floor, rooms: t.catalog.rooms, areaBands: t.catalog.areaBands, showN: t.catalog.showN, countShort: t.catalog.countShort, removeFilter: t.catalog.removeFilter, sold: t.catalog.sold },
-      modal: { title: t.modal.title, subtitle: t.modal.subtitle, alt3d: t.modal.alt3d, request: t.modal.request, soldCta: t.modal.soldCta },
+      modal: { title: t.modal.title, subtitle: t.modal.subtitle, alt3d: t.modal.alt3d, request: t.modal.request, soldCta: t.modal.soldCta, pdf: t.modal.pdf },
+      compare: t.compare,
       picker: { floorLabel: t.picker.floorLabel, floorCount: t.picker.floorCount, planAlt: t.picker.planAlt },
       gallery: { counter: t.gallery.counter },
       hero: { pause: t.hero.pause, play: t.hero.play },
@@ -837,16 +877,19 @@ function homePage(lang) {
   const preload = `<link rel="preload" as="image" href="../assets/img/hero-poster-540.webp${hv('img/hero-poster-540.webp')}" media="(max-width: 700px)"><link rel="preload" as="image" href="../assets/img/hero-poster-1280.webp${hv('img/hero-poster-1280.webp')}" media="(min-width: 701px)">${jsonLd(lang, t)}`;
   return `${head({ lang, t, depth, title: t.meta.title, description: t.meta.description, extraHead: preload, og: ogFor(lang, '') })}
 <body class="page-home lang-${lang}">
+<div class="intro-curtain" aria-hidden="true"><i class="intro-curtain__bar intro-curtain__bar--top"></i><i class="intro-curtain__bar intro-curtain__bar--bottom"></i>${monogram('intro-curtain__mark')}</div>
 ${header({ lang, t, depth, home: true })}
 <main id="main" tabindex="-1">
 ${hero(t, lang)}
 ${story(t, lang)}
+${daySection(t)}
 ${nearbySection(t, lang)}
 ${picker(t, lang)}
 ${catalog(t, lang)}
 ${gallery(t)}
 ${location(t, lang)}
 ${purchase(t)}
+${constructionSection(t)}
 ${developer(t, lang)}
 ${faq(t)}
 ${contact(t, lang, depth)}
@@ -854,6 +897,7 @@ ${contact(t, lang, depth)}
 ${footer({ lang, t, depth })}
 ${mobileBar(t)}
 ${socialDock(t)}
+${compareUi(t)}
 ${aptDialog(t)}
 ${consentBanner(t)}
 ${clientData(lang, t)}
@@ -917,6 +961,8 @@ function chooserPage() {
     <ul class="chooser__langs">${langs.map((l) => `<li><a class="btn btn--hair" href="${PREVIEW ? `${l}/index.html` : `/${l}/`}" hreflang="${l}" lang="${I18N[l].htmlLang}" data-lang-link="${l}"><span class="chooser__label">${esc(I18N[l].labelLong)}</span><span class="chooser__hint">${esc(I18N[l].chooser.prompt)}</span></a></li>`).join('')}</ul>
   </div>
 </main>
+<div class="chooser-out" aria-hidden="true">${monogram('chooser-out__mark')}</div>
+<script>(function(){var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;document.querySelectorAll('[data-lang-link]').forEach(function(a){a.addEventListener('click',function(e){if(rm||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();try{sessionStorage.setItem('ipr-intro','1')}catch(x){}document.body.classList.add('is-leaving');setTimeout(function(){location.href=a.href},820);});});})()</script>
 <script>(function(){try{var s=localStorage.getItem('ipr-lang');if(s){var a=document.querySelector('[data-lang-link="'+s+'"]');if(a)a.classList.add('is-last');}document.querySelectorAll('[data-lang-link]').forEach(function(a){a.addEventListener('click',function(){try{localStorage.setItem('ipr-lang',a.getAttribute('data-lang-link'))}catch(e){}})})}catch(e){}})()</script>`;
   if (PREVIEW) {
     return `<title>Isani Park Residence</title>

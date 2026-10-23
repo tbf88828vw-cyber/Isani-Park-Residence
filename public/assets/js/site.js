@@ -7,6 +7,22 @@
   var D = dataEl ? JSON.parse(dataEl.textContent) : null;
   var T = D ? D.t : {};
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // ---------- section jumps: never scroll the whole long page in front of the visitor ----------
+  // Near targets glide; far targets get a 140 ms fade, an instant jump and a fade back in.
+  var jumpVeil = document.createElement('div'); jumpVeil.className = 'jump-veil'; jumpVeil.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(jumpVeil);
+  function goTo(el) {
+    if (!el) return;
+    var dist = Math.abs(el.getBoundingClientRect().top);
+    if (reduceMotion.matches) { el.scrollIntoView({ behavior: 'auto', block: 'start' }); return; }
+    if (dist < window.innerHeight * 1.3) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    jumpVeil.classList.add('is-on');
+    setTimeout(function () {
+      el.scrollIntoView({ behavior: 'instant', block: 'start' });
+      requestAnimationFrame(function () { requestAnimationFrame(function () { jumpVeil.classList.remove('is-on'); }); });
+    }, 140);
+  }
+  window.__iprGoTo = goTo;
 
   // ---------- small utils ----------
   function $(s, c) { return (c || document).querySelector(s); }
@@ -160,6 +176,8 @@
       // H.264 for Safari/Chrome/Edge; VP9 WebM where H.264 is unavailable (e.g. some Chromium builds, Firefox on Linux)
       if (!v.canPlayType('video/mp4; codecs="avc1.640028"') && v.canPlayType('video/webm; codecs="vp9"')) src = src.replace(/\.mp4(\?|$)/, '.webm$1');
       v.src = src;
+      // the film opens on black; the first play starts where the drawing is already visible (matches the poster)
+      v.addEventListener('loadedmetadata', function () { if (v.currentTime < 1) { try { v.currentTime = 1.6; } catch (e) {} } }, { once: true });
       v.addEventListener('playing', function () { v.classList.add('is-playing'); }, { once: true });
     }
     function play() { load(); var p = v.play(); if (p && p.catch) p.catch(function () { setBtn(true); }); setBtn(false); }
@@ -298,7 +316,7 @@
       var band = T.catalog.areaBands.filter(function (x) { return a >= x.min && a < x.max; })[0];
       writeFilters({ rooms: b.getAttribute('data-similar-rooms'), area: band ? band.id : 'all', floor: 'all', sort: 'areaAsc' });
       applyFilters();
-      document.getElementById('apartments').scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      goTo(document.getElementById('apartments'));
       setTimeout(function () { countEl.setAttribute('tabindex', '-1'); countEl.focus({ preventScroll: true }); }, 400);
     });
   });
@@ -374,6 +392,7 @@
 
   function fillDialog(a) {
     var c = T.catalog;
+    if (window.__iprCmpSync) window.__iprCmpSync(a.id);
     $('[data-apt-title]', dlg).textContent = fmt(T.modal.title, { n: a.id });
     $('[data-apt-sub]', dlg).textContent = fmt(T.modal.subtitle, { floor: a.floor, rooms: c.roomsLabel[a.rooms] });
     $('[data-apt-area]', dlg).textContent = area(a.area);
@@ -771,7 +790,7 @@
   }
   function goToForm() {
     var sec = document.getElementById('contact');
-    sec.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
+    goTo(sec);
     setTimeout(function () { var n = lf.elements.name; (n.value ? lf.elements.phone : n).focus({ preventScroll: true }); }, reduceMotion.matches ? 0 : 500);
   }
   $('[data-selected-remove]').addEventListener('click', function () { lf.elements.apartment.value = ''; selBox.hidden = true; saveDraft(); lf.elements.name.focus(); });
@@ -939,5 +958,137 @@
       entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     els.forEach(function (el) { io.observe(el); });
+  })();
+  // ---------- in-page links: fast jumps, hash kept for sharing and Back/Forward ----------
+  (function () {
+    var SECTIONS = /^#(top|project|living|nearby|day|choose|apartments|gallery|location|purchase|developer|faq|contact)$/;
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      var a = e.target.closest('a[href^="#"]'); if (!a) return;
+      var hash = a.getAttribute('href'); if (!SECTIONS.test(hash)) return;
+      var el = document.querySelector(hash); if (!el) return;
+      e.preventDefault();
+      if (location.hash !== hash) history.pushState(null, '', hash);
+      goTo(el);
+    });
+    window.addEventListener('popstate', function () {
+      if (!SECTIONS.test(location.hash) || document.querySelector('dialog[open]')) return;
+      var el = document.querySelector(location.hash); if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    });
+  })();
+  // ---------- «Один день»: three moods, switched by the visitor ----------
+  (function () {
+    var root = $('[data-day]'); if (!root) return;
+    var tabs = $$('[data-day-tab]', root);
+    function show(key, focus) {
+      tabs.forEach(function (b) {
+        var on = b.getAttribute('data-day-tab') === key;
+        b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1;
+        $('#' + b.getAttribute('aria-controls')).hidden = !on;
+        if (on && focus) b.focus();
+      });
+      $$('[data-day-frame]', root).forEach(function (f) { f.classList.toggle('is-on', f.getAttribute('data-day-frame') === key); });
+      track('day_view', { moment: key });
+    }
+    tabs.forEach(function (b, i) {
+      b.addEventListener('click', function () { show(b.getAttribute('data-day-tab')); });
+      b.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return;
+        e.preventDefault(); show(tabs[(i + d + tabs.length) % tabs.length].getAttribute('data-day-tab'), true);
+      });
+    });
+  })();
+
+  // ---------- nearby: the key places first, the rest on request ----------
+  (function () {
+    var grid = $('[data-near-grid]'), btn = $('[data-near-toggle]'); if (!grid || !btn) return;
+    grid.classList.add('is-collapsed');
+    btn.addEventListener('click', function () {
+      var open = grid.classList.toggle('is-collapsed') === false;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open ? btn.getAttribute('data-less') : btn.getAttribute('data-more');
+    });
+  })();
+
+  // ---------- compare up to three apartments (kept in this browser) ----------
+  (function () {
+    var C = T.compare, bar = $('[data-cmp-bar]'), cdlg = $('[data-cmp-dialog]'); if (!bar || !cdlg || !C) return;
+    var MAX = 3, sel = [];
+    try { sel = JSON.parse(local.get('ipr-compare') || '[]').filter(function (id) { return byId[id]; }).slice(0, MAX); } catch (e) { sel = []; }
+    function save() { if (sel.length) local.set('ipr-compare', JSON.stringify(sel)); else local.del('ipr-compare'); }
+    function has(id) { return sel.indexOf(id) >= 0; }
+    function render() {
+      $$('[data-compare]').forEach(function (b) {
+        var on = has(parseInt(b.getAttribute('data-compare'), 10));
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.classList.toggle('is-on', on);
+        var l = $('.apt-card__cmp-label', b); if (l) l.textContent = on ? C.added : C.add;
+      });
+      bar.hidden = !sel.length;
+      $('[data-cmp-count]', bar).textContent = fmt(C.bar, { n: sel.length });
+      if (openApt && window.__iprCmpSync) window.__iprCmpSync(openApt);
+      if (cdlg.open) fillTable();
+    }
+    function toggle(id) {
+      if (has(id)) sel.splice(sel.indexOf(id), 1);
+      else { if (sel.length >= MAX) sel.shift(); sel.push(id); track('compare_add', { apartment_id: id }); }
+      save(); render();
+    }
+    window.__iprCmpSync = function (id) {
+      var b = $('[data-compare-current]'); if (!b) return;
+      var on = has(id); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.textContent = on ? C.addedLong : C.addLong;
+    };
+    function cell(tag, text) { var e = document.createElement(tag); e.textContent = text; return e; }
+    function fillTable() {
+      var body = $('[data-cmp-body]', cdlg); body.textContent = '';
+      var c = T.catalog, list = sel.map(function (id) { return byId[id]; });
+      var table = document.createElement('table'); table.className = 'cmp-table';
+      var head = document.createElement('tr'); head.appendChild(document.createElement('th'));
+      list.forEach(function (a) {
+        var th = document.createElement('th'); th.scope = 'col';
+        if (a.plan) { var im = document.createElement('img'); im.src = D.assets + 'plans/img/apt-' + a.id + '-1000.webp'; im.alt = fmt(c.planAlt, { n: a.id, floor: a.floor }); im.loading = 'lazy'; th.appendChild(im); }
+        th.appendChild(cell('strong', c.no + ' ' + a.id));
+        var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn btn--text btn--sm'; rm.textContent = C.remove; rm.addEventListener('click', function () { toggle(a.id); if (!sel.length) cdlg.close(); });
+        th.appendChild(rm); head.appendChild(th);
+      });
+      var thead = document.createElement('thead'); thead.appendChild(head); table.appendChild(thead);
+      var tb = document.createElement('tbody');
+      var rows = [
+        [c.floor, function (a) { return fmt(c.floorShort, { n: a.floor }); }],
+        [c.rooms, function (a) { return c.roomsLabel[a.rooms]; }],
+        [c.total, function (a) { return area(a.area); }],
+        [c.interior, function (a) { return area(a.inner); }],
+        [c.summer, function (a) { return area(a.summer); }],
+        [C.status, function (a) { return a.sold ? c.sold : C.available; }]
+      ];
+      rows.forEach(function (r) {
+        var tr = document.createElement('tr'); var th = cell('th', r[0]); th.scope = 'row'; tr.appendChild(th);
+        list.forEach(function (a) { tr.appendChild(cell('td', r[1](a))); }); tb.appendChild(tr);
+      });
+      if (D.pdf !== false) {
+        var tr = document.createElement('tr'); var th = cell('th', C.pdf); th.scope = 'row'; tr.appendChild(th);
+        list.forEach(function (a) { var td = document.createElement('td'); if (a.plan) { var l = document.createElement('a'); l.href = D.assets + 'plans/pdf/isani-park-residence-E-apartment-' + a.id + '.pdf'; l.target = '_blank'; l.rel = 'noopener'; l.textContent = 'PDF'; l.setAttribute('data-cta', 'pdf-compare'); td.appendChild(l); } tr.appendChild(td); });
+        tb.appendChild(tr);
+      }
+      table.appendChild(tb); body.appendChild(table);
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-compare]'); if (b) { e.preventDefault(); e.stopPropagation(); toggle(parseInt(b.getAttribute('data-compare'), 10)); return; }
+      if (e.target.closest('[data-compare-current]') && openApt) { toggle(openApt); }
+    }, true);
+    $('[data-cmp-clear]', bar).addEventListener('click', function () { sel = []; save(); render(); });
+    $('[data-cmp-open]', bar).addEventListener('click', function () { fillTable(); cdlg.showModal(); track('compare_open', { count: sel.length }); });
+    $('[data-cmp-close]', cdlg).addEventListener('click', function () { cdlg.close(); });
+    cdlg.addEventListener('click', function (e) { if (e.target === cdlg) cdlg.close(); });
+    $('[data-cmp-request]', cdlg).addEventListener('click', function (e) {
+      e.preventDefault(); cdlg.close();
+      var free = sel.filter(function (id) { return !byId[id].sold; });
+      if (free.length) selectApartment(free[0]);
+      var cm = lf.elements.comment; var line = C.commentPrefix + ' ' + sel.map(function (id) { return T.catalog.no + ' ' + id; }).join(', ');
+      if (cm && cm.value.indexOf(line) < 0) { cm.value = (cm.value ? cm.value + '\n' : '') + line; cm.dispatchEvent(new Event('input', { bubbles: true })); }
+      history.replaceState(null, '', '#contact'); goToForm();
+      track('compare_request', { count: sel.length });
+    });
+    render();
   })();
 })();

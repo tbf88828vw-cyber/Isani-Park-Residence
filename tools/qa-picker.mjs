@@ -11,13 +11,13 @@ for (const lang of ['ka', 'en', 'ru']) {
   let total = 0;
   for (let f = 1; f <= 10; f++) {
     await p.click(`[data-floor-btn="${f}"]`);
-    const n = await p.locator('.pk-apt').count(); const chips = await p.locator('.picker__list .chip-btn').count();
+    const n = await p.locator('[data-pk-svg] .pk-apt').count(); const chips = await p.locator('.picker__list .chip-btn').count();
     ok(n === (f === 1 ? 21 : 22) && chips === n, `${lang} floor ${f}: ${n} hotspots, ${chips} chips`);
     total += n;
   }
   ok(total === 219, `${lang}: total hotspots ${total}`);
   await p.click('[data-floor-btn="3"]');
-  const first = p.locator('.pk-apt').first(); const id = await first.getAttribute('data-open-apt');
+  const first = p.locator('[data-pk-svg] .pk-apt').first(); const id = await first.getAttribute('data-open-apt');
   await first.click(); await p.waitForTimeout(300);
   ok((await p.evaluate(() => location.hash)) === `#apt-${id}`, `${lang}: hotspot opens #apt-${id}`);
   ok(await p.locator('[data-v3d]').isVisible(), `${lang}: 3D view shown first`);
@@ -25,7 +25,7 @@ for (const lang of ['ka', 'en', 'ru']) {
   await p.keyboard.press('Escape'); await p.waitForTimeout(200);
   // apartment without 3D (78.8 layout) opens straight on the plan
   await p.evaluate(() => document.querySelector('[data-open-apt="34"]') || null);
-  await p.click('[data-floor-btn="2"]'); await p.locator('.pk-apt[data-open-apt="34"]').click(); await p.waitForTimeout(300);
+  await p.click('[data-floor-btn="2"]'); await p.locator('[data-pk-svg] .pk-apt[data-open-apt="34"]').click(); await p.waitForTimeout(300);
   ok(await p.locator('[data-plan-view]').isVisible() && !(await p.locator('[data-v3d]').isVisible()), `${lang}: no-3D apartment opens on plan`);
   ok(await p.locator('[data-no3d]').isVisible(), `${lang}: no-3D note shown`);
   await p.keyboard.press('Escape');

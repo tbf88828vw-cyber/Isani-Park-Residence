@@ -177,7 +177,7 @@
       if (!v.canPlayType('video/mp4; codecs="avc1.640028"') && v.canPlayType('video/webm; codecs="vp9"')) src = src.replace(/\.mp4(\?|$)/, '.webm$1');
       v.src = src;
       // the film opens on black; the first play starts where the drawing is already visible (matches the poster)
-      v.addEventListener('loadedmetadata', function () { if (v.currentTime < 1) { try { v.currentTime = 1.6; } catch (e) {} } }, { once: true });
+      v.addEventListener('loadedmetadata', function () { if (v.currentTime < 1) { try { v.currentTime = 1.25; } catch (e) {} } }, { once: true });
       v.addEventListener('playing', function () { v.classList.add('is-playing'); }, { once: true });
     }
     function play() { load(); var p = v.play(); if (p && p.catch) p.catch(function () { setBtn(true); }); setBtn(false); }
@@ -665,6 +665,7 @@
         btn.lastChild.textContent = T.catalog.roomsLabel[a.rooms] + ' · ' + area(a.area) + (a.sold ? ' · ' + T.catalog.sold : '');
         li.appendChild(btn); list.appendChild(li);
       });
+      buildFlat(apts, shapes, fid);
       $$('[data-pk-step]', root).forEach(function (b) { var n = f + parseInt(b.getAttribute('data-pk-step'), 10); b.disabled = !byFloor[n]; });
       fbtns.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-floor-btn') === String(f) ? 'true' : 'false'); });
       if (wasOpen && !reduceMotion.matches) { box3d.classList.add('is-swapping'); var done = function () { box3d.classList.remove('is-swapping'); }; img.addEventListener('load', done, { once: true }); setTimeout(done, 400); }
@@ -672,6 +673,33 @@
       facade.hidden = true; floorBox.hidden = false; size3d();
       if (focus) { title.focus({ preventScroll: true }); var top = root.getBoundingClientRect().top + window.pageYOffset - 90; if (Math.abs(window.pageYOffset - top) > 40) window.scrollTo({ top: top, behavior: reduce() ? 'auto' : 'smooth' }); }
       track('picker_floor', { apartment_floor: f });
+    }
+    // phones: the whole floor as two flat halves stacked (no sideways scrolling, nothing cut off)
+    var flat = $('[data-pk-flat]', root), CUT = 1242;
+    function buildFlat(apts, shapes, fid) {
+      if (!flat) return;
+      flat.textContent = '';
+      var W = D.floormap.w, H = D.floormap.h, src = D.assets + 'img/floors/' + fid + ((window.devicePixelRatio || 1) > 1.4 ? '-2400' : '-1200') + '.webp';
+      [[0, CUT], [CUT, W]].forEach(function (r) {
+        var w = r[1] - r[0], s = document.createElementNS(NS, 'svg');
+        s.setAttribute('viewBox', r[0] + ' 0 ' + w + ' ' + H); s.setAttribute('class', 'pkflat__half');
+        s.setAttribute('focusable', 'false'); s.style.width = (w / CUT * 100).toFixed(3) + '%';
+        var im = document.createElementNS(NS, 'image'); im.setAttribute('href', src); im.setAttribute('width', W); im.setAttribute('height', H); im.setAttribute('preserveAspectRatio', 'none'); s.appendChild(im);
+        apts.forEach(function (a) {
+          var pts = shapes[a.pos]; if (!pts) return;
+          var cx = 0, cy = 0; pts.forEach(function (p) { cx += p[0]; cy += p[1]; }); cx /= pts.length; cy /= pts.length;
+          if (cx < r[0] || cx >= r[1]) return;
+          var g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'pk-apt pk-apt--r' + a.rooms + (a.sold ? ' pk-apt--sold' : '')); g.setAttribute('data-open-apt', a.id);
+          var poly = document.createElementNS(NS, 'polygon'); poly.setAttribute('points', pts.map(function (p) { return p[0] + ',' + p[1]; }).join(' '));
+          var t = document.createElementNS(NS, 'g'); t.setAttribute('class', 'pk-apt__tag');
+          var c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', 54);
+          var tx = document.createElementNS(NS, 'text'); tx.setAttribute('x', cx); tx.setAttribute('y', cy + 15); tx.textContent = a.id;
+          t.appendChild(c); t.appendChild(tx); g.appendChild(poly); g.appendChild(t);
+          g.addEventListener('click', function () { track('picker_select', { apartment_id: a.id, apartment_floor: a.floor }); });
+          s.appendChild(g);
+        });
+        flat.appendChild(s);
+      });
     }
     function reduce() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
     $$('[data-pk-step]', root).forEach(function (b) {

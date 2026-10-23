@@ -468,6 +468,7 @@ function picker(t, lang) {
           <div class="picker__tip" data-pk-tip2 aria-hidden="true" hidden></div>
           <span class="badge picker__badge">${esc(p.badge3d)}</span>
         </div>
+        <div class="pkflat" data-pk-flat aria-hidden="true"></div>
         <p class="picker__hint">${esc(p.hintFloor)}</p>
         <ul class="pk-legend" aria-label="${esc(p.legend.available)} / ${esc(p.legend.sold)}"><li><i class="pk-legend__dot pk-legend__dot--free" aria-hidden="true"></i>${esc(p.legend.available)}</li><li><i class="pk-legend__dot pk-legend__dot--sold" aria-hidden="true"></i>${esc(p.legend.sold)}</li></ul>
         <ul class="picker__list" data-pk-list aria-label="${esc(p.listLabel)}"></ul>

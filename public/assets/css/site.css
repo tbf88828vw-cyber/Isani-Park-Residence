@@ -1316,3 +1316,23 @@ body.is-leaving .chooser__inner { opacity: 0; transform: scale(0.98); transition
 
 /* image placeholders: never a white hole while a picture is still loading */
 .chapter__wide picture, .collage figure, .gallery__pic, .day__frame, .near__bg, .project__img, .living__img { background: var(--bg-sunk); }
+
+/* floor picker: phones get the whole floor flat, in two stacked halves */
+.pkflat { display: none; }
+@media (max-width: 900px) {
+  .pk3d { display: none; }
+  .pkflat { display: grid; grid-template-columns: minmax(0, 680px); justify-content: center; gap: 10px; padding: 12px; border-radius: var(--radius); background: var(--plan-bg); }
+  .pkflat__half { display: block; height: auto; overflow: hidden; border-radius: 6px; box-shadow: 0 0 0 1px rgba(27, 24, 20, 0.12); }
+  .pkflat .pk-apt { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .pkflat .pk-apt polygon { fill: var(--accent); fill-opacity: 0.12; stroke: #fffaf0; stroke-opacity: 0.8; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+  .pkflat .pk-apt:active polygon { fill-opacity: 0.55; }
+  .pkflat .pk-apt__tag text { font-size: 44px; }
+  .pkflat .pk-apt--sold polygon { fill: #14120f; fill-opacity: 0.6; stroke-opacity: 0.3; }
+}
+/* desktop 3D: lift the scene less so the top floors never leave the frame */
+@media (min-width: 901px) { .pk3d__scene { transform: translateY(calc(var(--H) * 0.6)) rotateX(58deg) rotateZ(-16deg); } }
+/* apartment plan: always fits the window whole (zoom stays available) */
+.plan-view__scroll { --pv-h: calc(100dvh - 140px); max-height: var(--pv-h); }
+.apt-dialog__media .plan-view__scroll { --pv-h: calc(100dvh - 210px); }
+@media (max-width: 860px) { .apt-dialog__media .plan-view__scroll, .plan-view__scroll { --pv-h: 58dvh; } }
+.plan-view__scroll img { width: auto; height: auto; max-width: min(100%, 640px); max-height: calc(var(--pv-h) - 32px); }

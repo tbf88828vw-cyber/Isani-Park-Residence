@@ -95,8 +95,9 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
   for (let i = 0; i < 9; i++) { await p.click('[data-pk-step="1"]'); await p.waitForTimeout(60); }
   ok('picker', await p.evaluate(() => /10/.test(document.querySelector('[data-pk-title]').textContent) && document.querySelector('[data-pk-step="1"]').disabled), `${tag}: step up reaches floor 10 and stops`);
   // hotspot → dialog → 3D → plan → close → Back
-  const first = await p.$('[data-pk-svg] a');
-  const aptId = await first.evaluate((a) => (a.getAttribute('href') || '').replace(/\D/g, ''));
+  const flatOn = await p.evaluate(() => getComputedStyle(document.querySelector('[data-pk-flat]')).display !== 'none');
+  const first = await p.$(flatOn ? '[data-pk-flat] .pk-apt' : '[data-pk-svg] a');
+  const aptId = await first.evaluate((a) => a.getAttribute('data-open-apt'));
   if (tag === 'touch') await first.tap(); else await first.click({ force: true });
   await p.waitForTimeout(250);
   const d = await p.evaluate(() => ({ open: document.getElementById('apt-dialog').open, title: document.querySelector('[data-apt-title]').textContent, hash: location.hash, view: document.querySelector('[data-view="3d"]').getAttribute('aria-selected'), img3d: document.querySelector('[data-v3d-img]').getAttribute('src'), has3d: !document.querySelector('[data-v3d]').hidden }));

@@ -575,7 +575,9 @@
     var svg = $('[data-pk-svg]', root), img = $('[data-pk-img]', root), title = $('[data-pk-title]', root), list = $('[data-pk-list]', root);
     var NS = 'http://www.w3.org/2000/svg', cur = null;
     var scene = $('[data-pk-scene]', root), box3d = $('[data-pk-scroll]', root), fbtns = $$('[data-floor-btn]', root);
-    function size3d() { if (!floorBox.hidden) { var cw = box3d.clientWidth; scene.style.setProperty('--W', Math.round(cw < 700 ? cw * 0.9 : Math.min(cw * 0.8, 1300)) + 'px'); } }
+    var stage3d = $('[data-pk-stage]', root);
+    // straight front view tilted 55°: visible height = D·cos55 + H·sin55, so the whole block (up to floor 10) always fits
+    function size3d() { if (!floorBox.hidden) { var cw = box3d.clientWidth, W = Math.round(Math.min(cw * 0.8, 1240)), n = cur || 5; scene.style.setProperty('--W', W + 'px'); stage3d.style.minHeight = Math.round(W * 0.24167 * 0.5736 + W / 26.55 * n * 0.8192 + W * 0.05 + 80) + 'px'; } }
     if ('ResizeObserver' in window) new ResizeObserver(size3d).observe(box3d); else window.addEventListener('resize', size3d);
     fbtns.forEach(function (b) { b.addEventListener('click', function () { openFloor(parseInt(b.getAttribute('data-floor-btn'), 10), true); }); });
     var byFloor = {}; APTS.forEach(function (a) { (byFloor[a.floor] = byFloor[a.floor] || []).push(a); });
@@ -638,7 +640,7 @@
       title.textContent = fmt(T.picker.floorCount, { n: f, count: apts.length });
       img.src = D.assets + 'img/floors/' + fid + '-1200.webp';
       img.srcset = D.assets + 'img/floors/' + fid + '-1200.webp 1200w, ' + D.assets + 'img/floors/' + fid + '-2400.webp 2400w';
-      img.sizes = '(min-width: 1300px) 1240px, 1100px';
+      img.sizes = '(min-width: 1520px) 1300px, 86vw';
       img.alt = fmt(T.picker.planAlt, { n: f });
       svg.setAttribute('aria-label', fmt(T.picker.planAlt, { n: f }));
       svg.textContent = ''; list.textContent = '';

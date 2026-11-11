@@ -31,6 +31,7 @@ GALLERY = [
     ("garden-front", f"{CITY}/03.jpg"),
     ("portrait-corner", f"{EXT}/7.png"),
     ("east-facade", f"{CITY}/06.jpg"),
+    ("rear-facade", f"{CITY}/05.jpg"),  # outer side of the block: floor picker + 3D walls
 ]
 
 

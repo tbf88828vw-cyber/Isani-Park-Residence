@@ -879,25 +879,31 @@ select:hover, input:hover, textarea:hover { border-color: var(--fg-muted); }
 .picker__fbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
 /* 3D cut-away of the building at the chosen floor */
-.pk3d { position: relative; overflow: hidden; border-radius: var(--radius); background: radial-gradient(120% 90% at 50% 70%, #2a3a2a 0%, #151a14 60%, #0d0f0c 100%); }
-[data-theme="light"] .pk3d { background: radial-gradient(120% 90% at 50% 70%, #dfe6d6 0%, #cdd6c2 55%, #b9c3ad 100%); }
-.pk3d__stage { display: grid; place-items: center; min-height: calc(var(--pk-W, 1000px) * 0.62); padding: 40px 0 60px; perspective: 2600px; perspective-origin: 50% 0%; }
+/* stage: quiet paper/charcoal field with a faint architectural grid and a warm champagne glow behind the block */
+.pk3d { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--radius); border: 1px solid var(--line);
+  background: radial-gradient(58% 52% at 50% 40%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 72%), linear-gradient(180deg, var(--bg-raise) 0%, var(--bg-sunk) 100%); }
+.pk3d::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0.6;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; background-position: 50% 50%;
+  -webkit-mask-image: radial-gradient(72% 68% at 50% 46%, #000 25%, transparent 82%); mask-image: radial-gradient(72% 68% at 50% 46%, #000 25%, transparent 82%); }
+.pk3d::after { content: ""; position: absolute; inset: auto 0 0; height: 34%; z-index: -1; pointer-events: none; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 8%, transparent)); }
+.pk3d__stage { display: grid; place-items: center; min-height: calc(var(--pk-W, 1000px) * 0.62); padding: 40px 0 60px; perspective: 2600px; perspective-origin: 50% 0%; transition: min-height 0.6s cubic-bezier(.2,.7,.2,1); }
 .pk3d__scene {
   --W: 1000px; --n: 5; --D: calc(var(--W) * 0.24167); --h: calc(var(--W) / 26.55); --H: calc(var(--h) * var(--n));
   position: relative; width: var(--W); height: var(--D); transform-style: preserve-3d;
-  transform: translateY(calc(var(--H) * 0.35)) rotateX(58deg) rotateZ(-16deg);
+  transform: translateY(calc(var(--H) * 0.41)) rotateX(55deg);
 }
 .pk3d__top { position: absolute; inset: 0; transform: translateZ(var(--H)); transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(.2,.7,.2,1); }
 .pk3d__top img { display: block; width: 100%; height: 100%; box-shadow: 0 0 0 2px rgba(255, 250, 240, 0.4); }
 .pk3d__top .picker__plan-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .pk3d__face { position: absolute; backface-visibility: hidden; transition: height 0.6s cubic-bezier(.2,.7,.2,1), top 0.6s cubic-bezier(.2,.7,.2,1), width 0.6s cubic-bezier(.2,.7,.2,1), left 0.6s cubic-bezier(.2,.7,.2,1); }
-.pk3d__front, .pk3d__back { left: 0; width: var(--W); height: var(--H); background-image: url("../img/floors/facade-strip-1689.webp"); background-size: 100% calc(var(--h) * 10); background-position: 50% 100%; background-repeat: no-repeat; }
+.pk3d__front, .pk3d__back { left: 0; width: var(--W); height: var(--H); background-image: url("../img/floors/facade-strip-1689.webp"); background-image: -webkit-image-set(url("../img/floors/facade-strip-1689.webp") 1x, url("../img/floors/facade-strip-3290.webp") 2x); background-image: image-set(url("../img/floors/facade-strip-1689.webp") 1x, url("../img/floors/facade-strip-3290.webp") 2x); background-size: 100% calc(var(--h) * 10); background-position: 50% 100%; background-repeat: no-repeat; }
 .pk3d__front { top: calc(var(--D) - var(--H)); transform-origin: 50% 100%; transform: rotateX(-90deg); }
 .pk3d__back { top: 0; transform-origin: 50% 0%; transform: rotateX(90deg) rotateY(180deg); filter: brightness(0.7); }
 .pk3d__left, .pk3d__right { top: 0; width: var(--H); height: var(--D); background: repeating-linear-gradient(90deg, #b4583d 0 calc(var(--h) - 2px), #8f4230 calc(var(--h) - 2px) var(--h)); }
 .pk3d__left { left: calc(var(--H) * -1); transform-origin: 100% 50%; transform: rotateY(90deg); filter: brightness(0.8); }
 .pk3d__right { left: var(--W); transform-origin: 0% 50%; transform: rotateY(-90deg); }
-.pk3d__shadow { position: absolute; inset: -6% -3%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), transparent); filter: blur(8px); transform: translateZ(-1px); }
+.pk3d__shadow { position: absolute; inset: -4% -2%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent); filter: blur(14px); transform: translateZ(-1px); }
+[data-theme="light"] .pk3d__shadow { background: radial-gradient(closest-side, rgba(60, 44, 20, 0.32), transparent); }
 .pk3d .picker__badge { top: 14px; left: 14px; }
 .pk3d .pk-apt polygon { fill-opacity: 0.18; stroke-width: 2; }
 .pk3d .pk-apt:hover polygon, .pk3d .pk-apt:focus-visible polygon { fill-opacity: 0.62; }
@@ -1330,7 +1336,8 @@ body.is-leaving .chooser__inner { opacity: 0; transform: scale(0.98); transition
   .pkflat .pk-apt--sold polygon { fill: #14120f; fill-opacity: 0.6; stroke-opacity: 0.3; }
 }
 /* desktop 3D: lift the scene less so the top floors never leave the frame */
-@media (min-width: 901px) { .pk3d__scene { transform: translateY(calc(var(--H) * 0.6)) rotateX(58deg) rotateZ(-16deg); } }
+/* desktop 3D: the block is seen straight from the front (no turn); the stage height follows the floor (site.js size3d) */
+@media (min-width: 901px) { .pk3d__scene { transform: translateY(calc(var(--H) * 0.41)) rotateX(55deg); } }
 /* apartment plan: always fits the window whole (zoom stays available) */
 .plan-view__scroll { --pv-h: calc(100dvh - 140px); max-height: var(--pv-h); }
 .apt-dialog__media .plan-view__scroll { --pv-h: calc(100dvh - 210px); }

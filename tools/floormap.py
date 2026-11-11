@@ -59,12 +59,14 @@ for f, lst in by_floor.items():
     for pos, a in enumerate(lst):
         out["apartments"][a["id"]] = {"pos": pos, "t3d": ref3d[pos]}
 
-# facade (gallery image 'front', 2000x1125 frame, normalised 0..1): floor bands, floor 10 on top
+# facade (gallery image 'rear-facade' = outer side, render 05.jpg 3840x2160, normalised 0..1): floor bands, floor 10 on top
+# floor slab of floor f at y = 722 + 124.8 * (10 - f); building frame x 260..3550.
+# The 3D walls use the same crop (x 260..3550, y 597..1845) as public/assets/img/floors/facade-strip-*.webp
 bands = {}
 for f in range(1, 11):
-    top = 230 + 72 + 63.6 * (10 - f)
-    bands[f] = [round(138 / 2000, 4), round(top / 1125, 4), round(1827 / 2000, 4), round((top + 63.6) / 1125, 4)]
-out["facade"] = {"image": "front", "bands": bands}
+    bot = 722 + 124.8 * (10 - f)
+    bands[f] = [round(260 / 3840, 4), round((bot - 124.8) / 2160, 4), round(3550 / 3840, 4), round(bot / 2160, 4)]
+out["facade"] = {"image": "rear-facade", "bands": bands}
 
 # 3D renders with alpha
 R3 = os.path.join(SRC, "ბინის აქსონომეტრული რენდერები")

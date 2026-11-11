@@ -246,7 +246,8 @@
    "front-trees": "The Block E façade behind the courtyard trees",
    "garden-front": "Planting in front of the main façade",
    "portrait-corner": "End elevation with balconies",
-   "east-facade": "The long façade of Block E"
+   "east-facade": "The long façade of Block E",
+   "rear-facade": "Outer façade of Block E"
   }
  },
  "location": {

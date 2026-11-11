@@ -61,7 +61,7 @@ for f, lst in by_floor.items():
 
 # facade (gallery image 'rear-facade' = outer side, render 05.jpg 3840x2160, normalised 0..1): floor bands, floor 10 on top
 # floor slab of floor f at y = 722 + 124.8 * (10 - f); building frame x 260..3550.
-# The 3D walls use the same crop (x 260..3550, y 597..1845) as public/assets/img/floors/facade-strip-*.webp
+# The 3D walls use the same crop (x 260..3550, y 597..1845) as public/assets/img/floors/facade-outer-*.webp (new name so browsers do not keep the old cached wall)
 bands = {}
 for f in range(1, 11):
     bot = 722 + 124.8 * (10 - f)

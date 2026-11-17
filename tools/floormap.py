@@ -46,6 +46,10 @@ typical_3d = ['71-8', '64-2', '75-9', '30-2', '30-2', '30-2', '52-3', '52-3', '5
 floor1 = [CORNER_TL, rect(266.4, 440.6)] + [rect(*r) for r in TOP_1R] + [rect(*r) for r in TOP_2R] + \
          [L_RIGHT, CORNER_TR, P((1052, 412.4), (1169.3, 412.4), (1169.3, 547.2), (1052, 547.2))] + [rectb(*r) for r in BOTTOM] + [CORNER_BL]
 floor1_3d = ['60-8', '101-1', '30-2', '30-2', '30-2', '52-3', '52-3', '52-3', '64-2', '71-8', '73-2', None] + ['52-3'] * 8 + ['101-9']
+# positions whose plan is the mirror image of its 3D render (checked by hand against each render:
+# bathroom/entrance side, balcony wrap side, deep/shallow side). Their 3D view is shown flipped horizontally.
+typical_mirror = {3, 7, 9, 10, 11, 13, 15, 17, 19}      # apts 25, 29, 31, 32, 33, 35, 37, 39, 41 (+22 per floor)
+floor1_mirror = {2, 6, 8, 9, 12, 14, 16, 18}            # apts 3, 7, 9, 10, 13, 15, 17, 19
 
 apts = json.load(open(os.path.join(ROOT, "src/data/apartments.source.json")))
 by_floor = {}
@@ -55,9 +59,12 @@ out = {"w": W, "h": H, "shapes": {"floor-1": floor1, "floor-typical": typical}, 
 for f, lst in by_floor.items():
     lst.sort(key=lambda a: a["id"])
     ref3d = floor1_3d if f == 1 else typical_3d
+    mir = floor1_mirror if f == 1 else typical_mirror
     assert len(lst) == len(ref3d), (f, len(lst))
     for pos, a in enumerate(lst):
         out["apartments"][a["id"]] = {"pos": pos, "t3d": ref3d[pos]}
+        if pos in mir and ref3d[pos]:
+            out["apartments"][a["id"]]["mir"] = 1
 
 # facade (gallery image 'rear-facade' = outer side, render 05.jpg 3840x2160, normalised 0..1): floor bands, floor 10 on top
 # floor slab of floor f at y = 722 + 124.8 * (10 - f); building frame x 260..3550.

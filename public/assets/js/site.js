@@ -203,7 +203,7 @@
   })();
 
   // ---------- catalog ----------
-  var APTS = D.apartments.map(function (a) { return { id: a[0], floor: a[1], rooms: a[2], area: a[3], inner: a[4], summer: a[5], plan: !!a[6], ratio: a[7], pos: a[8], t3d: a[9] || null, sold: !!a[10] }; });
+  var APTS = D.apartments.map(function (a) { return { id: a[0], floor: a[1], rooms: a[2], area: a[3], inner: a[4], summer: a[5], plan: !!a[6], ratio: a[7], pos: a[8], t3d: a[9] || null, sold: !!a[10], mir: !!a[11] }; });
   var byId = {}; APTS.forEach(function (a) { byId[a.id] = a; });
   var list = $('[data-apt-list]');
   var cards = {}; $$('[data-apt]', list).forEach(function (li) { cards[li.getAttribute('data-apt')] = li; });
@@ -425,6 +425,7 @@
       v3dImg.sizes = '(min-width: 900px) 60vw, 100vw';
       if (r) { v3dImg.width = 800; v3dImg.height = Math.round(800 * r.h / r.w); }
       v3dImg.alt = fmt(T.modal.alt3d, { n: a.id });
+      v3d.classList.toggle('is-mirror', a.mir); // mirrored twin of the rendered layout
     }
     vTabs[0].disabled = !has3d; no3d.hidden = !!a.t3d; err3d.hidden = !(a.t3d && failed3d[a.t3d]);
     var idx = filtered.indexOf(a);

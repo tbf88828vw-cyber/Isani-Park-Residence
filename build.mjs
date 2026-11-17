@@ -863,7 +863,7 @@ function clientData(lang, t) {
       nav: { themeToLight: t.nav.themeToLight, themeToDark: t.nav.themeToDark },
       net: t.net,
     },
-    apartments: apartments.map((a) => [a.id, a.floor, a.rooms, a.area, a.inner, a.summer, a.plan ? 1 : 0, a.ratio, floormap.apartments[a.id].pos, floormap.apartments[a.id].t3d || 0, a.sold ? 1 : 0]),
+    apartments: apartments.map((a) => [a.id, a.floor, a.rooms, a.area, a.inner, a.summer, a.plan ? 1 : 0, a.ratio, floormap.apartments[a.id].pos, floormap.apartments[a.id].t3d || 0, a.sold ? 1 : 0, floormap.apartments[a.id].mir ? 1 : 0]),
     floormap: { w: floormap.w, h: floormap.h, shapes: floormap.shapes, renders: floormap.renders },
   };
   return `<script id="ipr-data" type="application/json">${JSON.stringify(js).replace(/</g, '\\u003c')}</script>`;
